@@ -10,7 +10,7 @@ build_script:
   - dotnet --version
   - dotnet restore
   - dotnet build -c Release
-  - dotnet pack -c Release .\GeographicLib\GeographicLib.csproj
+  - dotnet pack -c Release .\GeographicLib\Sandwych.GeographicLib.csproj
 artifacts:
   - path: '.\GeographicLib\**\*.nupkg'
 deploy:
