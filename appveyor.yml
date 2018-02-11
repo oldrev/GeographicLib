@@ -1,0 +1,28 @@
+image: Visual Studio 2017
+init:
+  - git config --global core.autocrlf true
+install:
+  - ps: $env:BuildNumber= $env:APPVEYOR_BUILD_NUMBER
+  - ps: $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = true
+  - ps: $env:NUGET_XMLDOC_MODE = "skip"
+  - ps: $env:DOTNET_CLI_TELEMETRY_OPTOUT = 1
+build_script:
+  - dotnet --version
+  - dotnet restore
+  - dotnet build -c Release
+  - dotnet pack -c Release .\GeographicLib\GeographicLib.csproj
+artifacts:
+  - path: '.\GeographicLib\**\*.nupkg'
+deploy:
+  - provider: NuGet
+    on:
+      branch: dev
+    server: https://www.myget.org/F/maltreport/api/v2/package
+    skip_symbols: true
+    artifact: /.*\.nupkg/
+  - provider: NuGet
+    on:
+      branch: master
+    server: https://www.nuget.org/api/v2/package
+    skip_symbols: true
+    artifact: /.*\.nupkg/  
