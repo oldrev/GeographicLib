@@ -10,6 +10,8 @@ All in all, the code compiles without error and in general works ;)
 
 For the original code head on to http://geographiclib.sourceforge.net/
 
+Ported to .NET Standard 1.3 by Wei "oldrev" Li.
+
 Examples
 --------
 
