@@ -1,11 +1,10 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <PackageId>GeographicLib</PackageId>
+    <PackageId>Sandwych.GeographicLib</PackageId>
     <Title>This is an attempt to port the Java version of GeographicLib to C#.</Title>
     <PackageTags>geographic;gis</PackageTags>
-    <VersionPrefix>0.1.0</VersionPrefix>
-    <VersionSuffix>beta</VersionSuffix>
+    <VersionPrefix>1.0.0</VersionPrefix>
   </PropertyGroup>
 
   <Import Project="../Shared.props" />

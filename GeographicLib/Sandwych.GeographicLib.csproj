@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard1.3;net461</TargetFrameworks>
     <LangVersion>latest</LangVersion>
+    <RootNamespace>GeographicLib</RootNamespace>
   </PropertyGroup>
 
 </Project>

@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GeographicLib\GeographicLib.csproj" />
+    <ProjectReference Include="..\GeographicLib\Sandwych.GeographicLib.csproj" />
   </ItemGroup>
 
 </Project>
