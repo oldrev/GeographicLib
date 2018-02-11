@@ -11,17 +11,17 @@ namespace GeographicLib
     /// A pair of double precision numbers.
     /// This duplicates the C++ class {@code std::pair<double, double>}.
     /// </summary>
-    public class Pair
+    public readonly struct Pair
     {
         /// <summary>
         /// The First member of the pair.
         /// </summary>
-        public double First;
+        public double First { get; }
 
         /// <summary>
         /// The Second member of the pair.
         /// </summary>
-        public double Second;
+        public double Second { get; }
 
         /// <summary>
         /// Constructor

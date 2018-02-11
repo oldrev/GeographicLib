@@ -20,7 +20,7 @@ namespace GeographicLib
     /// In the documentation of the member functions, <i>sum</i> stands for the value
     /// currently held in the accumulator.
     /// </summary>
-    public class Accumulator
+    public struct Accumulator
     {
         /// <summary>
         /// _s + _t accumulators for the sum.

@@ -476,7 +476,7 @@ namespace GeographicLib
                                    bool arcmode, double s12_a12, int outmask)
         {
             return new GeodesicLine(this, lat1, lon1, azi1,
-                // Automatically supply DISTANCE_IN if necessary
+                                    // Automatically supply DISTANCE_IN if necessary
                                     outmask | (arcmode ? GeodesicMask.NONE :
                                                GeodesicMask.DISTANCE_IN))
               .                         // Note the dot!
@@ -661,7 +661,7 @@ namespace GeographicLib
                 calp2 = 1; salp2 = 0;           // At the target we're heading north
 
                 double
-                    // tan(bet) = tan(sig) * cos(alp)
+                  // tan(bet) = tan(sig) * cos(alp)
                   ssig1 = sbet1, csig1 = calp1 * cbet1,
                   ssig2 = sbet2, csig2 = calp2 * cbet2;
 
@@ -700,7 +700,7 @@ namespace GeographicLib
             double omg12 = Double.NaN;
             if (!meridian &&
                 sbet1 == 0 &&   // and sbet3 == 0
-                // Mimic the way Lambda12 works with calp1 = 0
+                                // Mimic the way Lambda12 works with calp1 = 0
                 (_f <= 0 || lam12 <= Math.PI - _f * Math.PI))
             {
 
@@ -854,19 +854,19 @@ namespace GeographicLib
             if ((outmask & GeodesicMask.AREA) != 0)
             {
                 double
-                    // From Lambda12: sin(alp1) * cos(bet1) = sin(alp0)
+                  // From Lambda12: sin(alp1) * cos(bet1) = sin(alp0)
                   salp0 = salp1 * cbet1,
                   calp0 = GeoMath.Hypot(calp1, salp1 * sbet1); // calp0 > 0
                 double alp12;
                 if (calp0 != 0 && salp0 != 0)
                 {
                     double
-                        // From Lambda12: tan(bet) = tan(sig) * cos(alp)
+                      // From Lambda12: tan(bet) = tan(sig) * cos(alp)
                       ssig1 = sbet1, csig1 = calp1 * cbet1,
                       ssig2 = sbet2, csig2 = calp2 * cbet2,
                       k2 = GeoMath.Sq(calp0) * _ep2,
                       eps = k2 / (2 * (1 + Math.Sqrt(1 + k2)) + k2),
-                        // Multiplier = a^2 * e^2 * cos(alpha0) * sin(alpha0).
+                      // Multiplier = a^2 * e^2 * cos(alpha0) * sin(alpha0).
                       A4 = GeoMath.Sq(_a) * calp0 * salp0 * _e2;
                     {
                         Pair p = SinCosNorm(ssig1, csig1);
@@ -1089,8 +1089,8 @@ namespace GeographicLib
 
         internal class LengthsV
         {
-           internal double s12b, m12b, m0, M12, M21;
-           internal LengthsV()
+            internal double s12b, m12b, m0, M12, M21;
+            internal LengthsV()
             {
                 s12b = m12b = m0 = M12 = M21 = Double.NaN;
             }
@@ -1101,7 +1101,7 @@ namespace GeographicLib
                                  double ssig2, double csig2, double dn2,
                                  double cbet1, double cbet2,
                                  bool scalep,
-            // Scratch areas of the right size
+                                 // Scratch areas of the right size
                                  double[] C1a, double[] C2a)
         {
             // Return m12b = (reduced length)/_b; also calculate s12b = distance/_b,
@@ -1147,13 +1147,13 @@ namespace GeographicLib
             if (!(q == 0 && r <= 0))
             {
                 double
-                    // Avoid possible division by zero when r = 0 by multiplying equations
-                    // for s and t by r^3 and r, resp.
+                  // Avoid possible division by zero when r = 0 by multiplying equations
+                  // for s and t by r^3 and r, resp.
                   S = p * q / 4,            // S = r^3 * s
                   r2 = GeoMath.Sq(r),
                   r3 = r * r2,
-                    // The discrimant of the quadratic equation for T3.  This is zero on
-                    // the evolute curve p^(1/3)+q^(1/3) = 1
+                  // The discrimant of the quadratic equation for T3.  This is zero on
+                  // the evolute curve p^(1/3)+q^(1/3) = 1
                   disc = S * (S + 2 * r3);
                 double u = r;
                 if (disc >= 0)
@@ -1178,7 +1178,7 @@ namespace GeographicLib
                 }
                 double
                   v = Math.Sqrt(GeoMath.Sq(u) + q),    // guaranteed positive
-                    // Avoid loss of accuracy when u < 0.
+                                                       // Avoid loss of accuracy when u < 0.
                   uv = u < 0 ? q / (v - u) : u + v, // u+v, guaranteed positive
                   w = (uv - q) / (2 * v);           // positive?
                 // Rearrange expression for k to avoid loss of accuracy due to
@@ -1197,9 +1197,9 @@ namespace GeographicLib
         internal class InverseStartV
         {
             internal double sig12, salp1, calp1,
-                // Only updated if return val >= 0
+              // Only updated if return val >= 0
               salp2, calp2,
-                // Only updated for short lines
+              // Only updated for short lines
               dnm;
             internal InverseStartV()
             {
@@ -1210,7 +1210,7 @@ namespace GeographicLib
         private InverseStartV InverseStart(double sbet1, double cbet1, double dn1,
                                            double sbet2, double cbet2, double dn2,
                                            double lam12,
-            // Scratch areas of the right size
+                                           // Scratch areas of the right size
                                            double[] C1a, double[] C2a)
         {
             // Return a starting point for Newton's method in salp1 and calp1 (function
@@ -1221,7 +1221,7 @@ namespace GeographicLib
             InverseStartV w = new InverseStartV();
             w.sig12 = -1;               // Return value
             double
-                // bet12 = bet2 - bet1 in [0, pi); bet12a = bet2 + bet1 in (-pi, 0]
+              // bet12 = bet2 - bet1 in [0, pi); bet12a = bet2 + bet1 in (-pi, 0]
               sbet12 = sbet2 * cbet1 - cbet2 * sbet1,
               cbet12 = cbet2 * cbet1 + sbet2 * sbet1;
             double sbet12a = sbet2 * cbet1 + cbet2 * sbet1;
@@ -1398,7 +1398,7 @@ namespace GeographicLib
                                    double sbet2, double cbet2, double dn2,
                                    double salp1, double calp1,
                                    bool diffp,
-            // Scratch areas of the right size
+                                   // Scratch areas of the right size
                                    double[] C1a, double[] C2a, double[] C3a)
         {
             // Object to hold lam12, salp3, calp3, sig12, ssig1, csig1, ssig3, csig3,
@@ -1412,7 +1412,7 @@ namespace GeographicLib
                 calp1 = -tiny_;
 
             double
-                // sin(alp1) * cos(bet1) = sin(alp0)
+              // sin(alp1) * cos(bet1) = sin(alp0)
               salp0 = salp1 * cbet1,
               calp0 = GeoMath.Hypot(calp1, salp1 * sbet1); // calp0 > 0
 
@@ -1475,7 +1475,6 @@ namespace GeographicLib
                     w.dlam12 = -2 * _f1 * dn1 / sbet1;
                 else
                 {
-                    double dummy;
                     LengthsV v =
                       Lengths(w.eps, w.sig12, w.ssig1, w.csig1, dn1, w.ssig2, w.csig2, dn2,
                               cbet1, cbet2, false, C1a, C2a);
@@ -1491,7 +1490,7 @@ namespace GeographicLib
         {
             // Evaluate sum(_A3x[k] * eps^k, k, 0, nA3x_-1) by Horner's method
             double v = 0;
-            for (int i = nA3x_; i > 0; )
+            for (int i = nA3x_; i > 0;)
                 v = eps * v + _A3x[--i];
             return v;
         }
@@ -1500,7 +1499,7 @@ namespace GeographicLib
         {
             // Evaluate C3 coeffs by Horner's method
             // Elements c[1] thru c[nC3_ - 1] are set
-            for (int j = nC3x_, k = nC3_ - 1; k > 0; )
+            for (int j = nC3x_, k = nC3_ - 1; k > 0;)
             {
                 double t = 0;
                 for (int i = nC3_ - k; i > 0; --i)
@@ -1509,7 +1508,7 @@ namespace GeographicLib
             }
 
             double mult = 1;
-            for (int k = 1; k < nC3_; )
+            for (int k = 1; k < nC3_;)
             {
                 mult *= eps;
                 c[k++] *= mult;
@@ -1520,7 +1519,7 @@ namespace GeographicLib
         {
             // Evaluate C4 coeffs by Horner's method
             // Elements c[0] thru c[nC4_ - 1] are set
-            for (int j = nC4x_, k = nC4_; k > 0; )
+            for (int j = nC4x_, k = nC4_; k > 0;)
             {
                 double t = 0;
                 for (int i = nC4_ - k + 1; i > 0; --i)
@@ -1529,7 +1528,7 @@ namespace GeographicLib
             }
 
             double mult = 1;
-            for (int k = 1; k < nC4_; )
+            for (int k = 1; k < nC4_;)
             {
                 mult *= eps;
                 c[k++] *= mult;

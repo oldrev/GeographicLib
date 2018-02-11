@@ -22,7 +22,7 @@ namespace GeographicLib
         /// </summary>
         /// <param name="msg">msg a string message, which is accessible in the catch clause via getMessage(). </param>
         public GeographicErr(String msg)
-            : base(msg) 
+            : base(msg)
         { }
     }
 }

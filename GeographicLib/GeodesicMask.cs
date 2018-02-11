@@ -21,60 +21,60 @@ namespace GeographicLib
      * Geodesic#Line(double, double, double, int) Geodesic.Line} what capabilities
      * should be included in the {@link GeodesicLine} object.
      **********************************************************************/
-    public class GeodesicMask
+    public static class GeodesicMask
     {
-        internal static readonly int CAP_NONE = 0;
-        internal static readonly int CAP_C1 = 1 << 0;
-        internal static readonly int CAP_C1p = 1 << 1;
-        internal static readonly int CAP_C2 = 1 << 2;
-        internal static readonly int CAP_C3 = 1 << 3;
-        internal static readonly int CAP_C4 = 1 << 4;
-        internal static readonly int CAP_ALL = 0x1F;
-        internal static readonly int OUT_ALL = 0x7F80;
+        internal const int CAP_NONE = 0;
+        internal const int CAP_C1 = 1 << 0;
+        internal const int CAP_C1p = 1 << 1;
+        internal const int CAP_C2 = 1 << 2;
+        internal const int CAP_C3 = 1 << 3;
+        internal const int CAP_C4 = 1 << 4;
+        internal const int CAP_ALL = 0x1F;
+        internal const int OUT_ALL = 0x7F80;
 
         /**
          * No capabilities, no output.
          **********************************************************************/
-        public static readonly int NONE = 0;
+        public const int NONE = 0;
         /**
          * Calculate latitude <i>lat2</i>.  (It's not necessary to include this as a
          * capability to {@link GeodesicLine} because this is included by default.)
          **********************************************************************/
-        public static readonly int LATITUDE = 1 << 7 | CAP_NONE;
+        public const int LATITUDE = 1 << 7 | CAP_NONE;
         /**
          * Calculate longitude <i>lon2</i>.
          **********************************************************************/
-        public static readonly int LONGITUDE = 1 << 8 | CAP_C3;
+        public const int LONGITUDE = 1 << 8 | CAP_C3;
         /**
          * Calculate azimuths <i>azi1</i> and <i>azi2</i>.  (It's not necessary to
          * include this as a capability to {@link GeodesicLine} because this is
          * included by default.)
          **********************************************************************/
-        public static readonly int AZIMUTH = 1 << 9 | CAP_NONE;
+        public const int AZIMUTH = 1 << 9 | CAP_NONE;
         /**
          * Calculate distance <i>s12</i>.
          **********************************************************************/
-        public static readonly int DISTANCE = 1 << 10 | CAP_C1;
+        public const int DISTANCE = 1 << 10 | CAP_C1;
         /**
          * Allow distance <i>s12</i> to be used as <i>input</i> in the direct
          * geodesic problem.
          **********************************************************************/
-        public static readonly int DISTANCE_IN = 1 << 11 | CAP_C1 | CAP_C1p;
+        public const int DISTANCE_IN = 1 << 11 | CAP_C1 | CAP_C1p;
         /**
          * Calculate reduced length <i>m12</i>.
          **********************************************************************/
-        public static readonly int REDUCEDLENGTH = 1 << 12 | CAP_C1 | CAP_C2;
+        public const int REDUCEDLENGTH = 1 << 12 | CAP_C1 | CAP_C2;
         /**
          * Calculate geodesic scales <i>M12</i> and <i>M21</i>.
          **********************************************************************/
-        public static readonly int GEODESICSCALE = 1 << 13 | CAP_C1 | CAP_C2;
+        public const int GEODESICSCALE = 1 << 13 | CAP_C1 | CAP_C2;
         /**
          * Calculate Area <i>S12</i>.
          **********************************************************************/
-        public static readonly int AREA = 1 << 14 | CAP_C4;
+        public const int AREA = 1 << 14 | CAP_C4;
         /**
          * All capabilities, calculate everything.
          **********************************************************************/
-        public static readonly int ALL = OUT_ALL | CAP_ALL;
+        public const int ALL = OUT_ALL | CAP_ALL;
     }
 }

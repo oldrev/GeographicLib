@@ -348,7 +348,6 @@ namespace GeographicLib
             double tempsum = _areasum.Sum();
             int crossings = _crossings;
             {
-                double lat, lon, s12, S12, t;
                 GeodesicData g =
                   _earth.Direct(_lat1, _lon1, azi, false, s, _mask);
                 tempsum += g.S12;

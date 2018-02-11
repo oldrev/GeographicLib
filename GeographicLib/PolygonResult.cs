@@ -11,20 +11,20 @@ namespace GeographicLib
     /**
      * A container for the results from PolygonArea.
      **********************************************************************/
-    public class PolygonResult
+    public readonly struct PolygonResult
     {
         /**
          * The number of vertices in the polygon
          **********************************************************************/
-        public int Num;
+        public int Num { get; }
         /**
          * The Perimeter of the polygon or the length of the polyline (meters).
          **********************************************************************/
-        public double Perimeter;
+        public double Perimeter { get; }
         /**
          * The Area of the polygon (meters<sup>2</sup>).
          **********************************************************************/
-        public double Area;
+        public double Area { get; }
         /**
          * Constructor
          * <p>
