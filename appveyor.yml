@@ -13,7 +13,6 @@ build_script:
   - dotnet pack -c Release .\GeographicLib\Sandwych.GeographicLib.csproj
 test_script:
   - dotnet test .\GeographicLib.Tests\Sandwych.GeographicLib.Tests.csproj
-
 artifacts:
   - path: '.\GeographicLib\**\*.nupkg'
 deploy:
