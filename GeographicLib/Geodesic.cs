@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 namespace GeographicLib
 {
 
+
     /**
      * Geodesic calculations.
      * <p>
@@ -38,7 +39,7 @@ namespace GeographicLib
      * solution is provided.
      * <p>
      * The standard way of specifying the direct problem is the specify the
-     * distance <i>s12</i> to the Second point.  However it is sometimes useful
+     * distance <i>s12</i> to the second point.  However it is sometimes useful
      * instead to specify the arc length <i>a12</i> (in degrees) on the auxiliary
      * sphere.  This is a mathematical construct used in solving the geodesic
      * problems.  The solution of the direct problem in this form is provided by
@@ -51,8 +52,8 @@ namespace GeographicLib
      * geodesics.  These are:
      * <ul>
      * <li>
-     *   <i>reduced length</i>.  If we fix the First point and increase
-     *   <i>azi1</i> by <i>dazi1</i> (radians), the Second point is displaced
+     *   <i>reduced length</i>.  If we fix the first point and increase
+     *   <i>azi1</i> by <i>dazi1</i> (radians), the second point is displaced
      *   <i>m12</i> <i>dazi1</i> in the direction <i>azi2</i> + 90&deg;.  The
      *   quantity <i>m12</i> is called the "reduced length" and is symmetric under
      *   interchange of the two points.  On a curved surface the reduced length
@@ -60,7 +61,7 @@ namespace GeographicLib
      *   surface, we have <i>m12</i> = <i>s12</i>.  The ratio <i>s12</i>/<i>m12</i>
      *   gives the azimuthal scale for an azimuthal equidistant projection.
      * <li>
-     *   <i>geodesic scale</i>.  Consider a reference geodesic and a Second
+     *   <i>geodesic scale</i>.  Consider a reference geodesic and a second
      *   geodesic parallel to this one at point 1 and separated by a small distance
      *   <i>dt</i>.  The separation of the two geodesics at point 2 is <i>M12</i>
      *   <i>dt</i> where <i>M12</i> is called the "geodesic scale".  <i>M21</i> is
@@ -68,11 +69,11 @@ namespace GeographicLib
      *   flat surface, we have <i>M12</i> = <i>M21</i> = 1.  The quantity
      *   1/<i>M12</i> gives the scale of the Cassini-Soldner projection.
      * <li>
-     *   <i>Area</i>.  The Area between the geodesic from point 1 to point 2 and
-     *   the equation is represented by <i>S12</i>; it is the Area, measured
+     *   <i>area</i>.  The area between the geodesic from point 1 to point 2 and
+     *   the equation is represented by <i>S12</i>; it is the area, measured
      *   counter-clockwise, of the geodesic quadrilateral with corners
      *   (<i>lat1</i>,<i>lon1</i>), (0,<i>lon1</i>), (0,<i>lon2</i>), and
-     *   (<i>lat2</i>,<i>lon2</i>).  It can be used to compute the Area of any
+     *   (<i>lat2</i>,<i>lon2</i>).  It can be used to compute the area of any
      *   simple geodesic polygon.
      * </ul>
      * <p>
@@ -125,40 +126,41 @@ namespace GeographicLib
      * catalog of those cases:
      * <ul>
      * <li>
-     *   <i>lat1</i> = &minus;<i>lat2</i> (with neither at a pole).  If <i>azi1</i>
-     *   = <i>azi2</i>, the geodesic is unique.  Otherwise there are two geodesics
-     *   and the Second one is obtained by setting [<i>azi1</i>, <i>azi2</i>] =
-     *   [<i>azi2</i>, <i>azi1</i>], [<i>M12</i>, <i>M21</i>] = [<i>M21</i>,
-     *   <i>M12</i>], <i>S12</i> = &minus;<i>S12</i>.  (This occurs when the
-     *   longitude difference is near &plusmn;180&deg; for oblate ellipsoids.)
+     *   <i>lat1</i> = &minus;<i>lat2</i> (with neither point at a pole).  If
+     *   <i>azi1</i> = <i>azi2</i>, the geodesic is unique.  Otherwise there are
+     *   two geodesics and the second one is obtained by setting [<i>azi1</i>,
+     *   <i>azi2</i>] &rarr; [<i>azi2</i>, <i>azi1</i>], [<i>M12</i>, <i>M21</i>]
+     *   &rarr; [<i>M21</i>, <i>M12</i>], <i>S12</i> &rarr; &minus;<i>S12</i>.
+     *   (This occurs when the longitude difference is near &plusmn;180&deg; for
+     *   oblate ellipsoids.)
      * <li>
-     *   <i>lon2</i> = <i>lon1</i> &plusmn; 180&deg; (with neither at a pole).  If
-     *   <i>azi1</i> = 0&deg; or &plusmn;180&deg;, the geodesic is unique.
-     *   Otherwise there are two geodesics and the Second one is obtained by
-     *   setting [ <i>azi1</i>, <i>azi2</i>] = [&minus;<i>azi1</i>,
-     *   &minus;<i>azi2</i>], <i>S12</i> = &minus; <i>S12</i>.  (This occurs when
-     *   the <i>lat2</i> is near &minus;<i>lat1</i> for prolate ellipsoids.)
+     *   <i>lon2</i> = <i>lon1</i> &plusmn; 180&deg; (with neither point at a
+     *   pole).  If <i>azi1</i> = 0&deg; or &plusmn;180&deg;, the geodesic is
+     *   unique.  Otherwise there are two geodesics and the second one is obtained
+     *   by setting [ <i>azi1</i>, <i>azi2</i>] &rarr; [&minus;<i>azi1</i>,
+     *   &minus;<i>azi2</i>], <i>S12</i> &rarr; &minus; <i>S12</i>.  (This occurs
+     *   when <i>lat2</i> is near &minus;<i>lat1</i> for prolate ellipsoids.)
      * <li>
      *   Points 1 and 2 at opposite poles.  There are infinitely many geodesics
-     *   which can be generated by setting [<i>azi1</i>, <i>azi2</i>] =
+     *   which can be generated by setting [<i>azi1</i>, <i>azi2</i>] &rarr;
      *   [<i>azi1</i>, <i>azi2</i>] + [<i>d</i>, &minus;<i>d</i>], for arbitrary
      *   <i>d</i>.  (For spheres, this prescription applies when points 1 and 2 are
      *   antipodal.)
      * <li>
-     *   s12 = 0 (coincident points).  There are infinitely many geodesics which
-     *   can be generated by setting [<i>azi1</i>, <i>azi2</i>] = [<i>azi1</i>,
-     *   <i>azi2</i>] + [<i>d</i>, <i>d</i>], for arbitrary <i>d</i>.
+     *   <i>s12</i> = 0 (coincident points).  There are infinitely many geodesics
+     *   which can be generated by setting [<i>azi1</i>, <i>azi2</i>] &rarr;
+     *   [<i>azi1</i>, <i>azi2</i>] + [<i>d</i>, <i>d</i>], for arbitrary <i>d</i>.
      * </ul>
      * <p>
      * The calculations are accurate to better than 15 nm (15 nanometers) for the
      * WGS84 ellipsoid.  See Sec. 9 of
-     * <a href="http://arxiv.org/abs/1102.1215v1">arXiv:1102.1215v1</a> for
+     * <a href="https://arxiv.org/abs/1102.1215v1">arXiv:1102.1215v1</a> for
      * details.  The algorithms used by this class are based on series expansions
      * using the flattening <i>f</i> as a small parameter.  These are only accurate
      * for |<i>f</i>| &lt; 0.02; however reasonably accurate results will be
      * obtained for |<i>f</i>| &lt; 0.2.  Here is a table of the approximate
      * maximum error (expressed as a distance) for an ellipsoid with the same
-     * major radius as the WGS84 ellipsoid and different values of the
+     * equatorial radius as the WGS84 ellipsoid and different values of the
      * flattening.<pre>
      *     |f|      error
      *     0.01     25 nm
@@ -170,13 +172,10 @@ namespace GeographicLib
      * The algorithms are described in
      * <ul>
      * <li>C. F. F. Karney,
-     *   <a href="http://dx.doi.org/10.1007/s00190-012-0578-z">
+     *   <a href="https://doi.org/10.1007/s00190-012-0578-z">
      *   Algorithms for geodesics</a>,
-     *   J. Geodesy <b>87</b>, 43&ndash;55 (2013);
-     *   DOI: <a href="http://dx.doi.org/10.1007/s00190-012-0578-z">
-     *   10.1007/s00190-012-0578-z</a>;
-     *   addenda: <a href="http://geographiclib.sf.net/geod-addenda.html">
-     *   geod-addenda.html</a>.
+     *   J. Geodesy <b>87</b>, 43&ndash;55 (2013)
+     *   (<a href="https://geographiclib.sourceforge.io/geod-addenda.html">addenda</a>).
      * </ul>
      * <p>
      * Example of use:
@@ -205,7 +204,7 @@ namespace GeographicLib
      *   }
      * }}</pre>
      **********************************************************************/
-    public sealed class Geodesic
+    public class Geodesic
     {
 
         /**
@@ -227,12 +226,9 @@ namespace GeographicLib
         private static readonly int maxit1_ = 20;
         private static readonly int maxit2_ = maxit1_ + GeoMath.Digits + 10;
 
-        private static readonly Lazy<Geodesic> _lazyWgs84 =
-            new Lazy<Geodesic>(() => new Geodesic(Constants.WGS84_a, Constants.WGS84_f), true);
-
         // Underflow guard.  We require
-        //   tiny_ * Epsilon() > 0
-        //   tiny_ + Epsilon() == Epsilon()
+        //   tiny_ * epsilon() > 0
+        //   tiny_ + epsilon() == epsilon()
         internal static readonly double tiny_ = Math.Sqrt(GeoMath.Min);
         private static readonly double tol0_ = GeoMath.Epsilon;
         // Increase multiplier in defn of tol1_ from 100 to 200 to fix inverse case
@@ -244,28 +240,6 @@ namespace GeographicLib
         private static readonly double tolb_ = tol0_ * tol2_;
         private static readonly double xthresh_ = 1000 * tol2_;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static double AngRound(double x)
-        {
-            // The makes the smallest gap in x = 1/16 - nextafter(1/16, 0) = 1/2^57
-            // for reals = 0.7 pm on the earth if x is an angle in degrees.  (This
-            // is about 1000 times more resolution than we get with angles around 90
-            // degrees.)  We use this to avoid having to deal with near singular
-            // cases when x is non-zero but tiny (e.g., 1.0e-200).
-            double z = 1 / 16.0;
-            double y = Math.Abs(x);
-            // The compiler mustn't "simplify" z - (z - y) to y
-            y = y < z ? z - (z - y) : y;
-            return x < 0 ? -y : y;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static Pair SinCosNorm(double sinx, double cosx)
-        {
-            double r = GeoMath.Hypot(sinx, cosx);
-            return new Pair(sinx / r, cosx / r);
-        }
-
         internal double _a, _f, _f1, _e2, _ep2, _b, _c2;
         private double _n, _etol2;
         private double[] _A3x, _C3x, _C4x;
@@ -275,18 +249,17 @@ namespace GeographicLib
          * <p>
          * @param a equatorial radius (meters).
          * @param f flattening of ellipsoid.  Setting <i>f</i> = 0 gives a sphere.
-         *   Negative <i>f</i> gives a prolate ellipsoid.  If <i>f</i> > 1, set
-         *   flattening to 1/<i>f</i>.
+         *   Negative <i>f</i> gives a prolate ellipsoid.
          * @exception GeographicErr if <i>a</i> or (1 &minus; <i>f</i> ) <i>a</i> is
          *   not positive.
          **********************************************************************/
         public Geodesic(double a, double f)
         {
             _a = a;
-            _f = f <= 1 ? f : 1 / f;
+            _f = f;
             _f1 = 1 - _f;
             _e2 = _f * (2 - _f);
-            _ep2 = _e2 / GeoMath.Sq(_f1);       // e2 / (1 - e2)
+            _ep2 = _e2 / GeoMath.Sq(_f1); // e2 / (1 - e2)
             _n = _f / (2 - _f);
             _b = _a * _f1;
             _c2 = (GeoMath.Sq(_a) + GeoMath.Sq(_b) *
@@ -294,23 +267,23 @@ namespace GeographicLib
                     (_e2 > 0 ? GeoMath.Atanh(Math.Sqrt(_e2)) :
                      Math.Atan(Math.Sqrt(-_e2))) /
                     Math.Sqrt(Math.Abs(_e2)))) / 2; // authalic radius squared
-            // The sig12 threshold for "really short".  Using the auxiliary sphere
-            // solution with dnm computed at (bet1 + bet2) / 2, the relative error in
-            // the azimuth consistency check is sig12^2 * abs(f) * Min(1, 1-f/2) / 2.
-            // (Error measured for 1/100 < b/a < 100 and abs(f) >= 1/1000.  For a
-            // given f and sig12, the max error occurs for lines near the pole.  If
-            // the old rule for computing dnm = (dn1 + dn2)/2 is used, then the error
-            // increases by a factor of 2.)  Setting this equal to Epsilon gives
-            // sig12 = etol2.  Here 0.1 is a safety factor (error decreased by 100)
-            // and max(0.001, abs(f)) stops etol2 getting too large in the nearly
-            // spherical case.
+                                                    // The sig12 threshold for "really short".  Using the auxiliary sphere
+                                                    // solution with dnm computed at (bet1 + bet2) / 2, the relative error in
+                                                    // the azimuth consistency check is sig12^2 * abs(f) * min(1, 1-f/2) / 2.
+                                                    // (Error measured for 1/100 < b/a < 100 and abs(f) >= 1/1000.  For a
+                                                    // given f and sig12, the max error occurs for lines near the pole.  If
+                                                    // the old rule for computing dnm = (dn1 + dn2)/2 is used, then the error
+                                                    // increases by a factor of 2.)  Setting this equal to epsilon gives
+                                                    // sig12 = etol2.  Here 0.1 is a safety factor (error decreased by 100)
+                                                    // and max(0.001, abs(f)) stops etol2 getting too large in the nearly
+                                                    // spherical case.
             _etol2 = 0.1 * tol2_ /
                       Math.Sqrt(Math.Max(0.001, Math.Abs(_f)) *
                                  Math.Min(1.0, 1 - _f / 2) / 2);
             if (!(GeoMath.isfinite(_a) && _a > 0))
-                throw new GeographicErr("Major radius is not positive");
+                throw new GeographicErr("Equatorial radius is not positive");
             if (!(GeoMath.isfinite(_b) && _b > 0))
-                throw new GeographicErr("Minor radius is not positive");
+                throw new GeographicErr("Polar semi-axis is not positive");
             _A3x = new double[nA3x_];
             _C3x = new double[nC3x_];
             _C4x = new double[nC4x_];
@@ -333,24 +306,22 @@ namespace GeographicLib
          *   <i>lat1</i>, <i>lon1</i>, <i>azi1</i>, <i>lat2</i>, <i>lon2</i>,
          *   <i>azi2</i>, <i>s12</i>, <i>a12</i>.
          * <p>
-         * <i>lat1</i> should be in the range [&minus;90&deg;, 90&deg;]; <i>lon1</i>
-         * and <i>azi1</i> should be in the range [&minus;540&deg;, 540&deg;).  The
-         * values of <i>lon2</i> and <i>azi2</i> returned are in the range
-         * [&minus;180&deg;, 180&deg;).
+         * <i>lat1</i> should be in the range [&minus;90&deg;, 90&deg;].  The values
+         * of <i>lon2</i> and <i>azi2</i> returned are in the range [&minus;180&deg;,
+         * 180&deg;].
          * <p>
          * If either point is at a pole, the azimuth is defined by keeping the
-         * longitude fixed, writing <i>lat</i> = &plusmn;(90&deg; &minus; &Epsilon;),
-         * and taking the limit &Epsilon; &rarr; 0+.  An arc length greater that
+         * longitude fixed, writing <i>lat</i> = &plusmn;(90&deg; &minus; &epsilon;),
+         * and taking the limit &epsilon; &rarr; 0+.  An arc length greater that
          * 180&deg; signifies a geodesic which is not a shortest path.  (For a
          * prolate ellipsoid, an additional condition is necessary for a shortest
          * path: the longitudinal extent must not exceed of 180&deg;.)
          **********************************************************************/
         public GeodesicData Direct(double lat1, double lon1,
-                                   double azi1, double s12) =>
-            Direct(lat1, lon1, azi1, false, s12,
-                          GeodesicMask.LATITUDE | GeodesicMask.LONGITUDE |
-                          GeodesicMask.AZIMUTH);
-
+                                   double azi1, double s12)
+        {
+            return Direct(lat1, lon1, azi1, false, s12, GeodesicMask.STANDARD);
+        }
         /**
          * Solve the direct geodesic problem where the length of the geodesic is
          * specified in terms of distance and with a subset of the geodesic results
@@ -367,11 +338,15 @@ namespace GeographicLib
          *   <i>outmask</i> computed.
          * <p>
          * <i>lat1</i>, <i>lon1</i>, <i>azi1</i>, <i>s12</i>, and <i>a12</i> are
-         * always included in the returned result.
+         * always included in the returned result.  The value of <i>lon2</i> returned
+         * is in the range [&minus;180&deg;, 180&deg;], unless the <i>outmask</i>
+         * includes the {@link GeodesicMask#LONG_UNROLL} flag.
          **********************************************************************/
         public GeodesicData Direct(double lat1, double lon1,
-                                   double azi1, double s12, int outmask) =>
-            Direct(lat1, lon1, azi1, false, s12, outmask);
+                                   double azi1, double s12, int outmask)
+        {
+            return Direct(lat1, lon1, azi1, false, s12, outmask);
+        }
 
         /**
          * Solve the direct geodesic problem where the length of the geodesic
@@ -386,23 +361,22 @@ namespace GeographicLib
          *   <i>lat1</i>, <i>lon1</i>, <i>azi1</i>, <i>lat2</i>, <i>lon2</i>,
          *   <i>azi2</i>, <i>s12</i>, <i>a12</i>.
          * <p>
-         * <i>lat1</i> should be in the range [&minus;90&deg;, 90&deg;]; <i>lon1</i>
-         * and <i>azi1</i> should be in the range [&minus;540&deg;, 540&deg;).  The
-         * values of <i>lon2</i> and <i>azi2</i> returned are in the range
-         * [&minus;180&deg;, 180&deg;).
+         * <i>lat1</i> should be in the range [&minus;90&deg;, 90&deg;].  The values
+         * of <i>lon2</i> and <i>azi2</i> returned are in the range [&minus;180&deg;,
+         * 180&deg;].
          * <p>
          * If either point is at a pole, the azimuth is defined by keeping the
-         * longitude fixed, writing <i>lat</i> = &plusmn;(90&deg; &minus; &Epsilon;),
-         * and taking the limit &Epsilon; &rarr; 0+.  An arc length greater that
+         * longitude fixed, writing <i>lat</i> = &plusmn;(90&deg; &minus; &epsilon;),
+         * and taking the limit &epsilon; &rarr; 0+.  An arc length greater that
          * 180&deg; signifies a geodesic which is not a shortest path.  (For a
          * prolate ellipsoid, an additional condition is necessary for a shortest
          * path: the longitudinal extent must not exceed of 180&deg;.)
          **********************************************************************/
         public GeodesicData ArcDirect(double lat1, double lon1,
-                                      double azi1, double a12) =>
-            Direct(lat1, lon1, azi1, true, a12,
-                          GeodesicMask.LATITUDE | GeodesicMask.LONGITUDE |
-                          GeodesicMask.AZIMUTH | GeodesicMask.DISTANCE);
+                                      double azi1, double a12)
+        {
+            return Direct(lat1, lon1, azi1, true, a12, GeodesicMask.STANDARD);
+        }
 
         /**
          * Solve the direct geodesic problem where the length of the geodesic is
@@ -420,11 +394,15 @@ namespace GeographicLib
          *   <i>outmask</i> computed.
          * <p>
          * <i>lat1</i>, <i>lon1</i>, <i>azi1</i>, and <i>a12</i> are always included
-         * in the returned result.
+         * in the returned result.  The value of <i>lon2</i> returned is in the range
+         * [&minus;180&deg;, 180&deg;], unless the <i>outmask</i> includes the {@link
+         * GeodesicMask#LONG_UNROLL} flag.
          **********************************************************************/
         public GeodesicData ArcDirect(double lat1, double lon1,
-                                      double azi1, double a12, int outmask) =>
-            Direct(lat1, lon1, azi1, true, a12, outmask);
+                                      double azi1, double a12, int outmask)
+        {
+            return Direct(lat1, lon1, azi1, true, a12, outmask);
+        }
 
         /**
          * The general direct geodesic problem.  {@link #Direct Direct} and
@@ -446,23 +424,33 @@ namespace GeographicLib
          * The {@link GeodesicMask} values possible for <i>outmask</i> are
          * <ul>
          * <li>
-         *   <i>outmask</i> |= GeodesicMask.LATITUDE for the latitude <i>lat2</i>;
+         *   <i>outmask</i> |= {@link GeodesicMask#LATITUDE} for the latitude
+         *   <i>lat2</i>;
          * <li>
-         *   <i>outmask</i> |= GeodesicMask.LONGITUDE for the latitude <i>lon2</i>;
+         *   <i>outmask</i> |= {@link GeodesicMask#LONGITUDE} for the latitude
+         *   <i>lon2</i>;
          * <li>
-         *   <i>outmask</i> |= GeodesicMask.AZIMUTH for the latitude <i>azi2</i>;
+         *   <i>outmask</i> |= {@link GeodesicMask#AZIMUTH} for the latitude
+         *   <i>azi2</i>;
          * <li>
-         *   <i>outmask</i> |= GeodesicMask.DISTANCE for the distance <i>s12</i>;
+         *   <i>outmask</i> |= {@link GeodesicMask#DISTANCE} for the distance
+         *   <i>s12</i>;
          * <li>
-         *   <i>outmask</i> |= GeodesicMask.REDUCEDLENGTH for the reduced length
-         *   <i>m12</i>;
+         *   <i>outmask</i> |= {@link GeodesicMask#REDUCEDLENGTH} for the reduced
+         *   length <i>m12</i>;
          * <li>
-         *   <i>outmask</i> |= GeodesicMask.GEODESICSCALE for the geodesic scales
-         *   <i>M12</i> and <i>M21</i>;
+         *   <i>outmask</i> |= {@link GeodesicMask#GEODESICSCALE} for the geodesic
+         *   scales <i>M12</i> and <i>M21</i>;
          * <li>
-         *   <i>outmask</i> |= GeodesicMask.AREA for the Area <i>S12</i>;
+         *   <i>outmask</i> |= {@link GeodesicMask#AREA} for the area <i>S12</i>;
          * <li>
-         *   <i>outmask</i> |= GeodesicMask.ALL for all of the above.
+         *   <i>outmask</i> |= {@link GeodesicMask#ALL} for all of the above;
+         * <li>
+         *   <i>outmask</i> |= {@link GeodesicMask#LONG_UNROLL}, if set then
+         *   <i>lon1</i> is unchanged and <i>lon2</i> &minus; <i>lon1</i> indicates
+         *   how many times and in what sense the geodesic encircles the ellipsoid.
+         *   Otherwise <i>lon1</i> and <i>lon2</i> are both reduced to the range
+         *   [&minus;180&deg;, 180&deg;].
          * </ul>
          * <p>
          * The function value <i>a12</i> is always computed and returned and this
@@ -475,12 +463,147 @@ namespace GeographicLib
         public GeodesicData Direct(double lat1, double lon1, double azi1,
                                    bool arcmode, double s12_a12, int outmask)
         {
-            return new GeodesicLine(this, lat1, lon1, azi1,
-                                    // Automatically supply DISTANCE_IN if necessary
-                                    outmask | (arcmode ? GeodesicMask.NONE :
-                                               GeodesicMask.DISTANCE_IN))
+            // Automatically supply DISTANCE_IN if necessary
+            if (!arcmode) outmask |= GeodesicMask.DISTANCE_IN;
+            return new GeodesicLine(this, lat1, lon1, azi1, outmask)
               .                         // Note the dot!
               Position(arcmode, s12_a12, outmask);
+        }
+
+        /**
+         * Define a {@link GeodesicLine} in terms of the direct geodesic problem
+         * specified in terms of distance with all capabilities included.
+         * <p>
+         * @param lat1 latitude of point 1 (degrees).
+         * @param lon1 longitude of point 1 (degrees).
+         * @param azi1 azimuth at point 1 (degrees).
+         * @param s12 distance between point 1 and point 2 (meters); it can be
+         *   negative.
+         * @return a {@link GeodesicLine} object.
+         * <p>
+         * This function sets point 3 of the GeodesicLine to correspond to point 2
+         * of the direct geodesic problem.
+         * <p>
+         * <i>lat1</i> should be in the range [&minus;90&deg;, 90&deg;].
+         **********************************************************************/
+        public GeodesicLine DirectLine(double lat1, double lon1, double azi1,
+                                       double s12)
+        {
+            return DirectLine(lat1, lon1, azi1, s12, GeodesicMask.ALL);
+        }
+
+        /**
+         * Define a {@link GeodesicLine} in terms of the direct geodesic problem
+         * specified in terms of distance with a subset of the capabilities included.
+         * <p>
+         * @param lat1 latitude of point 1 (degrees).
+         * @param lon1 longitude of point 1 (degrees).
+         * @param azi1 azimuth at point 1 (degrees).
+         * @param s12 distance between point 1 and point 2 (meters); it can be
+         *   negative.
+         * @param caps bitor'ed combination of {@link GeodesicMask} values
+         *   specifying the capabilities the GeodesicLine object should possess,
+         *   i.e., which quantities can be returned in calls to
+         *   {@link GeodesicLine#Position GeodesicLine.Position}.
+         * @return a {@link GeodesicLine} object.
+         * <p>
+         * This function sets point 3 of the GeodesicLine to correspond to point 2
+         * of the direct geodesic problem.
+         * <p>
+         * <i>lat1</i> should be in the range [&minus;90&deg;, 90&deg;].
+         **********************************************************************/
+        public GeodesicLine DirectLine(double lat1, double lon1, double azi1,
+                                       double s12, int caps)
+        {
+            return GenDirectLine(lat1, lon1, azi1, false, s12, caps);
+        }
+
+        /**
+         * Define a {@link GeodesicLine} in terms of the direct geodesic problem
+         * specified in terms of arc length with all capabilities included.
+         * <p>
+         * @param lat1 latitude of point 1 (degrees).
+         * @param lon1 longitude of point 1 (degrees).
+         * @param azi1 azimuth at point 1 (degrees).
+         * @param a12 arc length between point 1 and point 2 (degrees); it can
+         *   be negative.
+         * @return a {@link GeodesicLine} object.
+         * <p>
+         * This function sets point 3 of the GeodesicLine to correspond to point 2
+         * of the direct geodesic problem.
+         * <p>
+         * <i>lat1</i> should be in the range [&minus;90&deg;, 90&deg;].
+         **********************************************************************/
+        public GeodesicLine ArcDirectLine(double lat1, double lon1, double azi1,
+                                          double a12)
+        {
+            return ArcDirectLine(lat1, lon1, azi1, a12, GeodesicMask.ALL);
+        }
+
+        /**
+         * Define a {@link GeodesicLine} in terms of the direct geodesic problem
+         * specified in terms of arc length with a subset of the capabilities
+         * included.
+         * <p>
+         * @param lat1 latitude of point 1 (degrees).
+         * @param lon1 longitude of point 1 (degrees).
+         * @param azi1 azimuth at point 1 (degrees).
+         * @param a12 arc length between point 1 and point 2 (degrees); it can
+         *   be negative.
+         * @param caps bitor'ed combination of {@link GeodesicMask} values
+         *   specifying the capabilities the GeodesicLine object should possess,
+         *   i.e., which quantities can be returned in calls to
+         *   {@link GeodesicLine#Position GeodesicLine.Position}.
+         * @return a {@link GeodesicLine} object.
+         * <p>
+         * This function sets point 3 of the GeodesicLine to correspond to point 2
+         * of the direct geodesic problem.
+         * <p>
+         * <i>lat1</i> should be in the range [&minus;90&deg;, 90&deg;].
+         **********************************************************************/
+        public GeodesicLine ArcDirectLine(double lat1, double lon1, double azi1,
+                                          double a12, int caps)
+        {
+            return GenDirectLine(lat1, lon1, azi1, true, a12, caps);
+        }
+
+        /**
+         * Define a {@link GeodesicLine} in terms of the direct geodesic problem
+         * specified in terms of either distance or arc length with a subset of the
+         * capabilities included.
+         * <p>
+         * @param lat1 latitude of point 1 (degrees).
+         * @param lon1 longitude of point 1 (degrees).
+         * @param azi1 azimuth at point 1 (degrees).
+         * @param arcmode bool flag determining the meaning of the <i>s12_a12</i>.
+         * @param s12_a12 if <i>arcmode</i> is false, this is the distance between
+         *   point 1 and point 2 (meters); otherwise it is the arc length between
+         *   point 1 and point 2 (degrees); it can be negative.
+         * @param caps bitor'ed combination of {@link GeodesicMask} values
+         *   specifying the capabilities the GeodesicLine object should possess,
+         *   i.e., which quantities can be returned in calls to
+         *   {@link GeodesicLine#Position GeodesicLine.Position}.
+         * @return a {@link GeodesicLine} object.
+         * <p>
+         * This function sets point 3 of the GeodesicLine to correspond to point 2
+         * of the direct geodesic problem.
+         * <p>
+         * <i>lat1</i> should be in the range [&minus;90&deg;, 90&deg;].
+         **********************************************************************/
+        public GeodesicLine GenDirectLine(double lat1, double lon1, double azi1,
+                                          bool arcmode, double s12_a12, int caps)
+        {
+            azi1 = GeoMath.AngNormalize(azi1);
+            double salp1, calp1;
+            // Guard against underflow in salp0.  Also -0 is converted to +0.
+            {
+                Pair p = GeoMath.Sincosd(GeoMath.AngRound(azi1));
+                salp1 = p.First; calp1 = p.Second;
+            }
+            // Automatically supply DISTANCE_IN if necessary
+            if (!arcmode) caps |= GeodesicMask.DISTANCE_IN;
+            return new GeodesicLine(this, lat1, lon1, azi1, salp1, calp1,
+                                caps, arcmode, s12_a12);
         }
 
         /**
@@ -495,13 +618,12 @@ namespace GeographicLib
          *   <i>azi2</i>, <i>s12</i>, <i>a12</i>.
          * <p>
          * <i>lat1</i> and <i>lat2</i> should be in the range [&minus;90&deg;,
-         * 90&deg;]; <i>lon1</i> and <i>lon2</i> should be in the range
-         * [&minus;540&deg;, 540&deg;).  The values of <i>azi1</i> and <i>azi2</i>
-         * returned are in the range [&minus;180&deg;, 180&deg;).
+         * 90&deg;].  The values of <i>azi1</i> and <i>azi2</i> returned are in the
+         * range [&minus;180&deg;, 180&deg;].
          * <p>
          * If either point is at a pole, the azimuth is defined by keeping the
-         * longitude fixed, writing <i>lat</i> = &plusmn;(90&deg; &minus; &Epsilon;),
-         * taking the limit &Epsilon; &rarr; 0+.
+         * longitude fixed, writing <i>lat</i> = &plusmn;(90&deg; &minus; &epsilon;),
+         * taking the limit &epsilon; &rarr; 0+.
          * <p>
          * The solution to the inverse problem is found using Newton's method.  If
          * this fails to converge (this is very unlikely in geodetic applications
@@ -511,67 +633,60 @@ namespace GeographicLib
         public GeodesicData Inverse(double lat1, double lon1,
                                     double lat2, double lon2)
         {
-            return Inverse(lat1, lon1, lat2, lon2,
-                           GeodesicMask.DISTANCE | GeodesicMask.AZIMUTH);
+            return Inverse(lat1, lon1, lat2, lon2, GeodesicMask.STANDARD);
         }
 
-        /**
-         * Solve the inverse geodesic problem with a subset of the geodesic results
-         * returned.
-         * <p>
-         * @param lat1 latitude of point 1 (degrees).
-         * @param lon1 longitude of point 1 (degrees).
-         * @param lat2 latitude of point 2 (degrees).
-         * @param lon2 longitude of point 2 (degrees).
-         * @param outmask a bitor'ed combination of {@link GeodesicMask} values
-         *   specifying which results should be returned.
-         * @return a {@link GeodesicData} object with the fields specified by
-         *   <i>outmask</i> computed.
-         * <p>
-         * The {@link GeodesicMask} values possible for <i>outmask</i> are
-         * <ul>
-         * <li>
-         *   <i>outmask</i> |= GeodesicMask.DISTANCE for the distance <i>s12</i>;
-         * <li>
-         *   <i>outmask</i> |= GeodesicMask.AZIMUTH for the latitude <i>azi2</i>;
-         * <li>
-         *   <i>outmask</i> |= GeodesicMask.REDUCEDLENGTH for the reduced length
-         *   <i>m12</i>;
-         * <li>
-         *   <i>outmask</i> |= GeodesicMask.GEODESICSCALE for the geodesic scales
-         *   <i>M12</i> and <i>M21</i>;
-         * <li>
-         *   <i>outmask</i> |= GeodesicMask.AREA for the Area <i>S12</i>;
-         * <li>
-         *   <i>outmask</i> |= GeodesicMask.ALL for all of the above.
-         * </ul>
-         * <p>
-         * <i>lat1</i>, <i>lon1</i>, <i>lat2</i>, <i>lon2</i>, and <i>a12</i> are
-         * always included in the returned result.
-         **********************************************************************/
-        public GeodesicData Inverse(double lat1, double lon1,
-                                    double lat2, double lon2, int outmask)
+        internal class InverseData
         {
-            outmask &= GeodesicMask.OUT_ALL;
-            GeodesicData r = new GeodesicData();
-            lon1 = GeoMath.AngNormalize(lon1);
-            lon2 = GeoMath.AngNormalize(lon2);
+            internal GeodesicData g;
+            internal double salp1, calp1, salp2, calp2;
+            internal InverseData()
+            {
+                g = new GeodesicData();
+                salp1 = calp1 = salp2 = calp2 = Double.NaN;
+            }
+        }
+
+        private InverseData InverseInt(double lat1, double lon1,
+                                       double lat2, double lon2, int outmask)
+        {
+            InverseData result = new InverseData();
+            GeodesicData r = result.g;
             // Compute longitude difference (AngDiff does this carefully).  Result is
             // in [-180, 180] but -180 is only for west-going geodesics.  180 is for
             // east-going and meridional geodesics.
-            double lon12 = GeoMath.AngDiff(lon1, lon2);
-            // If very close to being on the same half-meridian, then make it so.
-            lon12 = AngRound(lon12);
+            r.lat1 = lat1 = GeoMath.LatFix(lat1); r.lat2 = lat2 = GeoMath.LatFix(lat2);
+            // If really close to the equator, treat as on equator.
+            lat1 = GeoMath.AngRound(lat1);
+            lat2 = GeoMath.AngRound(lat2);
+            double lon12, lon12s;
+            {
+                Pair p = GeoMath.AngDiff(lon1, lon2);
+                lon12 = p.First; lon12s = p.Second;
+            }
+            if ((outmask & GeodesicMask.LONG_UNROLL) != 0)
+            {
+                r.lon1 = lon1; r.lon2 = (lon1 + lon12) + lon12s;
+            }
+            else
+            {
+                r.lon1 = GeoMath.AngNormalize(lon1); r.lon2 = GeoMath.AngNormalize(lon2);
+            }
             // Make longitude difference positive.
             int lonsign = lon12 >= 0 ? 1 : -1;
-            lon12 *= lonsign;
-            // If really close to the equator, treat as on equator.
-            lat1 = AngRound(lat1);
-            lat2 = AngRound(lat2);
-            // Save input parameters post normalization
-            r.lat1 = lat1; r.lon1 = lon1; r.lat2 = lat2; r.lon2 = lon2;
+            // If very close to being on the same half-meridian, then make it so.
+            lon12 = lonsign * GeoMath.AngRound(lon12);
+            lon12s = GeoMath.AngRound((180 - lon12) - lonsign * lon12s);
+            double
+              lam12 = GeoMath.ToRadians(lon12), slam12, clam12;
+            {
+                Pair p = GeoMath.Sincosd(lon12 > 90 ? lon12s : lon12);
+                slam12 = p.First; clam12 = (lon12 > 90 ? -1 : 1) * p.Second;
+            }
+
             // Swap points so that point with higher (abs) latitude is point 1
-            int swapp = Math.Abs(lat1) >= Math.Abs(lat2) ? 1 : -1;
+            // If one latitude is a nan, then it becomes lat1.
+            int swapp = Math.Abs(lat1) < Math.Abs(lat2) ? -1 : 1;
             if (swapp < 0)
             {
                 lonsign *= -1;
@@ -593,30 +708,29 @@ namespace GeographicLib
             // check, e.g., on verifying quadrants in atan2.  In addition, this
             // enforces some symmetries in the results returned.
 
-            double phi, sbet1, cbet1, sbet2, cbet2, s12x, m12x;
+            double sbet1, cbet1, sbet2, cbet2, s12x, m12x;
             s12x = m12x = Double.NaN;
 
-            phi = lat1 * GeoMath.Degree;
-            // Ensure cbet1 = +Epsilon at poles
-            sbet1 = _f1 * Math.Sin(phi);
-            cbet1 = lat1 == -90 ? tiny_ : Math.Cos(phi);
             {
-                Pair p = SinCosNorm(sbet1, cbet1);
-                sbet1 = p.First; cbet1 = p.Second;
+                Pair p = GeoMath.Sincosd(lat1);
+                sbet1 = _f1 * p.First; cbet1 = p.Second;
             }
+            // Ensure cbet1 = +epsilon at poles; doing the fix on beta means that sig12
+            // will be <= 2*tiny for two points at the same pole.
+            { Pair p = GeoMath.Norm(sbet1, cbet1); sbet1 = p.First; cbet1 = p.Second; }
+            cbet1 = Math.Max(tiny_, cbet1);
 
-            phi = lat2 * GeoMath.Degree;
-            // Ensure cbet3 = +Epsilon at poles
-            sbet2 = _f1 * Math.Sin(phi);
-            cbet2 = Math.Abs(lat2) == 90 ? tiny_ : Math.Cos(phi);
             {
-                Pair p = SinCosNorm(sbet2, cbet2);
-                sbet2 = p.First; cbet2 = p.Second;
+                Pair p = GeoMath.Sincosd(lat2);
+                sbet2 = _f1 * p.First; cbet2 = p.Second;
             }
+            // Ensure cbet2 = +epsilon at poles
+            { Pair p = GeoMath.Norm(sbet2, cbet2); sbet2 = p.First; cbet2 = p.Second; }
+            cbet2 = Math.Max(tiny_, cbet2);
 
-            // If cbet1 < -sbet1, then cbet3 - cbet1 is a sensitive measure of the
-            // |bet1| - |bet2|.  Alternatively (cbet1 >= -sbet1), abs(sbet3) + sbet1 is
-            // a better measure.  This logic is used in assigning calp3 in Lambda12.
+            // If cbet1 < -sbet1, then cbet2 - cbet1 is a sensitive measure of the
+            // |bet1| - |bet2|.  Alternatively (cbet1 >= -sbet1), abs(sbet2) + sbet1 is
+            // a better measure.  This logic is used in assigning calp2 in Lambda12.
             // Sometimes these quantities vanish and in that case we force bet2 = +/-
             // bet1 exactly.  An example where is is necessary is the inverse problem
             // 48.522876735459 0 -48.52287673545898293 179.599720456223079643
@@ -636,11 +750,6 @@ namespace GeographicLib
             double
               dn1 = Math.Sqrt(1 + _ep2 * GeoMath.Sq(sbet1)),
               dn2 = Math.Sqrt(1 + _ep2 * GeoMath.Sq(sbet2));
-
-            double
-              lam12 = lon12 * GeoMath.Degree,
-              slam12 = Math.Abs(lon12) == 180 ? 0 : Math.Sin(lam12),
-              clam12 = Math.Cos(lam12);      // lon12 == 90 isn't interesting
 
             double a12, sig12, calp1, salp1, calp2, salp2;
             a12 = sig12 = calp1 = salp1 = calp2 = salp2 = Double.NaN;
@@ -666,13 +775,14 @@ namespace GeographicLib
                   ssig2 = sbet2, csig2 = calp2 * cbet2;
 
                 // sig12 = sig2 - sig1
-                sig12 = Math.Atan2(Math.Max(csig1 * ssig2 - ssig1 * csig2, 0.0),
-                              csig1 * csig2 + ssig1 * ssig2);
+                sig12 = Math.Atan2(Math.Max(0.0, csig1 * ssig2 - ssig1 * csig2),
+                                                 csig1 * csig2 + ssig1 * ssig2);
                 {
                     LengthsV v =
-                      Lengths(_n, sig12, ssig1, csig1, dn1, ssig2, csig2, dn2,
-                              cbet1, cbet2,
-                              (outmask & GeodesicMask.GEODESICSCALE) != 0, C1a, C2a);
+                      Lengths(_n, sig12, ssig1, csig1, dn1,
+                              ssig2, csig2, dn2, cbet1, cbet2,
+                              outmask | GeodesicMask.DISTANCE | GeodesicMask.REDUCEDLENGTH,
+                              C1a, C2a);
                     s12x = v.s12b; m12x = v.m12b;
                     if ((outmask & GeodesicMask.GEODESICSCALE) != 0)
                     {
@@ -682,26 +792,29 @@ namespace GeographicLib
                 // Add the check for sig12 since zero length geodesics might yield m12 <
                 // 0.  Test case was
                 //
-                //    echo 20.001 0 20.001 0 | Geod -i
+                //    echo 20.001 0 20.001 0 | GeodSolve -i
                 //
                 // In fact, we will have sig12 > pi/2 for meridional geodesic which is
                 // not a shortest path.
                 if (sig12 < 1 || m12x >= 0)
                 {
+                    // Need at least 2, to handle 90 0 90 180
+                    if (sig12 < 3 * tiny_)
+                        sig12 = m12x = s12x = 0;
                     m12x *= _b;
                     s12x *= _b;
-                    a12 = sig12 / GeoMath.Degree;
+                    a12 = GeoMath.ToDegrees(sig12);
                 }
                 else
                     // m12 < 0, i.e., prolate and too close to anti-podal
                     meridian = false;
             }
 
-            double omg12 = Double.NaN;
+            double omg12 = Double.NaN, somg12 = 2, comg12 = Double.NaN;
             if (!meridian &&
-                sbet1 == 0 &&   // and sbet3 == 0
+                sbet1 == 0 &&   // and sbet2 == 0
                                 // Mimic the way Lambda12 works with calp1 = 0
-                (_f <= 0 || lam12 <= Math.PI - _f * Math.PI))
+                (_f <= 0 || lon12s >= _f * 180))
             {
 
                 // Geodesic runs along equator
@@ -725,7 +838,7 @@ namespace GeographicLib
                 {
                     InverseStartV v =
                       InverseStart(sbet1, cbet1, dn1, sbet2, cbet2, dn2,
-                                   lam12,
+                                   lam12, slam12, clam12,
                                    C1a, C2a);
                     sig12 = v.sig12;
                     salp1 = v.salp1; calp1 = v.calp1;
@@ -735,12 +848,12 @@ namespace GeographicLib
 
                 if (sig12 >= 0)
                 {
-                    // Short lines (InverseStart sets salp3, calp3, dnm)
+                    // Short lines (InverseStart sets salp2, calp2, dnm)
                     s12x = sig12 * _b * dnm;
                     m12x = GeoMath.Sq(dnm) * _b * Math.Sin(sig12 / dnm);
                     if ((outmask & GeodesicMask.GEODESICSCALE) != 0)
                         r.M12 = r.M21 = Math.Cos(sig12 / dnm);
-                    a12 = sig12 / GeoMath.Degree;
+                    a12 = GeoMath.ToDegrees(sig12);
                     omg12 = lam12 / (_f1 * dnm);
                 }
                 else
@@ -757,8 +870,8 @@ namespace GeographicLib
                     // value of alp1 is then further from the solution) or if the new
                     // estimate of alp1 lies outside (0,pi); in this case, the new starting
                     // guess is taken to be (alp1a + alp1b) / 2.
-                    double ssig1, csig1, ssig2, csig2, eps;
-                    ssig1 = csig1 = ssig2 = csig2 = eps = Double.NaN;
+                    double ssig1, csig1, ssig2, csig2, eps, domg12;
+                    ssig1 = csig1 = ssig2 = csig2 = eps = domg12 = Double.NaN;
                     int numit = 0;
                     // Bracketing range
                     double salp1a = tiny_, calp1a = 1, salp1b = tiny_, calp1b = -1;
@@ -770,18 +883,18 @@ namespace GeographicLib
                         {
                             Lambda12V w =
                               Lambda12(sbet1, cbet1, dn1, sbet2, cbet2, dn2, salp1, calp1,
-                                       numit < maxit1_, C1a, C2a, C3a);
-                            v = w.lam12 - lam12;
+                                       slam12, clam12, numit < maxit1_, C1a, C2a, C3a);
+                            v = w.lam12;
                             salp2 = w.salp2; calp2 = w.calp2;
                             sig12 = w.sig12;
                             ssig1 = w.ssig1; csig1 = w.csig1;
                             ssig2 = w.ssig2; csig2 = w.csig2;
-                            eps = w.eps; omg12 = w.domg12;
+                            eps = w.eps; domg12 = w.domg12;
                             dv = w.dlam12;
                         }
                         // 2 * tol0 is approximately 1 ulp for a number in [0, pi].
                         // Reversed test to allow escape with NaNs
-                        if (tripb || !(Math.Abs(v) >= (tripn ? 8 : 2) * tol0_)) break;
+                        if (tripb || !(Math.Abs(v) >= (tripn ? 8 : 1) * tol0_)) break;
                         // Update bracketing values
                         if (v > 0 && (numit > maxit1_ || calp1 / salp1 > calp1b / salp1b))
                         { salp1b = salp1; calp1b = calp1; }
@@ -799,17 +912,17 @@ namespace GeographicLib
                                 calp1 = calp1 * cdalp1 - salp1 * sdalp1;
                                 salp1 = nsalp1;
                                 {
-                                    Pair p = SinCosNorm(salp1, calp1);
+                                    Pair p = GeoMath.Norm(salp1, calp1);
                                     salp1 = p.First; calp1 = p.Second;
                                 }
                                 // In some regimes we don't get quadratic convergence because
-                                // slope -> 0.  So use convergence conditions based on Epsilon
-                                // instead of sqrt(Epsilon).
+                                // slope -> 0.  So use convergence conditions based on epsilon
+                                // instead of sqrt(epsilon).
                                 tripn = Math.Abs(v) <= 16 * tol0_;
                                 continue;
                             }
                         }
-                        // Either dv was not postive or updated value was outside legal
+                        // Either dv was not positive or updated value was outside legal
                         // range.  Use the midpoint of the bracket as the next estimate.
                         // This mechanism is not needed for the WGS84 ellipsoid, but it does
                         // catch problems with more eccentric ellipsoids.  Its efficacy is
@@ -820,7 +933,7 @@ namespace GeographicLib
                         salp1 = (salp1a + salp1b) / 2;
                         calp1 = (calp1a + calp1b) / 2;
                         {
-                            Pair p = SinCosNorm(salp1, calp1);
+                            Pair p = GeoMath.Norm(salp1, calp1);
                             salp1 = p.First; calp1 = p.Second;
                         }
                         tripn = false;
@@ -828,10 +941,16 @@ namespace GeographicLib
                                  Math.Abs(salp1 - salp1b) + (calp1 - calp1b) < tolb_);
                     }
                     {
+                        // Ensure that the reduced length and geodesic scale are computed in
+                        // a "canonical" way, with the I2 integral.
+                        int lengthmask = outmask |
+                          ((outmask &
+                            (GeodesicMask.REDUCEDLENGTH | GeodesicMask.GEODESICSCALE)) != 0 ?
+                           GeodesicMask.DISTANCE : GeodesicMask.NONE);
                         LengthsV v =
-                          Lengths(eps, sig12, ssig1, csig1, dn1, ssig2, csig2, dn2,
-                                  cbet1, cbet2,
-                                  (outmask & GeodesicMask.GEODESICSCALE) != 0, C1a, C2a);
+                          Lengths(eps, sig12,
+                                  ssig1, csig1, dn1, ssig2, csig2, dn2, cbet1, cbet2,
+                                  lengthmask, C1a, C2a);
                         s12x = v.s12b; m12x = v.m12b;
                         if ((outmask & GeodesicMask.GEODESICSCALE) != 0)
                         {
@@ -840,8 +959,14 @@ namespace GeographicLib
                     }
                     m12x *= _b;
                     s12x *= _b;
-                    a12 = sig12 / GeoMath.Degree;
-                    omg12 = lam12 - omg12;
+                    a12 = GeoMath.ToDegrees(sig12);
+                    if ((outmask & GeodesicMask.AREA) != 0)
+                    {
+                        // omg12 = lam12 - domg12
+                        double sdomg12 = Math.Sin(domg12), cdomg12 = Math.Cos(domg12);
+                        somg12 = slam12 * cdomg12 - clam12 * sdomg12;
+                        comg12 = clam12 * cdomg12 + slam12 * sdomg12;
+                    }
                 }
             }
 
@@ -869,11 +994,11 @@ namespace GeographicLib
                       // Multiplier = a^2 * e^2 * cos(alpha0) * sin(alpha0).
                       A4 = GeoMath.Sq(_a) * calp0 * salp0 * _e2;
                     {
-                        Pair p = SinCosNorm(ssig1, csig1);
+                        Pair p = GeoMath.Norm(ssig1, csig1);
                         ssig1 = p.First; csig1 = p.Second;
                     }
                     {
-                        Pair p = SinCosNorm(ssig2, csig2);
+                        Pair p = GeoMath.Norm(ssig2, csig2);
                         ssig2 = p.First; csig2 = p.Second;
                     }
                     double[] C4a = new double[nC4_];
@@ -887,16 +1012,20 @@ namespace GeographicLib
                     // Avoid problems with indeterminate sig1, sig2 on equator
                     r.S12 = 0;
 
+                if (!meridian && somg12 > 1)
+                {
+                    somg12 = Math.Sin(omg12); comg12 = Math.Cos(omg12);
+                }
+
                 if (!meridian &&
-                    omg12 < 0.75 * Math.PI && // Long difference too big
+                    comg12 > -0.7071 &&     // Long difference not too big
                     sbet2 - sbet1 < 1.75)
-                {            // Lat difference too big
-                    // Use tan(Gamma/2) = tan(omg12/2)
-                    // * (tan(bet1/2)+tan(bet2/2))/(1+tan(bet1/2)*tan(bet2/2))
-                    // with tan(x/2) = sin(x)/(1+cos(x))
+                { // Lat difference not too big
+                  // Use tan(Gamma/2) = tan(omg12/2)
+                  // * (tan(bet1/2)+tan(bet2/2))/(1+tan(bet1/2)*tan(bet2/2))
+                  // with tan(x/2) = sin(x)/(1+cos(x))
                     double
-                      somg12 = Math.Sin(omg12), domg12 = 1 + Math.Cos(omg12),
-                      dbet1 = 1 + cbet1, dbet2 = 1 + cbet2;
+                      domg12 = 1 + comg12, dbet1 = 1 + cbet1, dbet2 = 1 + cbet2;
                     alp12 = 2 * Math.Atan2(somg12 * (sbet1 * dbet2 + sbet2 * dbet1),
                                        domg12 * (sbet1 * sbet2 + dbet1 * dbet2));
                 }
@@ -935,36 +1064,144 @@ namespace GeographicLib
             salp1 *= swapp * lonsign; calp1 *= swapp * latsign;
             salp2 *= swapp * lonsign; calp2 *= swapp * latsign;
 
-            if ((outmask & GeodesicMask.AZIMUTH) != 0)
-            {
-                // minus signs give range [-180, 180). 0- converts -0 to +0.
-                r.azi1 = 0 - Math.Atan2(-salp1, calp1) / GeoMath.Degree;
-                r.azi2 = 0 - Math.Atan2(-salp2, calp2) / GeoMath.Degree;
-            }
             // Returned value in [0, 180]
             r.a12 = a12;
+            result.salp1 = salp1; result.calp1 = calp1;
+            result.salp2 = salp2; result.calp2 = calp2;
+            return result;
+        }
+
+        /**
+         * Solve the inverse geodesic problem with a subset of the geodesic results
+         * returned.
+         * <p>
+         * @param lat1 latitude of point 1 (degrees).
+         * @param lon1 longitude of point 1 (degrees).
+         * @param lat2 latitude of point 2 (degrees).
+         * @param lon2 longitude of point 2 (degrees).
+         * @param outmask a bitor'ed combination of {@link GeodesicMask} values
+         *   specifying which results should be returned.
+         * @return a {@link GeodesicData} object with the fields specified by
+         *   <i>outmask</i> computed.
+         * <p>
+         * The {@link GeodesicMask} values possible for <i>outmask</i> are
+         * <ul>
+         * <li>
+         *   <i>outmask</i> |= {@link GeodesicMask#DISTANCE} for the distance
+         *   <i>s12</i>;
+         * <li>
+         *   <i>outmask</i> |= {@link GeodesicMask#AZIMUTH} for the latitude
+         *   <i>azi2</i>;
+         * <li>
+         *   <i>outmask</i> |= {@link GeodesicMask#REDUCEDLENGTH} for the reduced
+         *   length <i>m12</i>;
+         * <li>
+         *   <i>outmask</i> |= {@link GeodesicMask#GEODESICSCALE} for the geodesic
+         *   scales <i>M12</i> and <i>M21</i>;
+         * <li>
+         *   <i>outmask</i> |= {@link GeodesicMask#AREA} for the area <i>S12</i>;
+         * <li>
+         *   <i>outmask</i> |= {@link GeodesicMask#ALL} for all of the above.
+         * <li>
+         *   <i>outmask</i> |= {@link GeodesicMask#LONG_UNROLL}, if set then
+         *   <i>lon1</i> is unchanged and <i>lon2</i> &minus; <i>lon1</i> indicates
+         *   whether the geodesic is east going or west going.  Otherwise <i>lon1</i>
+         *   and <i>lon2</i> are both reduced to the range [&minus;180&deg;,
+         *   180&deg;].
+         * </ul>
+         * <p>
+         * <i>lat1</i>, <i>lon1</i>, <i>lat2</i>, <i>lon2</i>, and <i>a12</i> are
+         * always included in the returned result.
+         **********************************************************************/
+        public GeodesicData Inverse(double lat1, double lon1,
+                                    double lat2, double lon2, int outmask)
+        {
+            outmask &= GeodesicMask.OUT_MASK;
+            InverseData result = InverseInt(lat1, lon1, lat2, lon2, outmask);
+            GeodesicData r = result.g;
+            if ((outmask & GeodesicMask.AZIMUTH) != 0)
+            {
+                r.azi1 = GeoMath.Atan2d(result.salp1, result.calp1);
+                r.azi2 = GeoMath.Atan2d(result.salp2, result.calp2);
+            }
             return r;
         }
 
         /**
-         * Set up to compute several points on a single geodesic.
+         * Define a {@link GeodesicLine} in terms of the inverse geodesic problem
+         * with all capabilities included.
+         * <p>
+         * @param lat1 latitude of point 1 (degrees).
+         * @param lon1 longitude of point 1 (degrees).
+         * @param lat2 latitude of point 2 (degrees).
+         * @param lon2 longitude of point 2 (degrees).
+         * @return a {@link GeodesicLine} object.
+         * <p>
+         * This function sets point 3 of the GeodesicLine to correspond to point 2
+         * of the inverse geodesic problem.
+         * <p>
+         * <i>lat1</i> and <i>lat2</i> should be in the range [&minus;90&deg;,
+         * 90&deg;].
+         **********************************************************************/
+        public GeodesicLine InverseLine(double lat1, double lon1,
+                                        double lat2, double lon2)
+        {
+            return InverseLine(lat1, lon1, lat2, lon2, GeodesicMask.ALL);
+        }
+
+        /**
+         * Define a {@link GeodesicLine} in terms of the inverse geodesic problem
+         * with a subset of the capabilities included.
+         * <p>
+         * @param lat1 latitude of point 1 (degrees).
+         * @param lon1 longitude of point 1 (degrees).
+         * @param lat2 latitude of point 2 (degrees).
+         * @param lon2 longitude of point 2 (degrees).
+         * @param caps bitor'ed combination of {@link GeodesicMask} values specifying
+         *   the capabilities the GeodesicLine object should possess, i.e., which
+         *   quantities can be returned in calls to
+         *   {@link GeodesicLine#Position GeodesicLine.Position}.
+         * @return a {@link GeodesicLine} object.
+         * <p>
+         * This function sets point 3 of the GeodesicLine to correspond to point 2
+         * of the inverse geodesic problem.
+         * <p>
+         * <i>lat1</i> and <i>lat2</i> should be in the range [&minus;90&deg;,
+         * 90&deg;].
+         **********************************************************************/
+        public GeodesicLine InverseLine(double lat1, double lon1,
+                                        double lat2, double lon2, int caps)
+        {
+            InverseData result = InverseInt(lat1, lon1, lat2, lon2, 0);
+            double salp1 = result.salp1, calp1 = result.calp1,
+              azi1 = GeoMath.Atan2d(salp1, calp1), a12 = result.g.a12;
+            // Ensure that a12 can be converted to a distance
+            if ((caps & (GeodesicMask.OUT_MASK & GeodesicMask.DISTANCE_IN)) != 0)
+                caps |= GeodesicMask.DISTANCE;
+            return new GeodesicLine(this, lat1, lon1, azi1, salp1, calp1, caps,
+                                    true, a12);
+        }
+
+        /**
+         * Set up to compute several points on a single geodesic with all
+         * capabilities included.
          * <p>
          * @param lat1 latitude of point 1 (degrees).
          * @param lon1 longitude of point 1 (degrees).
          * @param azi1 azimuth at point 1 (degrees).
          * @return a {@link GeodesicLine} object.
          * <p>
-         * <i>lat1</i> should be in the range [&minus;90&deg;, 90&deg;]; <i>lon1</i>
-         * and <i>azi1</i> should be in the range [&minus;540&deg;, 540&deg;).  The
-         * full set of capabilities is included.
+         * <i>lat1</i> should be in the range [&minus;90&deg;, 90&deg;].  The full
+         * set of capabilities is included.
          * <p>
          * If the point is at a pole, the azimuth is defined by keeping the
-         * <i>lon1</i> fixed, writing <i>lat1</i> = &plusmn;(90 &minus; &Epsilon;),
-         * taking the limit &Epsilon; &rarr; 0+.
+         * <i>lon1</i> fixed, writing <i>lat1</i> = &plusmn;(90 &minus; &epsilon;),
+         * taking the limit &epsilon; &rarr; 0+.
          **********************************************************************/
-        public GeodesicLine Line(double lat1, double lon1, double azi1) =>
-            Line(lat1, lon1, azi1, GeodesicMask.ALL);
-
+        public GeodesicLine Line(double lat1, double lon1, double azi1)
+        {
+            return Line(lat1, lon1, azi1, GeodesicMask.ALL);
+        }
         /**
          * Set up to compute several points on a single geodesic with a subset of the
          * capabilities included.
@@ -981,62 +1218,67 @@ namespace GeographicLib
          * The {@link GeodesicMask} values are
          * <ul>
          * <li>
-         *   <i>caps</i> |= GeodesicMask.LATITUDE for the latitude <i>lat2</i>; this
-         *   is added automatically;
+         *   <i>caps</i> |= {@link GeodesicMask#LATITUDE} for the latitude
+         *   <i>lat2</i>; this is added automatically;
          * <li>
-         *   <i>caps</i> |= GeodesicMask.LONGITUDE for the latitude <i>lon2</i>;
+         *   <i>caps</i> |= {@link GeodesicMask#LONGITUDE} for the latitude
+         *   <i>lon2</i>;
          * <li>
-         *   <i>caps</i> |= GeodesicMask.AZIMUTH for the azimuth <i>azi2</i>; this is
-         *   added automatically;
+         *   <i>caps</i> |= {@link GeodesicMask#AZIMUTH} for the azimuth <i>azi2</i>;
+         *   this is added automatically;
          * <li>
-         *   <i>caps</i> |= GeodesicMask.DISTANCE for the distance <i>s12</i>;
+         *   <i>caps</i> |= {@link GeodesicMask#DISTANCE} for the distance
+         *   <i>s12</i>;
          * <li>
-         *   <i>caps</i> |= GeodesicMask.REDUCEDLENGTH for the reduced length
+         *   <i>caps</i> |= {@link GeodesicMask#REDUCEDLENGTH} for the reduced length
          *   <i>m12</i>;
          * <li>
-         *   <i>caps</i> |= GeodesicMask.GEODESICSCALE for the geodesic scales
-         *   <i>M12</i> and <i>M21</i>;
+         *   <i>caps</i> |= {@link GeodesicMask#GEODESICSCALE} for the geodesic
+         *   scales <i>M12</i> and <i>M21</i>;
          * <li>
-         *   <i>caps</i> |= GeodesicMask.AREA for the Area <i>S12</i>;
+         *   <i>caps</i> |= {@link GeodesicMask#AREA} for the area <i>S12</i>;
          * <li>
-         *   <i>caps</i> |= GeodesicMask.DISTANCE_IN permits the length of the
-         *   geodesic to be given in terms of <i>s12</i>; without this capability the
-         *   length can only be specified in terms of arc length;
+         *   <i>caps</i> |= {@link GeodesicMask#DISTANCE_IN} permits the length of
+         *   the geodesic to be given in terms of <i>s12</i>; without this capability
+         *   the length can only be specified in terms of arc length;
          * <li>
-         *   <i>caps</i> |= GeodesicMask.ALL for all of the above.
+         *   <i>caps</i> |= {@link GeodesicMask#ALL} for all of the above.
          * </ul>
          * <p>
          * If the point is at a pole, the azimuth is defined by keeping <i>lon1</i>
-         * fixed, writing <i>lat1</i> = &plusmn;(90 &minus; &Epsilon;), and taking
-         * the limit &Epsilon; &rarr; 0+.
+         * fixed, writing <i>lat1</i> = &plusmn;(90 &minus; &epsilon;), and taking
+         * the limit &epsilon; &rarr; 0+.
          **********************************************************************/
-        public GeodesicLine Line(double lat1, double lon1, double azi1, int caps) =>
-            new GeodesicLine(this, lat1, lon1, azi1, caps);
+        public GeodesicLine Line(double lat1, double lon1, double azi1, int caps)
+        {
+            return new GeodesicLine(this, lat1, lon1, azi1, caps);
+        }
 
         /**
          * @return <i>a</i> the equatorial radius of the ellipsoid (meters).  This is
          *   the value used in the constructor.
          **********************************************************************/
-        public double MajorRadius() => _a;
+        public double MajorRadius() { return _a; }
 
         /**
          * @return <i>f</i> the  flattening of the ellipsoid.  This is the
          *   value used in the constructor.
          **********************************************************************/
-        public double Flattening() => _f;
+        public double Flattening() { return _f; }
 
         /**
-         * @return total Area of ellipsoid in meters<sup>2</sup>.  The Area of a
+         * @return total area of ellipsoid in meters<sup>2</sup>.  The area of a
          *   polygon encircling a pole can be found by adding EllipsoidArea()/2 to
          *   the sum of <i>S12</i> for each side of the polygon.
          **********************************************************************/
-        public double EllipsoidArea() => 4 * Math.PI * _c2;
+        public double EllipsoidArea() { return 4 * Math.PI * _c2; }
 
-        /// <summary>
-        /// A global instantiation of Geodesic with the parameters for the WGS84
-        /// ellipsoid.
-        /// </summary>
-        public static Geodesic WGS84 => _lazyWgs84.Value;
+        /**
+         * A global instantiation of Geodesic with the parameters for the WGS84
+         * ellipsoid.
+         **********************************************************************/
+        public static readonly Geodesic WGS84 =
+    new Geodesic(Constants.WGS84_a, Constants.WGS84_f);
 
         // This is a reformulation of the geodesic problem.  The notation is as
         // follows:
@@ -1056,6 +1298,7 @@ namespace GeographicLib
         //   - sigma = s = 0
         // - a 12 suffix means a difference, e.g., s12 = s2 - s1.
         // - s and c prefixes mean sin and cos
+
         internal static double SinCosSeries(bool sinp,
                                              double sinx, double cosx,
                                              double[] c)
@@ -1065,11 +1308,13 @@ namespace GeographicLib
             //            sum(c[i] * cos((2*i+1) * x), i, 0, n-1)
             // using Clenshaw summation.  N.B. c[0] is unused for sin series
             // Approx operation count = (n + 5) mult and (2 * n + 2) add
-            int k = c.Length, n = k - (sinp ? 1 : 0);
+            int
+              k = c.Length,             // Point to one beyond last element
+              n = k - (sinp ? 1 : 0);
             double
               ar = 2 * (cosx - sinx) * (cosx + sinx), // 2 * cos(2 * x)
               y0 = (n & 1) != 0 ? c[--k] : 0, y1 = 0;        // accumulators for sum
-            // Now n is even
+                                                             // Now n is even
             n /= 2;
             while (n-- != 0)
             {
@@ -1082,61 +1327,77 @@ namespace GeographicLib
               : cosx * (y0 - y1);       // cos(x) * (y0 - y1)
         }
 
-        internal struct LengthsV
+        internal class LengthsV
         {
-            internal double s12b;
-            internal double m12b;
-            internal double m0;
-            internal double M12;
-            internal double M21;
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private void Init()
+            internal double s12b, m12b, m0, M12, M21;
+            internal LengthsV()
             {
-                s12b = m12b = m0 = M12 = M21 = double.NaN;
-            }
-
-            internal static LengthsV Empty
-            {
-                get
-                {
-                    var self = new LengthsV();
-                    self.Init();
-                    return self;
-                }
+                s12b = m12b = m0 = M12 = M21 = Double.NaN;
             }
         }
 
-        internal LengthsV Lengths(double eps, double sig12,
+        private LengthsV Lengths(double eps, double sig12,
                                  double ssig1, double csig1, double dn1,
                                  double ssig2, double csig2, double dn2,
                                  double cbet1, double cbet2,
-                                 bool scalep,
+                                 int outmask,
                                  // Scratch areas of the right size
                                  double[] C1a, double[] C2a)
         {
             // Return m12b = (reduced length)/_b; also calculate s12b = distance/_b,
             // and m0 = coefficient of secular term in expression for reduced length.
-            LengthsV v = LengthsV.Empty; // To hold s12b, m12b, m0, M12, M21;
-            C1f(eps, C1a);
-            C2f(eps, C2a);
-            double
-              A1m1 = A1m1f(eps),
-              AB1 = (1 + A1m1) * (SinCosSeries(true, ssig2, csig2, C1a) -
-                                  SinCosSeries(true, ssig1, csig1, C1a)),
-              A2m1 = A2m1f(eps),
-              AB2 = (1 + A2m1) * (SinCosSeries(true, ssig2, csig2, C2a) -
-                                  SinCosSeries(true, ssig1, csig1, C2a));
-            v.m0 = A1m1 - A2m1;
-            double J12 = v.m0 * sig12 + (AB1 - AB2);
-            // Missing a factor of _b.
-            // Add parens around (csig1 * ssig3) and (ssig1 * csig3) to ensure accurate
-            // cancellation in the case of coincident points.
-            v.m12b = dn2 * (csig1 * ssig2) - dn1 * (ssig1 * csig2) -
-              csig1 * csig2 * J12;
-            // Missing a factor of _b
-            v.s12b = (1 + A1m1) * sig12 + AB1;
-            if (scalep)
+            outmask &= GeodesicMask.OUT_MASK;
+            LengthsV v = new LengthsV(); // To hold s12b, m12b, m0, M12, M21;
+
+            double m0x = 0, J12 = 0, A1 = 0, A2 = 0;
+            if ((outmask & (GeodesicMask.DISTANCE | GeodesicMask.REDUCEDLENGTH |
+                            GeodesicMask.GEODESICSCALE)) != 0)
+            {
+                A1 = A1m1f(eps);
+                C1f(eps, C1a);
+                if ((outmask & (GeodesicMask.REDUCEDLENGTH |
+                                GeodesicMask.GEODESICSCALE)) != 0)
+                {
+                    A2 = A2m1f(eps);
+                    C2f(eps, C2a);
+                    m0x = A1 - A2;
+                    A2 = 1 + A2;
+                }
+                A1 = 1 + A1;
+            }
+            if ((outmask & GeodesicMask.DISTANCE) != 0)
+            {
+                double B1 = SinCosSeries(true, ssig2, csig2, C1a) -
+                  SinCosSeries(true, ssig1, csig1, C1a);
+                // Missing a factor of _b
+                v.s12b = A1 * (sig12 + B1);
+                if ((outmask & (GeodesicMask.REDUCEDLENGTH |
+                                GeodesicMask.GEODESICSCALE)) != 0)
+                {
+                    double B2 = SinCosSeries(true, ssig2, csig2, C2a) -
+                      SinCosSeries(true, ssig1, csig1, C2a);
+                    J12 = m0x * sig12 + (A1 * B1 - A2 * B2);
+                }
+            }
+            else if ((outmask & (GeodesicMask.REDUCEDLENGTH |
+                                 GeodesicMask.GEODESICSCALE)) != 0)
+            {
+                // Assume here that nC1_ >= nC2_
+                for (int l = 1; l <= nC2_; ++l)
+                    C2a[l] = A1 * C1a[l] - A2 * C2a[l];
+                J12 = m0x * sig12 + (SinCosSeries(true, ssig2, csig2, C2a) -
+                                     SinCosSeries(true, ssig1, csig1, C2a));
+            }
+            if ((outmask & GeodesicMask.REDUCEDLENGTH) != 0)
+            {
+                v.m0 = m0x;
+                // Missing a factor of _b.
+                // Add parens around (csig1 * ssig2) and (ssig1 * csig2) to ensure
+                // accurate cancellation in the case of coincident points.
+                v.m12b = dn2 * (csig1 * ssig2) - dn1 * (ssig1 * csig2) -
+                  csig1 * csig2 * J12;
+            }
+            if ((outmask & GeodesicMask.GEODESICSCALE) != 0)
             {
                 double csig12 = csig1 * csig2 + ssig1 * ssig2;
                 double t = _ep2 * (cbet1 - cbet2) * (cbet1 + cbet2) / (dn1 + dn2);
@@ -1163,7 +1424,7 @@ namespace GeographicLib
                   S = p * q / 4,            // S = r^3 * s
                   r2 = GeoMath.Sq(r),
                   r3 = r * r2,
-                  // The discrimant of the quadratic equation for T3.  This is zero on
+                  // The discriminant of the quadratic equation for T3.  This is zero on
                   // the evolute curve p^(1/3)+q^(1/3) = 1
                   disc = S * (S + 2 * r3);
                 double u = r;
@@ -1174,9 +1435,9 @@ namespace GeographicLib
                     // of precision due to cancellation.  The result is unchanged because
                     // of the way the T is used in definition of u.
                     T3 += T3 < 0 ? -Math.Sqrt(disc) : Math.Sqrt(disc); // T3 = (r * t)^3
-                    // N.B. cbrt always returns the double root.  cbrt(-8) = -2.
-                    double T = GeoMath.cbrt(T3); // T = r * t
-                    // T can be zero; but then r2 / T -> 0.
+                                                                       // N.B. cbrt always returns the double root.  cbrt(-8) = -2.
+                    double T = GeoMath.Cbrt(T3); // T = r * t
+                                                 // T can be zero; but then r2 / T -> 0.
                     u += T + (T != 0 ? r2 / T : 0);
                 }
                 else
@@ -1192,39 +1453,27 @@ namespace GeographicLib
                                                        // Avoid loss of accuracy when u < 0.
                   uv = u < 0 ? q / (v - u) : u + v, // u+v, guaranteed positive
                   w = (uv - q) / (2 * v);           // positive?
-                // Rearrange expression for k to avoid loss of accuracy due to
-                // subtraction.  Division by 0 not possible because uv > 0, w >= 0.
+                                                    // Rearrange expression for k to avoid loss of accuracy due to
+                                                    // subtraction.  Division by 0 not possible because uv > 0, w >= 0.
                 k = uv / (Math.Sqrt(uv + GeoMath.Sq(w)) + w);   // guaranteed positive
             }
             else
             {               // q == 0 && r <= 0
-                // y = 0 with |x| <= 1.  Handle this case directly.
-                // for y small, positive root is k = abs(y)/sqrt(1-x^2)
+                            // y = 0 with |x| <= 1.  Handle this case directly.
+                            // for y small, positive root is k = abs(y)/sqrt(1-x^2)
                 k = 0;
             }
             return k;
         }
 
-        internal struct InverseStartV
+        internal class InverseStartV
         {
             internal double sig12, salp1, calp1,
               // Only updated if return val >= 0
               salp2, calp2,
               // Only updated for short lines
               dnm;
-
-            internal static InverseStartV Empty
-            {
-                get
-                {
-                    var self = new InverseStartV();
-                    self.Init();
-                    return self;
-                }
-            }
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private void Init()
+            internal InverseStartV()
             {
                 sig12 = salp1 = calp1 = salp2 = calp2 = dnm = Double.NaN;
             }
@@ -1233,15 +1482,16 @@ namespace GeographicLib
         private InverseStartV InverseStart(double sbet1, double cbet1, double dn1,
                                            double sbet2, double cbet2, double dn2,
                                            double lam12,
+                                           double slam12, double clam12,
                                            // Scratch areas of the right size
                                            double[] C1a, double[] C2a)
         {
             // Return a starting point for Newton's method in salp1 and calp1 (function
             // value is -1).  If Newton's method doesn't need to be used, return also
-            // salp3 and calp3 and function value is sig12.
+            // salp2 and calp2 and function value is sig12.
 
-            // To hold sig12, salp1, calp1, salp3, calp3, dnm.
-            var w = InverseStartV.Empty;
+            // To hold sig12, salp1, calp1, salp2, calp2, dnm.
+            InverseStartV w = new InverseStartV();
             w.sig12 = -1;               // Return value
             double
               // bet12 = bet2 - bet1 in [0, pi); bet12a = bet2 + bet1 in (-pi, 0]
@@ -1250,17 +1500,21 @@ namespace GeographicLib
             double sbet12a = sbet2 * cbet1 + cbet2 * sbet1;
             bool shortline = cbet12 >= 0 && sbet12 < 0.5 &&
               cbet2 * lam12 < 0.5;
-            double omg12 = lam12;
+            double somg12, comg12;
             if (shortline)
             {
                 double sbetm2 = GeoMath.Sq(sbet1 + sbet2);
                 // sin((bet1+bet2)/2)^2
-                // =  (sbet1 + sbet3)^2 / ((sbet1 + sbet3)^2 + (cbet1 + cbet3)^2)
+                // =  (sbet1 + sbet2)^2 / ((sbet1 + sbet2)^2 + (cbet1 + cbet2)^2)
                 sbetm2 /= sbetm2 + GeoMath.Sq(cbet1 + cbet2);
                 w.dnm = Math.Sqrt(1 + _ep2 * sbetm2);
-                omg12 /= _f1 * w.dnm;
+                double omg12 = lam12 / (_f1 * w.dnm);
+                somg12 = Math.Sin(omg12); comg12 = Math.Cos(omg12);
             }
-            double somg12 = Math.Sin(omg12), comg12 = Math.Cos(omg12);
+            else
+            {
+                somg12 = slam12; comg12 = clam12;
+            }
 
             w.salp1 = cbet2 * somg12;
             w.calp1 = comg12 >= 0 ?
@@ -1278,7 +1532,7 @@ namespace GeographicLib
                 w.calp2 = sbet12 - cbet1 * sbet2 *
                   (comg12 >= 0 ? GeoMath.Sq(somg12) / (1 + comg12) : 1 - comg12);
                 {
-                    Pair p = SinCosNorm(w.salp2, w.calp2);
+                    Pair p = GeoMath.Norm(w.salp2, w.calp2);
                     w.salp2 = p.First; w.calp2 = p.Second;
                 }
                 // Set return value
@@ -1299,9 +1553,10 @@ namespace GeographicLib
                 // 56.320923501171 0 -56.320923501171 179.664747671772880215
                 // which otherwise fails with g++ 4.4.4 x86 -O3
                 double x;
+                double lam12x = Math.Atan2(-slam12, -clam12); // lam12 - pi
                 if (_f >= 0)
                 {            // In fact f == 0 does not get here
-                    // x = dlong, y = dlat
+                             // x = dlong, y = dlat
                     {
                         double
                           k2 = GeoMath.Sq(sbet1) * _ep2,
@@ -1310,12 +1565,12 @@ namespace GeographicLib
                     }
                     betscale = lamscale * cbet1;
 
-                    x = (lam12 - Math.PI) / lamscale;
+                    x = lam12x / lamscale;
                     y = sbet12a / betscale;
                 }
                 else
                 {                  // _f < 0
-                    // x = dlat, y = dlong
+                                   // x = dlat, y = dlong
                     double
                       cbet12a = cbet2 * cbet1 - sbet2 * sbet1,
                       bet12a = Math.Atan2(sbet12a, cbet12a);
@@ -1325,14 +1580,14 @@ namespace GeographicLib
                     LengthsV v =
                       Lengths(_n, Math.PI + bet12a,
                               sbet1, -cbet1, dn1, sbet2, cbet2, dn2,
-                              cbet1, cbet2, false, C1a, C2a);
+                              cbet1, cbet2, GeodesicMask.REDUCEDLENGTH, C1a, C2a);
                     m12b = v.m12b; m0 = v.m0;
 
                     x = -1 + m12b / (cbet1 * cbet2 * m0 * Math.PI);
                     betscale = x < -0.01 ? sbet12a / x :
                       -_f * GeoMath.Sq(cbet1) * Math.PI;
                     lamscale = betscale / cbet1;
-                    y = (lam12 - Math.PI) / lamscale;
+                    y = lam12x / lamscale;
                 }
 
                 if (y > -tol1_ && x > -1 - xthresh_)
@@ -1359,8 +1614,8 @@ namespace GeographicLib
                     //
                     // However, it's better to estimate omg12 from astroid and use
                     // spherical formula to compute alp1.  This reduces the mean number of
-                    // Newton iterations for astroid cases from 2.24 (Min 0, max 6) to 2.12
-                    // (Min 0 max 5).  The changes in the number of iterations are as
+                    // Newton iterations for astroid cases from 2.24 (min 0, max 6) to 2.12
+                    // (min 0 max 5).  The changes in the number of iterations are as
                     // follows:
                     //
                     // change percent
@@ -1394,9 +1649,10 @@ namespace GeographicLib
                     w.calp1 = sbet12a - cbet2 * sbet1 * GeoMath.Sq(somg12) / (1 - comg12);
                 }
             }
-            if (w.salp1 > 0)              // Sanity check on starting guess
+            // Sanity check on starting guess.  Backwards check allows NaN through.
+            if (!(w.salp1 <= 0))
             {
-                Pair p = SinCosNorm(w.salp1, w.calp1);
+                Pair p = GeoMath.Norm(w.salp1, w.calp1);
                 w.salp1 = p.First; w.calp1 = p.Second;
             }
             else
@@ -1406,24 +1662,11 @@ namespace GeographicLib
             return w;
         }
 
-        internal struct Lambda12V
+        internal class Lambda12V
         {
             internal double lam12, salp2, calp2, sig12, ssig1, csig1, ssig2, csig2,
               eps, domg12, dlam12;
-
-
-            internal static Lambda12V Empty
-            {
-                get
-                {
-                    var self = new Lambda12V();
-                    self.Init();
-                    return self;
-                }
-            }
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private void Init()
+            internal Lambda12V()
             {
                 lam12 = salp2 = calp2 = sig12 = ssig1 = csig1 = ssig2 = csig2
                   = eps = domg12 = dlam12 = Double.NaN;
@@ -1433,14 +1676,15 @@ namespace GeographicLib
         private Lambda12V Lambda12(double sbet1, double cbet1, double dn1,
                                    double sbet2, double cbet2, double dn2,
                                    double salp1, double calp1,
+                                   double slam120, double clam120,
                                    bool diffp,
                                    // Scratch areas of the right size
                                    double[] C1a, double[] C2a, double[] C3a)
         {
-            // Object to hold lam12, salp3, calp3, sig12, ssig1, csig1, ssig3, csig3,
+            // Object to hold lam12, salp2, calp2, sig12, ssig1, csig1, ssig2, csig2,
             // eps, domg12, dlam12;
 
-            var w = Lambda12V.Empty;
+            Lambda12V w = new Lambda12V();
 
             if (sbet1 == 0 && calp1 == 0)
                 // Break degeneracy of equatorial line.  This case has already been
@@ -1452,24 +1696,24 @@ namespace GeographicLib
               salp0 = salp1 * cbet1,
               calp0 = GeoMath.Hypot(calp1, salp1 * sbet1); // calp0 > 0
 
-            double somg1, comg1, somg2, comg2, omg12;
+            double somg1, comg1, somg2, comg2, somg12, comg12;
             // tan(bet1) = tan(sig1) * cos(alp1)
             // tan(omg1) = sin(alp0) * tan(sig1) = tan(omg1)=tan(alp1)*sin(bet1)
             w.ssig1 = sbet1; somg1 = salp0 * sbet1;
             w.csig1 = comg1 = calp1 * cbet1;
             {
-                Pair p = SinCosNorm(w.ssig1, w.csig1);
+                Pair p = GeoMath.Norm(w.ssig1, w.csig1);
                 w.ssig1 = p.First; w.csig1 = p.Second;
             }
-            // SinCosNorm(somg1, comg1); -- don't need to normalize!
+            // GeoMath.norm(somg1, comg1); -- don't need to normalize!
 
             // Enforce symmetries in the case abs(bet2) = -bet1.  Need to be careful
             // about this case, since this can yield singularities in the Newton
             // iteration.
             // sin(alp2) * cos(bet2) = sin(alp0)
             w.salp2 = cbet2 != cbet1 ? salp0 / cbet2 : salp1;
-            // calp3 = sqrt(1 - Sq(salp3))
-            //       = sqrt(Sq(calp0) - Sq(sbet3)) / cbet3
+            // calp2 = sqrt(1 - sq(salp2))
+            //       = sqrt(sq(calp0) - sq(sbet2)) / cbet2
             // and subst for calp0 and rearrange to give (choose positive sqrt
             // to give alp2 in [0, pi/2]).
             w.calp2 = cbet2 != cbet1 || Math.Abs(sbet2) != -sbet1 ?
@@ -1483,27 +1727,29 @@ namespace GeographicLib
             w.ssig2 = sbet2; somg2 = salp0 * sbet2;
             w.csig2 = comg2 = w.calp2 * cbet2;
             {
-                Pair p = SinCosNorm(w.ssig2, w.csig2);
+                Pair p = GeoMath.Norm(w.ssig2, w.csig2);
                 w.ssig2 = p.First; w.csig2 = p.Second;
             }
-            // SinCosNorm(somg3, comg3); -- don't need to normalize!
+            // GeoMath.norm(somg2, comg2); -- don't need to normalize!
 
             // sig12 = sig2 - sig1, limit to [0, pi]
-            w.sig12 = Math.Atan2(Math.Max(w.csig1 * w.ssig2 - w.ssig1 * w.csig2, 0.0),
-                          w.csig1 * w.csig2 + w.ssig1 * w.ssig2);
+            w.sig12 = Math.Atan2(Math.Max(0.0, w.csig1 * w.ssig2 - w.ssig1 * w.csig2),
+                                               w.csig1 * w.csig2 + w.ssig1 * w.ssig2);
 
             // omg12 = omg2 - omg1, limit to [0, pi]
-            omg12 = Math.Atan2(Math.Max(comg1 * somg2 - somg1 * comg2, 0.0),
-                          comg1 * comg2 + somg1 * somg2);
-            double B312, h0;
+            somg12 = Math.Max(0.0, comg1 * somg2 - somg1 * comg2);
+            comg12 = comg1 * comg2 + somg1 * somg2;
+            // eta = omg12 - lam120
+            double eta = Math.Atan2(somg12 * clam120 - comg12 * slam120,
+                                    comg12 * clam120 + somg12 * slam120);
+            double B312;
             double k2 = GeoMath.Sq(calp0) * _ep2;
             w.eps = k2 / (2 * (1 + Math.Sqrt(1 + k2)) + k2);
             C3f(w.eps, C3a);
             B312 = (SinCosSeries(true, w.ssig2, w.csig2, C3a) -
                     SinCosSeries(true, w.ssig1, w.csig1, C3a));
-            h0 = -_f * A3f(w.eps);
-            w.domg12 = salp0 * h0 * (w.sig12 + B312);
-            w.lam12 = omg12 + w.domg12;
+            w.domg12 = -_f * A3f(w.eps) * salp0 * (w.sig12 + B312);
+            w.lam12 = eta + w.domg12;
 
             if (diffp)
             {
@@ -1513,7 +1759,7 @@ namespace GeographicLib
                 {
                     LengthsV v =
                       Lengths(w.eps, w.sig12, w.ssig1, w.csig1, dn1, w.ssig2, w.csig2, dn2,
-                              cbet1, cbet2, false, C1a, C2a);
+                              cbet1, cbet2, GeodesicMask.REDUCEDLENGTH, C1a, C2a);
                     w.dlam12 = v.m12b;
                     w.dlam12 *= _f1 / (w.calp2 * cbet2);
                 }
@@ -1524,189 +1770,287 @@ namespace GeographicLib
 
         internal double A3f(double eps)
         {
-            // Evaluate sum(_A3x[k] * eps^k, k, 0, nA3x_-1) by Horner's method
-            double v = 0;
-            for (int i = nA3x_; i > 0;)
-                v = eps * v + _A3x[--i];
-            return v;
+            // Evaluate A3
+            return GeoMath.Polyval(nA3_ - 1, _A3x, 0, eps);
         }
 
         internal void C3f(double eps, double[] c)
         {
-            // Evaluate C3 coeffs by Horner's method
+            // Evaluate C3 coeffs
             // Elements c[1] thru c[nC3_ - 1] are set
-            for (int j = nC3x_, k = nC3_ - 1; k > 0;)
-            {
-                double t = 0;
-                for (int i = nC3_ - k; i > 0; --i)
-                    t = eps * t + _C3x[--j];
-                c[k--] = t;
-            }
-
             double mult = 1;
-            for (int k = 1; k < nC3_;)
-            {
+            int o = 0;
+            for (int l = 1; l < nC3_; ++l)
+            { // l is index of C3[l]
+                int m = nC3_ - l - 1;          // order of polynomial in eps
                 mult *= eps;
-                c[k++] *= mult;
+                c[l] = mult * GeoMath.Polyval(m, _C3x, o, eps);
+                o += m + 1;
             }
         }
 
         internal void C4f(double eps, double[] c)
         {
-            // Evaluate C4 coeffs by Horner's method
+            // Evaluate C4 coeffs
             // Elements c[0] thru c[nC4_ - 1] are set
-            for (int j = nC4x_, k = nC4_; k > 0;)
-            {
-                double t = 0;
-                for (int i = nC4_ - k + 1; i > 0; --i)
-                    t = eps * t + _C4x[--j];
-                c[--k] = t;
-            }
-
             double mult = 1;
-            for (int k = 1; k < nC4_;)
-            {
+            int o = 0;
+            for (int l = 0; l < nC4_; ++l)
+            { // l is index of C4[l]
+                int m = nC4_ - l - 1;          // order of polynomial in eps
+                c[l] = mult * GeoMath.Polyval(m, _C4x, o, eps);
+                o += m + 1;
                 mult *= eps;
-                c[k++] *= mult;
             }
         }
-
-        // Generated by Maxima on 2010-09-04 10:26:17-04:00
 
         // The scale factor A1-1 = mean value of (d/dsigma)I1 - 1
         internal static double A1m1f(double eps)
         {
-            double
-              eps2 = GeoMath.Sq(eps),
-              t;
-            t = eps2 * (eps2 * (eps2 + 4) + 64) / 256;
+            double[] coeff = {
+              // (1-eps)*A1-1, polynomial in eps2 of order 3
+              1, 4, 64, 0, 256,
+            };
+            int m = nA1_ / 2;
+            double t = GeoMath.Polyval(m, coeff, 0, GeoMath.Sq(eps)) / coeff[m + 1];
             return (t + eps) / (1 - eps);
         }
 
         // The coefficients C1[l] in the Fourier expansion of B1
         internal static void C1f(double eps, double[] c)
         {
+            double[] coeff = {
+              // C1[1]/eps^1, polynomial in eps2 of order 2
+              -1, 6, -16, 32,
+              // C1[2]/eps^2, polynomial in eps2 of order 2
+              -9, 64, -128, 2048,
+              // C1[3]/eps^3, polynomial in eps2 of order 1
+              9, -16, 768,
+              // C1[4]/eps^4, polynomial in eps2 of order 1
+              3, -5, 512,
+              // C1[5]/eps^5, polynomial in eps2 of order 0
+              -7, 1280,
+              // C1[6]/eps^6, polynomial in eps2 of order 0
+              -7, 2048,
+            };
             double
               eps2 = GeoMath.Sq(eps),
               d = eps;
-            c[1] = d * ((6 - eps2) * eps2 - 16) / 32;
-            d *= eps;
-            c[2] = d * ((64 - 9 * eps2) * eps2 - 128) / 2048;
-            d *= eps;
-            c[3] = d * (9 * eps2 - 16) / 768;
-            d *= eps;
-            c[4] = d * (3 * eps2 - 5) / 512;
-            d *= eps;
-            c[5] = -7 * d / 1280;
-            d *= eps;
-            c[6] = -7 * d / 2048;
+            int o = 0;
+            for (int l = 1; l <= nC1_; ++l)
+            { // l is index of C1p[l]
+                int m = (nC1_ - l) / 2;         // order of polynomial in eps^2
+                c[l] = d * GeoMath.Polyval(m, coeff, o, eps2) / coeff[o + m + 1];
+                o += m + 2;
+                d *= eps;
+            }
         }
 
         // The coefficients C1p[l] in the Fourier expansion of B1p
         internal static void C1pf(double eps, double[] c)
         {
+            double[] coeff = {
+                // C1p[1]/eps^1, polynomial in eps2 of order 2
+                205, -432, 768, 1536,
+                // C1p[2]/eps^2, polynomial in eps2 of order 2
+                4005, -4736, 3840, 12288,
+                // C1p[3]/eps^3, polynomial in eps2 of order 1
+                -225, 116, 384,
+                // C1p[4]/eps^4, polynomial in eps2 of order 1
+                -7173, 2695, 7680,
+                // C1p[5]/eps^5, polynomial in eps2 of order 0
+                3467, 7680,
+                // C1p[6]/eps^6, polynomial in eps2 of order 0
+                38081, 61440,
+            };
             double
               eps2 = GeoMath.Sq(eps),
               d = eps;
-            c[1] = d * (eps2 * (205 * eps2 - 432) + 768) / 1536;
-            d *= eps;
-            c[2] = d * (eps2 * (4005 * eps2 - 4736) + 3840) / 12288;
-            d *= eps;
-            c[3] = d * (116 - 225 * eps2) / 384;
-            d *= eps;
-            c[4] = d * (2695 - 7173 * eps2) / 7680;
-            d *= eps;
-            c[5] = 3467 * d / 7680;
-            d *= eps;
-            c[6] = 38081 * d / 61440;
+            int o = 0;
+            for (int l = 1; l <= nC1p_; ++l)
+            { // l is index of C1p[l]
+                int m = (nC1p_ - l) / 2;         // order of polynomial in eps^2
+                c[l] = d * GeoMath.Polyval(m, coeff, o, eps2) / coeff[o + m + 1];
+                o += m + 2;
+                d *= eps;
+            }
         }
 
         // The scale factor A2-1 = mean value of (d/dsigma)I2 - 1
         internal static double A2m1f(double eps)
         {
-            double
-              eps2 = GeoMath.Sq(eps),
-              t;
-            t = eps2 * (eps2 * (25 * eps2 + 36) + 64) / 256;
-            return t * (1 - eps) - eps;
+            double[] coeff = {
+                // (eps+1)*A2-1, polynomial in eps2 of order 3
+                -11, -28, -192, 0, 256,
+            };
+            int m = nA2_ / 2;
+            double t = GeoMath.Polyval(m, coeff, 0, GeoMath.Sq(eps)) / coeff[m + 1];
+            return (t - eps) / (1 + eps);
         }
 
         // The coefficients C2[l] in the Fourier expansion of B2
         internal static void C2f(double eps, double[] c)
         {
+            double[] coeff = {
+                // C2[1]/eps^1, polynomial in eps2 of order 2
+                1, 2, 16, 32,
+                // C2[2]/eps^2, polynomial in eps2 of order 2
+                35, 64, 384, 2048,
+                // C2[3]/eps^3, polynomial in eps2 of order 1
+                15, 80, 768,
+                // C2[4]/eps^4, polynomial in eps2 of order 1
+                7, 35, 512,
+                // C2[5]/eps^5, polynomial in eps2 of order 0
+                63, 1280,
+                // C2[6]/eps^6, polynomial in eps2 of order 0
+                77, 2048,
+            };
+
             double
               eps2 = GeoMath.Sq(eps),
               d = eps;
-            c[1] = d * (eps2 * (eps2 + 2) + 16) / 32;
-            d *= eps;
-            c[2] = d * (eps2 * (35 * eps2 + 64) + 384) / 2048;
-            d *= eps;
-            c[3] = d * (15 * eps2 + 80) / 768;
-            d *= eps;
-            c[4] = d * (7 * eps2 + 35) / 512;
-            d *= eps;
-            c[5] = 63 * d / 1280;
-            d *= eps;
-            c[6] = 77 * d / 2048;
+            int o = 0;
+            for (int l = 1; l <= nC2_; ++l)
+            { // l is index of C2[l]
+                int m = (nC2_ - l) / 2;         // order of polynomial in eps^2
+                c[l] = d * GeoMath.Polyval(m, coeff, o, eps2) / coeff[o + m + 1];
+                o += m + 2;
+                d *= eps;
+            }
         }
 
         // The scale factor A3 = mean value of (d/dsigma)I3
         internal void A3coeff()
         {
-            _A3x[0] = 1;
-            _A3x[1] = (_n - 1) / 2;
-            _A3x[2] = (_n * (3 * _n - 1) - 2) / 8;
-            _A3x[3] = ((-_n - 3) * _n - 1) / 16;
-            _A3x[4] = (-2 * _n - 3) / 64;
-            _A3x[5] = -3 / 128.0;
+            double[] coeff = {
+                // A3, coeff of eps^5, polynomial in n of order 0
+                -3, 128,
+                // A3, coeff of eps^4, polynomial in n of order 1
+                -2, -3, 64,
+                // A3, coeff of eps^3, polynomial in n of order 2
+                -1, -3, -1, 16,
+                // A3, coeff of eps^2, polynomial in n of order 2
+                3, -1, -2, 8,
+                // A3, coeff of eps^1, polynomial in n of order 1
+                1, -1, 2,
+                // A3, coeff of eps^0, polynomial in n of order 0
+                1, 1,
+            };
+            int o = 0, k = 0;
+            for (int j = nA3_ - 1; j >= 0; --j)
+            { // coeff of eps^j
+                int m = Math.Min(nA3_ - j - 1, j);  // order of polynomial in n
+                _A3x[k++] = GeoMath.Polyval(m, coeff, o, _n) / coeff[o + m + 1];
+                o += m + 2;
+            }
         }
 
         // The coefficients C3[l] in the Fourier expansion of B3
         internal void C3coeff()
         {
-            _C3x[0] = (1 - _n) / 4;
-            _C3x[1] = (1 - _n * _n) / 8;
-            _C3x[2] = ((3 - _n) * _n + 3) / 64;
-            _C3x[3] = (2 * _n + 5) / 128;
-            _C3x[4] = 3 / 128.0;
-            _C3x[5] = ((_n - 3) * _n + 2) / 32;
-            _C3x[6] = ((-3 * _n - 2) * _n + 3) / 64;
-            _C3x[7] = (_n + 3) / 128;
-            _C3x[8] = 5 / 256.0;
-            _C3x[9] = (_n * (5 * _n - 9) + 5) / 192;
-            _C3x[10] = (9 - 10 * _n) / 384;
-            _C3x[11] = 7 / 512.0;
-            _C3x[12] = (7 - 14 * _n) / 512;
-            _C3x[13] = 7 / 512.0;
-            _C3x[14] = 21 / 2560.0;
+            double[] coeff = {
+              // C3[1], coeff of eps^5, polynomial in n of order 0
+              3, 128,
+              // C3[1], coeff of eps^4, polynomial in n of order 1
+              2, 5, 128,
+              // C3[1], coeff of eps^3, polynomial in n of order 2
+              -1, 3, 3, 64,
+              // C3[1], coeff of eps^2, polynomial in n of order 2
+              -1, 0, 1, 8,
+              // C3[1], coeff of eps^1, polynomial in n of order 1
+              -1, 1, 4,
+              // C3[2], coeff of eps^5, polynomial in n of order 0
+              5, 256,
+              // C3[2], coeff of eps^4, polynomial in n of order 1
+              1, 3, 128,
+              // C3[2], coeff of eps^3, polynomial in n of order 2
+              -3, -2, 3, 64,
+              // C3[2], coeff of eps^2, polynomial in n of order 2
+              1, -3, 2, 32,
+              // C3[3], coeff of eps^5, polynomial in n of order 0
+              7, 512,
+              // C3[3], coeff of eps^4, polynomial in n of order 1
+              -10, 9, 384,
+              // C3[3], coeff of eps^3, polynomial in n of order 2
+              5, -9, 5, 192,
+              // C3[4], coeff of eps^5, polynomial in n of order 0
+              7, 512,
+              // C3[4], coeff of eps^4, polynomial in n of order 1
+              -14, 7, 512,
+              // C3[5], coeff of eps^5, polynomial in n of order 0
+              21, 2560,
+            };
+            int o = 0, k = 0;
+            for (int l = 1; l < nC3_; ++l)
+            {        // l is index of C3[l]
+                for (int j = nC3_ - 1; j >= l; --j)
+                { // coeff of eps^j
+                    int m = Math.Min(nC3_ - j - 1, j);  // order of polynomial in n
+                    _C3x[k++] = GeoMath.Polyval(m, coeff, o, _n) / coeff[o + m + 1];
+                    o += m + 2;
+                }
+            }
         }
 
-        // Generated by Maxima on 2012-10-19 08:02:34-04:00
-
-        // The coefficients C4[l] in the Fourier expansion of I4
         internal void C4coeff()
         {
-            _C4x[0] = (_n * (_n * (_n * (_n * (100 * _n + 208) + 572) + 3432) - 12012) + 30030) / 45045;
-            _C4x[1] = (_n * (_n * (_n * (64 * _n + 624) - 4576) + 6864) - 3003) / 15015;
-            _C4x[2] = (_n * ((14144 - 10656 * _n) * _n - 4576) - 858) / 45045;
-            _C4x[3] = ((-224 * _n - 4784) * _n + 1573) / 45045;
-            _C4x[4] = (1088 * _n + 156) / 45045;
-            _C4x[5] = 97 / 15015.0;
-            _C4x[6] = (_n * (_n * ((-64 * _n - 624) * _n + 4576) - 6864) + 3003) / 135135;
-            _C4x[7] = (_n * (_n * (5952 * _n - 11648) + 9152) - 2574) / 135135;
-            _C4x[8] = (_n * (5792 * _n + 1040) - 1287) / 135135;
-            _C4x[9] = (468 - 2944 * _n) / 135135;
-            _C4x[10] = 1 / 9009.0;
-            _C4x[11] = (_n * ((4160 - 1440 * _n) * _n - 4576) + 1716) / 225225;
-            _C4x[12] = ((4992 - 8448 * _n) * _n - 1144) / 225225;
-            _C4x[13] = (1856 * _n - 936) / 225225;
-            _C4x[14] = 8 / 10725.0;
-            _C4x[15] = (_n * (3584 * _n - 3328) + 1144) / 315315;
-            _C4x[16] = (1024 * _n - 208) / 105105;
-            _C4x[17] = -136 / 63063.0;
-            _C4x[18] = (832 - 2560 * _n) / 405405;
-            _C4x[19] = -128 / 135135.0;
-            _C4x[20] = 128 / 99099.0;
+            double[] coeff = {
+              // C4[0], coeff of eps^5, polynomial in n of order 0
+              97, 15015,
+              // C4[0], coeff of eps^4, polynomial in n of order 1
+              1088, 156, 45045,
+              // C4[0], coeff of eps^3, polynomial in n of order 2
+              -224, -4784, 1573, 45045,
+              // C4[0], coeff of eps^2, polynomial in n of order 3
+              -10656, 14144, -4576, -858, 45045,
+              // C4[0], coeff of eps^1, polynomial in n of order 4
+              64, 624, -4576, 6864, -3003, 15015,
+              // C4[0], coeff of eps^0, polynomial in n of order 5
+              100, 208, 572, 3432, -12012, 30030, 45045,
+              // C4[1], coeff of eps^5, polynomial in n of order 0
+              1, 9009,
+              // C4[1], coeff of eps^4, polynomial in n of order 1
+              -2944, 468, 135135,
+              // C4[1], coeff of eps^3, polynomial in n of order 2
+              5792, 1040, -1287, 135135,
+              // C4[1], coeff of eps^2, polynomial in n of order 3
+              5952, -11648, 9152, -2574, 135135,
+              // C4[1], coeff of eps^1, polynomial in n of order 4
+              -64, -624, 4576, -6864, 3003, 135135,
+              // C4[2], coeff of eps^5, polynomial in n of order 0
+              8, 10725,
+              // C4[2], coeff of eps^4, polynomial in n of order 1
+              1856, -936, 225225,
+              // C4[2], coeff of eps^3, polynomial in n of order 2
+              -8448, 4992, -1144, 225225,
+              // C4[2], coeff of eps^2, polynomial in n of order 3
+              -1440, 4160, -4576, 1716, 225225,
+              // C4[3], coeff of eps^5, polynomial in n of order 0
+              -136, 63063,
+              // C4[3], coeff of eps^4, polynomial in n of order 1
+              1024, -208, 105105,
+              // C4[3], coeff of eps^3, polynomial in n of order 2
+              3584, -3328, 1144, 315315,
+              // C4[4], coeff of eps^5, polynomial in n of order 0
+              -128, 135135,
+              // C4[4], coeff of eps^4, polynomial in n of order 1
+              -2560, 832, 405405,
+              // C4[5], coeff of eps^5, polynomial in n of order 0
+              128, 99099,
+            };
+            int o = 0, k = 0;
+            for (int l = 0; l < nC4_; ++l)
+            {        // l is index of C4[l]
+                for (int j = nC4_ - 1; j >= l; --j)
+                { // coeff of eps^j
+                    int m = nC4_ - j - 1;               // order of polynomial in n
+                    _C4x[k++] = GeoMath.Polyval(m, coeff, o, _n) / coeff[o + m + 1];
+                    o += m + 2;
+                }
+            }
         }
     }
+
+
+
 }

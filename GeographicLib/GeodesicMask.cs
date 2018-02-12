@@ -7,7 +7,6 @@
  **********************************************************************/
 namespace GeographicLib
 {
-
     /**
      * Bit masks for what geodesic calculations to do.
      * <p>
@@ -21,7 +20,7 @@ namespace GeographicLib
      * Geodesic#Line(double, double, double, int) Geodesic.Line} what capabilities
      * should be included in the {@link GeodesicLine} object.
      **********************************************************************/
-    public static class GeodesicMask
+    public class GeodesicMask
     {
         internal const int CAP_NONE = 0;
         internal const int CAP_C1 = 1 << 0;
@@ -30,7 +29,9 @@ namespace GeographicLib
         internal const int CAP_C3 = 1 << 3;
         internal const int CAP_C4 = 1 << 4;
         internal const int CAP_ALL = 0x1F;
+        internal const int CAP_MASK = CAP_ALL;
         internal const int OUT_ALL = 0x7F80;
+        internal const int OUT_MASK = 0xFF80; // Include LONG_UNROLL
 
         /**
          * No capabilities, no output.
@@ -56,6 +57,11 @@ namespace GeographicLib
          **********************************************************************/
         public const int DISTANCE = 1 << 10 | CAP_C1;
         /**
+         * All of the above, the "standard" output and capabilities.
+         **********************************************************************/
+        public const int STANDARD = LATITUDE | LONGITUDE |
+            AZIMUTH | DISTANCE;
+        /**
          * Allow distance <i>s12</i> to be used as <i>input</i> in the direct
          * geodesic problem.
          **********************************************************************/
@@ -69,12 +75,18 @@ namespace GeographicLib
          **********************************************************************/
         public const int GEODESICSCALE = 1 << 13 | CAP_C1 | CAP_C2;
         /**
-         * Calculate Area <i>S12</i>.
+         * Calculate area <i>S12</i>.
          **********************************************************************/
         public const int AREA = 1 << 14 | CAP_C4;
         /**
-         * All capabilities, calculate everything.
+         * All capabilities, calculate everything.  (LONG_UNROLL is not included in
+         * this mask.)
          **********************************************************************/
         public const int ALL = OUT_ALL | CAP_ALL;
+        /**
+         * Unroll <i>lon2</i>.
+         **********************************************************************/
+        public const int LONG_UNROLL = 1 << 15;
     }
+
 }

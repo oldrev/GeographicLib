@@ -94,12 +94,12 @@ namespace GeographicLib
             double u;                       // hold exact sum as [s, t, u]
             // Accumulate starting at least significant end
             {
-                Pair r = GeoMath.sum(y, _t);
+                Pair r = GeoMath.Sum(y, _t);
                 y = r.First;
                 u = r.Second;
             }
             {
-                Pair r = GeoMath.sum(y, _s);
+                Pair r = GeoMath.Sum(y, _s);
                 _s = r.First;
                 _t = r.Second;
             }
