@@ -6,6 +6,8 @@
  * http://geographiclib.sourceforge.net/
  **********************************************************************/
 using System;
+using System.Runtime.CompilerServices;
+
 namespace GeographicLib
 {
 
@@ -61,7 +63,7 @@ namespace GeographicLib
      *   }
      * }}</pre>
      **********************************************************************/
-    public class PolygonArea
+    public sealed class PolygonArea
     {
 
         private Geodesic _earth;
@@ -187,7 +189,8 @@ namespace GeographicLib
          * <p>
          * Counter-clockwise traversal counts as a positive Area.
          **********************************************************************/
-        public PolygonResult Compute() { return Compute(false, true); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public PolygonResult Compute() => Compute(false, true);
         /**
          * Return the results so far.
          * <p>
@@ -387,14 +390,15 @@ namespace GeographicLib
          * @return <i>a</i> the equatorial radius of the ellipsoid (meters).  This is
          *   the value inherited from the Geodesic object used in the constructor.
          **********************************************************************/
-
-        public double MajorRadius() { return _earth.MajorRadius(); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double MajorRadius() => _earth.MajorRadius();
 
         /**
          * @return <i>f</i> the flattening of the ellipsoid.  This is the value
          *   inherited from the Geodesic object used in the constructor.
          **********************************************************************/
-        public double Flattening() { return _earth.Flattening(); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double Flattening() => _earth.Flattening();
 
         /**
          * Report the previous vertex added to the polygon or polyline.
@@ -404,6 +408,7 @@ namespace GeographicLib
          * If no points have been added, then Double.NaN is returned.  Otherwise,
          * <i>lon</i> will be in the range [&minus;180&deg;, 180&deg;).
          **********************************************************************/
-        public Pair CurrentPoint() { return new Pair(_lat1, _lon1); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Pair CurrentPoint() => new Pair(_lat1, _lon1);
     }
 }

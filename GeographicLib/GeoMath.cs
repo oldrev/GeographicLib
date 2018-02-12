@@ -6,47 +6,53 @@
  * http://geographiclib.sourceforge.net/
  **********************************************************************/
 using System;
+using System.Runtime.CompilerServices;
+
 namespace GeographicLib
 {
 
-    /**
-     * Mathematical functions needed by GeographicLib.
-     * <p>
-     * Define mathematical functions and constants so that any version of Java
-     * can be used.
+    /*
      **********************************************************************/
-    public class GeoMath
+    /// <summary>
+    /// Mathematical functions needed by GeographicLib.
+    /// Define mathematical functions and constants so that any version of Java
+    /// can be used.
+    /// </summary>
+    public static class GeoMath
     {
-        /**
-         * The number of binary Digits in the fraction of a double precision
-         * number (equivalent to C++'s {@code numeric_limits<double>::Digits}).
-         **********************************************************************/
-        public static readonly int Digits = 53;
+        /// <summary>
+        /// The number of binary Digits in the fraction of a double precision
+        /// number (equivalent to C++'s {@code numeric_limits<double>::Digits}).
+        /// </summary>
+        public const int Digits = 53;
+
         /**
          * Equivalent to C++'s {@code numeric_limits<double>::Epsilon()}.  In Java
          * version 1.5 and later, Math.ulp(1.0) can be used.
          **********************************************************************/
         public static readonly double Epsilon = Math.Pow(0.5, Digits - 1);
+
         /**
          * Equivalent to C++'s {@code numeric_limits<double>::Min()}.  In Java
          * version 1.6 and later, Double.MIN_NORMAL can be used.
          **********************************************************************/
         public static readonly double Min = Math.Pow(0.5, 1022);
+
         /**
          * The number of radians in a Degree.  In Java version 1.2 and later,
          * Math.toRadians and Math.toDegrees can be used.
          **********************************************************************/
-        public static readonly double Degree = Math.PI / 180;
+        public const double Degree = Math.PI / 180;
 
-        /**
-         * Square a number.
-         * <p>
-         * @param x the argument.
-         * @return <i>x</i><sup>2</sup>.
-         **********************************************************************/
-        public static double Sq(double x) { return x * x; }
+        /// <summary>
+        /// Square a number.
+        /// </summary>
+        /// <param name="x">the argument</param>
+        /// <returns><i>x</i><sup>2</sup>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Sq(double x) => x * x;
 
-        /**
+        /*
          * The hypotenuse function avoiding underflow and overflow.  In Java version
          * 1.5 and later, Math.Hypot can be used.
          * <p>
@@ -54,6 +60,7 @@ namespace GeographicLib
          * @param y the Second argument.
          * @return sqrt(<i>x</i><sup>2</sup> + <i>y</i><sup>2</sup>).
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Hypot(double x, double y)
         {
             x = Math.Abs(x); y = Math.Abs(y);
@@ -77,6 +84,7 @@ namespace GeographicLib
          * @param x the argument.
          * @return log(1 + <i>x</i>).
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Log1p(double x)
         {
             double
@@ -97,6 +105,7 @@ namespace GeographicLib
          * @param x the argument.
          * @return Atanh(<i>x</i>).
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Atanh(double x)
         {
             double y = Math.Abs(x);     // Enforce odd parity
@@ -111,6 +120,7 @@ namespace GeographicLib
          * @param x the argument.
          * @return the real cube root of <i>x</i>.
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double cbrt(double x)
         {
             double y = Math.Pow(Math.Abs(x), 1 / 3.0); // Return the real cube root
@@ -127,6 +137,7 @@ namespace GeographicLib
          * <p>
          * See D. E. Knuth, TAOCP, Vol 2, 4.2.2, Theorem B.
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Pair sum(double u, double v)
         {
             double s = u + v;
@@ -148,8 +159,9 @@ namespace GeographicLib
          * <p>
          * <i>x</i> must lie in [&minus;540&deg;, 540&deg;).
          **********************************************************************/
-        public static double AngNormalize(double x)
-        { return x >= 180 ? x - 360 : (x < -180 ? x + 360 : x); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double AngNormalize(double x) =>
+            x >= 180 ? x - 360 : (x < -180 ? x + 360 : x);
 
         /**
          * Normalize an arbitrary angle.
@@ -159,8 +171,8 @@ namespace GeographicLib
          * <p>
          * The range of <i>x</i> is unrestricted.
          **********************************************************************/
-        public static double AngNormalize2(double x)
-        { return AngNormalize(x % 360.0); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double AngNormalize2(double x) => AngNormalize(x % 360.0);
 
         /**
          * Difference of two angles reduced to [&minus;180&deg;, 180&deg;]
@@ -176,27 +188,30 @@ namespace GeographicLib
          * prescription allows &minus;180&deg; to be returned (e.g., if <i>x</i> is
          * tiny and negative and <i>y</i> = 180&deg;).
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double AngDiff(double x, double y)
         {
             double d, t;
-            { Pair r = sum(-x, y); d = r.First; t = r.Second; }
+            {
+                Pair r = sum(-x, y);
+                d = r.First;
+                t = r.Second;
+            }
             if ((d - 180.0) + t > 0.0) // y - x > 180
                 d -= 360.0;            // exact
             else if ((d + 180.0) + t <= 0.0) // y - x <= -180
                 d += 360.0;            // exact
             return d + t;
         }
+
         /**
          * Test for finiteness.
          * <p>
          * @param x the argument.
          * @return true if number is finite, false if NaN or infinite.
          **********************************************************************/
-        public static bool isfinite(double x)
-        {
-            return Math.Abs(x) <= Double.MaxValue;
-        }
-
-        private GeoMath() { }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool isfinite(double x) =>
+            Math.Abs(x) <= Double.MaxValue;
     }
 }

@@ -20,60 +20,71 @@ namespace GeographicLib
      * Geodesic#Inverse(double, double, double, double) Geodesic.Inverse} and it
      * always includes the field <i>a12</i>.
      **********************************************************************/
-    public class GeodesicData
+    public sealed class GeodesicData
     {
-        /**
-         * latitude of point 1 (degrees).
-         **********************************************************************/
+        /// <summary>
+        /// latitude of point 1 (degrees).
+        /// </summary>
         public double lat1;
-        /**
-         * longitude of point 1 (degrees).
-         **********************************************************************/
+
+        /// <summary>
+        /// longitude of point 1 (degrees).
+        /// </summary>
         public double lon1;
-        /**
-         * azimuth at point 1 (degrees).
-         **********************************************************************/
+
+        /// <summary>
+        /// azimuth at point 1 (degrees).
+        /// </summary>
         public double azi1;
-        /**
-         * latitude of point 2 (degrees).
-         **********************************************************************/
+
+        /// <summary>
+        /// latitude of point 2 (degrees).
+        /// </summary>
         public double lat2;
-        /**
-         * longitude of point 2 (degrees).
-         **********************************************************************/
+
+        /// <summary>
+        /// longitude of point 2 (degrees).
+        /// </summary>
         public double lon2;
-        /**
-         * azimuth at point 2 (degrees).
-         **********************************************************************/
+
+        /// <summary>
+        /// azimuth at point 2 (degrees).
+        /// </summary>
         public double azi2;
-        /**
-         * distance between point 1 and point 2 (meters).
-         **********************************************************************/
+
+        /// <summary>
+        /// distance between point 1 and point 2 (meters).
+        /// </summary>
         public double s12;
-        /**
-         * arc length on the auxiliary sphere between point 1 and point 2
-         *   (degrees).
-         **********************************************************************/
+
+        /// <summary>
+        /// arc length on the auxiliary sphere between point 1 and point 2 (degrees).
+        /// </summary>
         public double a12;
-        /**
-         * reduced length of geodesic (meters).
-         **********************************************************************/
+
+        /// <summary>
+        /// reduced length of geodesic (meters).
+        /// </summary>
         public double m12;
-        /**
-         * geodesic scale of point 2 relative to point 1 (dimensionless).
-         **********************************************************************/
+
+        /// <summary>
+        /// geodesic scale of point 2 relative to point 1 (dimensionless).
+        /// </summary>
         public double M12;
-        /**
-         * geodesic scale of point 1 relative to point 2 (dimensionless).
-         **********************************************************************/
+
+        /// <summary>
+        /// geodesic scale of point 1 relative to point 2 (dimensionless).
+        /// </summary>
         public double M21;
-        /**
-         * Area under the geodesic (meters<sup>2</sup>).
-         **********************************************************************/
+
+        /// <summary>
+        /// Area under the geodesic (meters<sup>2</sup>).
+        /// </summary>
         public double S12;
-        /**
-         * Initialize all the fields to Double.NaN.
-         **********************************************************************/
+
+        /// <summary>
+        /// Initialize all the fields to Double.NaN.
+        /// </summary>
         public GeodesicData()
         {
             lat1 = lon1 = azi1 = lat2 = lon2 = azi2 =

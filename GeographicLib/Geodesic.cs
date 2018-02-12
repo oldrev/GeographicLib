@@ -6,6 +6,8 @@
  * http://geographiclib.sourceforge.net/
  **********************************************************************/
 using System;
+using System.Runtime.CompilerServices;
+
 namespace GeographicLib
 {
 
@@ -203,7 +205,7 @@ namespace GeographicLib
      *   }
      * }}</pre>
      **********************************************************************/
-    public class Geodesic
+    public sealed class Geodesic
     {
 
         /**
@@ -225,6 +227,9 @@ namespace GeographicLib
         private static readonly int maxit1_ = 20;
         private static readonly int maxit2_ = maxit1_ + GeoMath.Digits + 10;
 
+        private static readonly Lazy<Geodesic> _lazyWgs84 =
+            new Lazy<Geodesic>(() => new Geodesic(Constants.WGS84_a, Constants.WGS84_f), true);
+
         // Underflow guard.  We require
         //   tiny_ * Epsilon() > 0
         //   tiny_ + Epsilon() == Epsilon()
@@ -239,6 +244,7 @@ namespace GeographicLib
         private static readonly double tolb_ = tol0_ * tol2_;
         private static readonly double xthresh_ = 1000 * tol2_;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static double AngRound(double x)
         {
             // The makes the smallest gap in x = 1/16 - nextafter(1/16, 0) = 1/2^57
@@ -253,6 +259,7 @@ namespace GeographicLib
             return x < 0 ? -y : y;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static Pair SinCosNorm(double sinx, double cosx)
         {
             double r = GeoMath.Hypot(sinx, cosx);
@@ -339,12 +346,11 @@ namespace GeographicLib
          * path: the longitudinal extent must not exceed of 180&deg;.)
          **********************************************************************/
         public GeodesicData Direct(double lat1, double lon1,
-                                   double azi1, double s12)
-        {
-            return Direct(lat1, lon1, azi1, false, s12,
+                                   double azi1, double s12) =>
+            Direct(lat1, lon1, azi1, false, s12,
                           GeodesicMask.LATITUDE | GeodesicMask.LONGITUDE |
                           GeodesicMask.AZIMUTH);
-        }
+
         /**
          * Solve the direct geodesic problem where the length of the geodesic is
          * specified in terms of distance and with a subset of the geodesic results
@@ -364,10 +370,8 @@ namespace GeographicLib
          * always included in the returned result.
          **********************************************************************/
         public GeodesicData Direct(double lat1, double lon1,
-                                   double azi1, double s12, int outmask)
-        {
-            return Direct(lat1, lon1, azi1, false, s12, outmask);
-        }
+                                   double azi1, double s12, int outmask) =>
+            Direct(lat1, lon1, azi1, false, s12, outmask);
 
         /**
          * Solve the direct geodesic problem where the length of the geodesic
@@ -395,12 +399,10 @@ namespace GeographicLib
          * path: the longitudinal extent must not exceed of 180&deg;.)
          **********************************************************************/
         public GeodesicData ArcDirect(double lat1, double lon1,
-                                      double azi1, double a12)
-        {
-            return Direct(lat1, lon1, azi1, true, a12,
+                                      double azi1, double a12) =>
+            Direct(lat1, lon1, azi1, true, a12,
                           GeodesicMask.LATITUDE | GeodesicMask.LONGITUDE |
                           GeodesicMask.AZIMUTH | GeodesicMask.DISTANCE);
-        }
 
         /**
          * Solve the direct geodesic problem where the length of the geodesic is
@@ -421,10 +423,8 @@ namespace GeographicLib
          * in the returned result.
          **********************************************************************/
         public GeodesicData ArcDirect(double lat1, double lon1,
-                                      double azi1, double a12, int outmask)
-        {
-            return Direct(lat1, lon1, azi1, true, a12, outmask);
-        }
+                                      double azi1, double a12, int outmask) =>
+            Direct(lat1, lon1, azi1, true, a12, outmask);
 
         /**
          * The general direct geodesic problem.  {@link #Direct Direct} and
@@ -962,10 +962,9 @@ namespace GeographicLib
          * <i>lon1</i> fixed, writing <i>lat1</i> = &plusmn;(90 &minus; &Epsilon;),
          * taking the limit &Epsilon; &rarr; 0+.
          **********************************************************************/
-        public GeodesicLine Line(double lat1, double lon1, double azi1)
-        {
-            return Line(lat1, lon1, azi1, GeodesicMask.ALL);
-        }
+        public GeodesicLine Line(double lat1, double lon1, double azi1) =>
+            Line(lat1, lon1, azi1, GeodesicMask.ALL);
+
         /**
          * Set up to compute several points on a single geodesic with a subset of the
          * capabilities included.
@@ -1011,36 +1010,33 @@ namespace GeographicLib
          * fixed, writing <i>lat1</i> = &plusmn;(90 &minus; &Epsilon;), and taking
          * the limit &Epsilon; &rarr; 0+.
          **********************************************************************/
-        public GeodesicLine Line(double lat1, double lon1, double azi1, int caps)
-        {
-            return new GeodesicLine(this, lat1, lon1, azi1, caps);
-        }
+        public GeodesicLine Line(double lat1, double lon1, double azi1, int caps) =>
+            new GeodesicLine(this, lat1, lon1, azi1, caps);
 
         /**
          * @return <i>a</i> the equatorial radius of the ellipsoid (meters).  This is
          *   the value used in the constructor.
          **********************************************************************/
-        public double MajorRadius() { return _a; }
+        public double MajorRadius() => _a;
 
         /**
          * @return <i>f</i> the  flattening of the ellipsoid.  This is the
          *   value used in the constructor.
          **********************************************************************/
-        public double Flattening() { return _f; }
+        public double Flattening() => _f;
 
         /**
          * @return total Area of ellipsoid in meters<sup>2</sup>.  The Area of a
          *   polygon encircling a pole can be found by adding EllipsoidArea()/2 to
          *   the sum of <i>S12</i> for each side of the polygon.
          **********************************************************************/
-        public double EllipsoidArea() { return 4 * Math.PI * _c2; }
+        public double EllipsoidArea() => 4 * Math.PI * _c2;
 
-        /**
-         * A global instantiation of Geodesic with the parameters for the WGS84
-         * ellipsoid.
-         **********************************************************************/
-        public static readonly Geodesic WGS84 =
-            new Geodesic(Constants.WGS84_a, Constants.WGS84_f);
+        /// <summary>
+        /// A global instantiation of Geodesic with the parameters for the WGS84
+        /// ellipsoid.
+        /// </summary>
+        public static Geodesic WGS84 => _lazyWgs84.Value;
 
         // This is a reformulation of the geodesic problem.  The notation is as
         // follows:
@@ -1060,7 +1056,6 @@ namespace GeographicLib
         //   - sigma = s = 0
         // - a 12 suffix means a difference, e.g., s12 = s2 - s1.
         // - s and c prefixes mean sin and cos
-
         internal static double SinCosSeries(bool sinp,
                                              double sinx, double cosx,
                                              double[] c)
@@ -1087,12 +1082,28 @@ namespace GeographicLib
               : cosx * (y0 - y1);       // cos(x) * (y0 - y1)
         }
 
-        internal class LengthsV
+        internal struct LengthsV
         {
-            internal double s12b, m12b, m0, M12, M21;
-            internal LengthsV()
+            internal double s12b;
+            internal double m12b;
+            internal double m0;
+            internal double M12;
+            internal double M21;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private void Init()
             {
-                s12b = m12b = m0 = M12 = M21 = Double.NaN;
+                s12b = m12b = m0 = M12 = M21 = double.NaN;
+            }
+
+            internal static LengthsV Empty
+            {
+                get
+                {
+                    var self = new LengthsV();
+                    self.Init();
+                    return self;
+                }
             }
         }
 
@@ -1106,7 +1117,7 @@ namespace GeographicLib
         {
             // Return m12b = (reduced length)/_b; also calculate s12b = distance/_b,
             // and m0 = coefficient of secular term in expression for reduced length.
-            LengthsV v = new LengthsV(); // To hold s12b, m12b, m0, M12, M21;
+            LengthsV v = LengthsV.Empty; // To hold s12b, m12b, m0, M12, M21;
             C1f(eps, C1a);
             C2f(eps, C2a);
             double
@@ -1194,14 +1205,26 @@ namespace GeographicLib
             return k;
         }
 
-        internal class InverseStartV
+        internal struct InverseStartV
         {
             internal double sig12, salp1, calp1,
               // Only updated if return val >= 0
               salp2, calp2,
               // Only updated for short lines
               dnm;
-            internal InverseStartV()
+
+            internal static InverseStartV Empty
+            {
+                get
+                {
+                    var self = new InverseStartV();
+                    self.Init();
+                    return self;
+                }
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private void Init()
             {
                 sig12 = salp1 = calp1 = salp2 = calp2 = dnm = Double.NaN;
             }
@@ -1218,7 +1241,7 @@ namespace GeographicLib
             // salp3 and calp3 and function value is sig12.
 
             // To hold sig12, salp1, calp1, salp3, calp3, dnm.
-            InverseStartV w = new InverseStartV();
+            var w = InverseStartV.Empty;
             w.sig12 = -1;               // Return value
             double
               // bet12 = bet2 - bet1 in [0, pi); bet12a = bet2 + bet1 in (-pi, 0]
@@ -1383,11 +1406,24 @@ namespace GeographicLib
             return w;
         }
 
-        internal class Lambda12V
+        internal struct Lambda12V
         {
             internal double lam12, salp2, calp2, sig12, ssig1, csig1, ssig2, csig2,
               eps, domg12, dlam12;
-            internal Lambda12V()
+
+
+            internal static Lambda12V Empty
+            {
+                get
+                {
+                    var self = new Lambda12V();
+                    self.Init();
+                    return self;
+                }
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private void Init()
             {
                 lam12 = salp2 = calp2 = sig12 = ssig1 = csig1 = ssig2 = csig2
                   = eps = domg12 = dlam12 = Double.NaN;
@@ -1404,7 +1440,7 @@ namespace GeographicLib
             // Object to hold lam12, salp3, calp3, sig12, ssig1, csig1, ssig3, csig3,
             // eps, domg12, dlam12;
 
-            Lambda12V w = new Lambda12V();
+            var w = Lambda12V.Empty;
 
             if (sbet1 == 0 && calp1 == 0)
                 // Break degeneracy of equatorial line.  This case has already been

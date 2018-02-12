@@ -5,6 +5,8 @@
  * under the MIT/X11 License.  For more information, see
  * http://geographiclib.sourceforge.net/
  **********************************************************************/
+using System.Runtime.CompilerServices;
+
 namespace GeographicLib
 {
 
@@ -51,6 +53,7 @@ namespace GeographicLib
         /// Set the value to a double.
         /// </summary>
         /// <param name="y">set <i>sum</i> = <i>y</i>.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(double y)
         {
             _s = y;
@@ -61,6 +64,7 @@ namespace GeographicLib
         ///  Return the value
         /// </summary>
         /// <returns><i>sum</i>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double Sum()
         {
             return _s;
@@ -71,6 +75,7 @@ namespace GeographicLib
         /// </summary>
         /// <param name="y">the number to be added to the sum.</param>
         /// <returns><i>sum</i> + <i>y</i>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double Sum(double y)
         {
             Accumulator a = new Accumulator(this);
@@ -82,6 +87,7 @@ namespace GeographicLib
         /// Add a number to the accumulator.
         /// </summary>
         /// <param name="y">Set <i>sum</i> += <i>y</i>.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(double y)
         {
             // Here's Shewchuk's solution...
@@ -138,6 +144,7 @@ namespace GeographicLib
         /// <p>
         /// Set <i>sum</i> = &minus;<i>sum</i>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Negate()
         {
             _s = -_s;

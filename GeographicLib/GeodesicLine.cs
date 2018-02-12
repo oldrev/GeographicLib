@@ -6,6 +6,8 @@
  * http://geographiclib.sourceforge.net/
  **********************************************************************/
 using System;
+using System.Runtime.CompilerServices;
+
 namespace GeographicLib
 {
 
@@ -81,7 +83,7 @@ namespace GeographicLib
      *   }
      * }}</pre>
      **********************************************************************/
-    public class GeodesicLine
+    public sealed class GeodesicLine
     {
 
         private static readonly int nC1_ = Geodesic.nC1_;
@@ -115,10 +117,10 @@ namespace GeographicLib
          * fixed, writing <i>lat1</i> = &plusmn;(90&deg; &minus; &Epsilon;), and
          * taking the limit &Epsilon; &rarr; 0+.
          **********************************************************************/
-        public GeodesicLine(Geodesic g,
-                            double lat1, double lon1, double azi1) :
+        public GeodesicLine(Geodesic g, double lat1, double lon1, double azi1) :
             this(g, lat1, lon1, azi1, GeodesicMask.ALL)
-        { }
+        {
+        }
 
         /**
          * Constructor for a geodesic line staring at latitude <i>lat1</i>, longitude
@@ -163,9 +165,7 @@ namespace GeographicLib
          *   <i>caps</i> |= GeodesicMask.ALL for all of the above;
          * </ul>
          **********************************************************************/
-        public GeodesicLine(Geodesic g,
-                            double lat1, double lon1, double azi1,
-                            int caps)
+        public GeodesicLine(Geodesic g, double lat1, double lon1, double azi1, int caps)
         {
             _a = g._a;
             _f = g._f;
@@ -277,7 +277,10 @@ namespace GeographicLib
          * (This constructor was useful in C++, e.g., to allow vectors of
          * GeodesicLine objects.  It may not be needed in Java, so make it private.)
          **********************************************************************/
-        private GeodesicLine() { _caps = 0; }
+        private GeodesicLine() 
+        {
+            _caps = 0;
+        }
 
         /**
          * Compute the position of point 2 which is a distance <i>s12</i> (meters)
@@ -296,12 +299,10 @@ namespace GeographicLib
          * The GeodesicLine object <i>must</i> have been constructed with <i>caps</i>
          * |= {@link GeodesicMask#DISTANCE_IN}; otherwise no parameters are set.
          **********************************************************************/
-        public GeodesicData Position(double s12)
-        {
-            return Position(false, s12,
-                            GeodesicMask.LATITUDE | GeodesicMask.LONGITUDE |
-                            GeodesicMask.AZIMUTH);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public GeodesicData Position(double s12) =>
+            Position(false, s12, GeodesicMask.LATITUDE | GeodesicMask.LONGITUDE | GeodesicMask.AZIMUTH);
+
         /**
          * Compute the position of point 2 which is a distance <i>s12</i> (meters)
          * from point 1 and with a subset of the geodesic results returned.
@@ -317,10 +318,8 @@ namespace GeographicLib
          * Requesting a value which the GeodesicLine object is not capable of
          * computing is not an error (no parameters will be set).
          **********************************************************************/
-        public GeodesicData Position(double s12, int outmask)
-        {
-            return Position(false, s12, outmask);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public GeodesicData Position(double s12, int outmask) => Position(false, s12, outmask);
 
         /**
          * Compute the position of point 2 which is an arc length <i>a12</i>
@@ -339,12 +338,11 @@ namespace GeographicLib
          * The GeodesicLine object <i>must</i> have been constructed with <i>caps</i>
          * |= {@link GeodesicMask#DISTANCE_IN}; otherwise no parameters are set.
          **********************************************************************/
-        public GeodesicData ArcPosition(double a12)
-        {
-            return Position(true, a12,
-                            GeodesicMask.LATITUDE | GeodesicMask.LONGITUDE |
-                            GeodesicMask.AZIMUTH | GeodesicMask.DISTANCE);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public GeodesicData ArcPosition(double a12) =>
+            Position(true, a12,
+                     GeodesicMask.LATITUDE | GeodesicMask.LONGITUDE |
+                     GeodesicMask.AZIMUTH | GeodesicMask.DISTANCE);
         /**
          * Compute the position of point 2 which is an arc length <i>a12</i>
          * (degrees) from point 1 and with a subset of the geodesic results returned.
@@ -361,10 +359,8 @@ namespace GeographicLib
          * Requesting a value which the GeodesicLine object is not capable of
          * computing is not an error (no parameters will be set).
          **********************************************************************/
-        public GeodesicData ArcPosition(double a12, int outmask)
-        {
-            return Position(true, a12, outmask);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public GeodesicData ArcPosition(double a12, int outmask) => Position(true, a12, outmask);
 
         /**
          * The general position function.  {@link #Position(double, int) Position}
@@ -408,11 +404,13 @@ namespace GeographicLib
         {
             outmask &= _caps & GeodesicMask.OUT_ALL;
             GeodesicData r = new GeodesicData();
-            if (!(Init() &&
+            if (!(Init &&
                    (arcmode ||
                     (_caps & GeodesicMask.DISTANCE_IN & GeodesicMask.OUT_ALL) != 0)))
+            {
                 // Uninitialized or impossible distance calculation requested
                 return r;
+            }
             r.lat1 = _lat1; r.lon1 = _lon1; r.azi1 = _azi1;
 
             // Avoid warning about uninitialized B12.
@@ -506,7 +504,9 @@ namespace GeographicLib
                           comg3 * _comg1 + somg3 * _somg1);
 
             if ((outmask & GeodesicMask.DISTANCE) != 0 && arcmode)
+            {
                 r.s12 = _b * ((1 + _A1m1) * sig12 + AB1);
+            }
 
             if ((outmask & GeodesicMask.LONGITUDE) != 0)
             {
@@ -591,70 +591,67 @@ namespace GeographicLib
         /**
          * @return true if the object has been initialized.
          **********************************************************************/
-        private bool Init() { return _caps != 0; }
+        private bool Init => _caps != 0;
 
         /**
          * @return <i>lat1</i> the latitude of point 1 (degrees).
          **********************************************************************/
-        public double Latitude()
-        { return Init() ? _lat1 : Double.NaN; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double Latitude() => Init ? _lat1 : Double.NaN;
 
         /**
          * @return <i>lon1</i> the longitude of point 1 (degrees).
          **********************************************************************/
-        public double Longitude()
-        { return Init() ? _lon1 : Double.NaN; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double Longitude() => Init ? _lon1 : Double.NaN;
 
         /**
          * @return <i>azi1</i> the azimuth (degrees) of the geodesic line at point 1.
          **********************************************************************/
-        public double Azimuth()
-        { return Init() ? _azi1 : Double.NaN; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double Azimuth() => Init ? _azi1 : Double.NaN;
 
         /**
          * @return <i>azi0</i> the azimuth (degrees) of the geodesic line as it
          *   crosses the equator in a northward direction.
          **********************************************************************/
-        public double EquatorialAzimuth()
-        {
-            return Init() ?
+        public double EquatorialAzimuth() => Init ?
               Math.Atan2(_salp0, _calp0) / GeoMath.Degree : Double.NaN;
-        }
 
         /**
          * @return <i>a1</i> the arc length (degrees) between the northward
          *   equatorial crossing and point 1.
          **********************************************************************/
-        public double EquatorialArc()
-        {
-            return Init() ?
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double EquatorialArc() => Init ?
               Math.Atan2(_ssig1, _csig1) / GeoMath.Degree : Double.NaN;
-        }
 
         /**
          * @return <i>a</i> the equatorial radius of the ellipsoid (meters).  This is
          *   the value inherited from the Geodesic object used in the constructor.
          **********************************************************************/
-        public double MajorRadius()
-        { return Init() ? _a : Double.NaN; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double MajorRadius() => Init ? _a : Double.NaN;
 
         /**
          * @return <i>f</i> the flattening of the ellipsoid.  This is the value
          *   inherited from the Geodesic object used in the constructor.
          **********************************************************************/
-        public double Flattening()
-        { return Init() ? _f : Double.NaN; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double Flattening() => Init ? _f : Double.NaN;
 
         /**
          * @return <i>caps</i> the computational capabilities that this object was
          *   constructed with.  LATITUDE and AZIMUTH are always included.
          **********************************************************************/
-        public int Capabilities() { return _caps; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Capabilities() => _caps;
 
         /**
          * @param testcaps a set of bitor'ed {@link GeodesicMask} values.
          * @return true if the GeodesicLine object has all these capabilities.
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Capabilities(int testcaps)
         {
             testcaps &= GeodesicMask.OUT_ALL;
