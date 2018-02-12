@@ -280,9 +280,9 @@ namespace GeographicLib
             _etol2 = 0.1 * tol2_ /
                       Math.Sqrt(Math.Max(0.001, Math.Abs(_f)) *
                                  Math.Min(1.0, 1 - _f / 2) / 2);
-            if (!(GeoMath.isfinite(_a) && _a > 0))
+            if (!(GeoMath.IsFinite(_a) && _a > 0))
                 throw new GeographicErr("Equatorial radius is not positive");
-            if (!(GeoMath.isfinite(_b) && _b > 0))
+            if (!(GeoMath.IsFinite(_b) && _b > 0))
                 throw new GeographicErr("Polar semi-axis is not positive");
             _A3x = new double[nA3x_];
             _C3x = new double[nC3x_];
@@ -641,13 +641,14 @@ namespace GeographicLib
             internal GeodesicData g;
             internal double salp1, calp1, salp2, calp2;
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private void Init()
             {
                 g = new GeodesicData();
                 salp1 = calp1 = salp2 = calp2 = Double.NaN;
             }
 
-            internal static InverseData Empty
+            internal static InverseData NaN
             {
                 get
                 {
@@ -661,7 +662,7 @@ namespace GeographicLib
         private InverseData InverseInt(double lat1, double lon1,
                                        double lat2, double lon2, int outmask)
         {
-            InverseData result = InverseData.Empty;
+            InverseData result = InverseData.NaN;
             GeodesicData r = result.g;
             // Compute longitude difference (AngDiff does this carefully).  Result is
             // in [-180, 180] but -180 is only for west-going geodesics.  180 is for
@@ -1269,13 +1270,13 @@ namespace GeographicLib
          * @return <i>a</i> the equatorial radius of the ellipsoid (meters).  This is
          *   the value used in the constructor.
          **********************************************************************/
-        public double MajorRadius() { return _a; }
+        public double MajorRadius => _a;
 
         /**
          * @return <i>f</i> the  flattening of the ellipsoid.  This is the
          *   value used in the constructor.
          **********************************************************************/
-        public double Flattening() { return _f; }
+        public double Flattening => _f;
 
         /**
          * @return total area of ellipsoid in meters<sup>2</sup>.  The area of a
@@ -1288,8 +1289,9 @@ namespace GeographicLib
          * A global instantiation of Geodesic with the parameters for the WGS84
          * ellipsoid.
          **********************************************************************/
-        public static readonly Geodesic WGS84 =
-    new Geodesic(Constants.WGS84_a, Constants.WGS84_f);
+        private static readonly Lazy<Geodesic> _wgs84 = new Lazy<Geodesic>(() => new Geodesic(Constants.WGS84_a, Constants.WGS84_f), true);
+
+        public static Geodesic WGS84 => _wgs84.Value;
 
         // This is a reformulation of the geodesic problem.  The notation is as
         // follows:
@@ -1341,11 +1343,14 @@ namespace GeographicLib
         internal struct LengthsV
         {
             internal double s12b, m12b, m0, M12, M21;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private void Init()
             {
                 s12b = m12b = m0 = M12 = M21 = Double.NaN;
             }
-            internal static LengthsV Empty
+
+            internal static LengthsV NaN
             {
                 get
                 {
@@ -1367,7 +1372,7 @@ namespace GeographicLib
             // Return m12b = (reduced length)/_b; also calculate s12b = distance/_b,
             // and m0 = coefficient of secular term in expression for reduced length.
             outmask &= GeodesicMask.OUT_MASK;
-            LengthsV v = LengthsV.Empty; // To hold s12b, m12b, m0, M12, M21;
+            LengthsV v = LengthsV.NaN; // To hold s12b, m12b, m0, M12, M21;
 
             double m0x = 0, J12 = 0, A1 = 0, A2 = 0;
             if ((outmask & (GeodesicMask.DISTANCE | GeodesicMask.REDUCEDLENGTH |
@@ -1494,12 +1499,13 @@ namespace GeographicLib
               // Only updated for short lines
               dnm;
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private void Init()
             {
                 sig12 = salp1 = calp1 = salp2 = calp2 = dnm = Double.NaN;
             }
 
-            internal static InverseStartV Empty
+            internal static InverseStartV NaN
             {
                 get
                 {
@@ -1522,7 +1528,7 @@ namespace GeographicLib
             // salp2 and calp2 and function value is sig12.
 
             // To hold sig12, salp1, calp1, salp2, calp2, dnm.
-            InverseStartV w = InverseStartV.Empty;
+            InverseStartV w = InverseStartV.NaN;
             w.sig12 = -1;               // Return value
             double
               // bet12 = bet2 - bet1 in [0, pi); bet12a = bet2 + bet1 in (-pi, 0]
@@ -1697,13 +1703,15 @@ namespace GeographicLib
         {
             internal double lam12, salp2, calp2, sig12, ssig1, csig1, ssig2, csig2,
               eps, domg12, dlam12;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private void Init()
             {
                 lam12 = salp2 = calp2 = sig12 = ssig1 = csig1 = ssig2 = csig2
                   = eps = domg12 = dlam12 = Double.NaN;
             }
 
-            internal static Lambda12V Empty
+            internal static Lambda12V NaN
             {
                 get
                 {
@@ -1725,7 +1733,7 @@ namespace GeographicLib
             // Object to hold lam12, salp2, calp2, sig12, ssig1, csig1, ssig2, csig2,
             // eps, domg12, dlam12;
 
-            Lambda12V w = Lambda12V.Empty;
+            Lambda12V w = Lambda12V.NaN;
 
             if (sbet1 == 0 && calp1 == 0)
                 // Break degeneracy of equatorial line.  This case has already been

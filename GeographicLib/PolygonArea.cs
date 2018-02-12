@@ -404,13 +404,13 @@ namespace GeographicLib
          *   the value inherited from the Geodesic object used in the constructor.
          **********************************************************************/
 
-        public double MajorRadius() { return _earth.MajorRadius(); }
+        public double MajorRadius => _earth.MajorRadius;
 
         /**
          * @return <i>f</i> the flattening of the ellipsoid.  This is the value
          *   inherited from the Geodesic object used in the constructor.
          **********************************************************************/
-        public double Flattening() { return _earth.Flattening(); }
+        public double Flattening => _earth.Flattening;
 
         /**
          * Report the previous vertex added to the polygon or polyline.

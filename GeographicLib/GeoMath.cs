@@ -310,8 +310,19 @@ namespace GeographicLib
             // converting it to degrees and mapping the result to the correct
             // quadrant.
             int q = 0;
-            if (Math.Abs(y) > Math.Abs(x)) { double t; t = x; x = y; y = t; q = 2; }
-            if (x < 0) { x = -x; ++q; }
+            if (Math.Abs(y) > Math.Abs(x))
+            {
+                double t;
+                t = x;
+                x = y;
+                y = t;
+                q = 2;
+            }
+            if (x < 0)
+            {
+                x = -x;
+                ++q;
+            }
             // here x >= 0 and x >= abs(y), so angle is in [-pi/4, pi/4]
             double ang = ToDegrees(Math.Atan2(y, x));
             switch (q)
@@ -336,7 +347,7 @@ namespace GeographicLib
          * @return true if number is finite, false if NaN or infinite.
          **********************************************************************/
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool isfinite(double x) =>
+        public static bool IsFinite(double x) =>
             Math.Abs(x) <= Double.MaxValue;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

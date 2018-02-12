@@ -153,8 +153,8 @@ namespace GeographicLib
         public Gnomonic(Geodesic earth)
         {
             _earth = earth;
-            _a = _earth.MajorRadius();
-            _f = _earth.Flattening();
+            _a = _earth.MajorRadius;
+            _f = _earth.Flattening;
         }
 
         /**

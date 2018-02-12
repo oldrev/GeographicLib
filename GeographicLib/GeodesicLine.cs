@@ -452,12 +452,11 @@ namespace GeographicLib
         {
             outmask &= _caps & GeodesicMask.OUT_MASK;
             GeodesicData r = new GeodesicData();
-            if (!(Init() &&
-                   (arcmode ||
-                    (_caps & (GeodesicMask.OUT_MASK & GeodesicMask.DISTANCE_IN)) != 0)
-                   ))
+            if (!(Init && (arcmode || (_caps & (GeodesicMask.OUT_MASK & GeodesicMask.DISTANCE_IN)) != 0)))
+            {
                 // Uninitialized or impossible distance calculation requested
                 return r;
+            }
             r.lat1 = _lat1; r.azi1 = _azi1;
             r.lon1 = ((outmask & GeodesicMask.LONG_UNROLL) != 0) ? _lon1 :
               GeoMath.AngNormalize(_lon1);
@@ -637,6 +636,7 @@ namespace GeographicLib
          * This is only useful if the GeodesicLine object has been constructed
          * with <i>caps</i> |= {@link GeodesicMask#DISTANCE_IN}.
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetDistance(double s13)
         {
             _s13 = s13;
@@ -653,6 +653,7 @@ namespace GeographicLib
          * The distance <i>s13</i> is only set if the GeodesicLine object has been
          * constructed with <i>caps</i> |= {@link GeodesicMask#DISTANCE}.
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void SetArc(double a13)
         {
             _a13 = a13;
@@ -671,6 +672,7 @@ namespace GeographicLib
          *   point 1 to point 3 (meters); otherwise it is the arc length from
          *   point 1 to point 3 (degrees); it can be negative.
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GenSetDistance(bool arcmode, double s13_a13)
         {
             if (arcmode)
@@ -682,90 +684,82 @@ namespace GeographicLib
         /**
          * @return true if the object has been initialized.
          **********************************************************************/
-        private bool Init() { return _caps != 0; }
+        private bool Init => _caps != 0;
 
         /**
          * @return <i>lat1</i> the latitude of point 1 (degrees).
          **********************************************************************/
-        public double Latitude()
-        { return Init() ? _lat1 : Double.NaN; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double Latitude() => Init ? _lat1 : double.NaN;
 
         /**
          * @return <i>lon1</i> the longitude of point 1 (degrees).
          **********************************************************************/
-        public double Longitude()
-        { return Init() ? _lon1 : Double.NaN; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double Longitude() => Init ? _lon1 : double.NaN;
 
         /**
          * @return <i>azi1</i> the azimuth (degrees) of the geodesic line at point 1.
          **********************************************************************/
-        public double Azimuth()
-        { return Init() ? _azi1 : Double.NaN; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double Azimuth() => Init ? _azi1 : double.NaN;
 
         /**
          * @return pair of sine and cosine of <i>azi1</i> the azimuth (degrees) of
          *   the geodesic line at point 1.
          **********************************************************************/
-        public Pair AzimuthCosines()
-        {
-            return new Pair(Init() ? _salp1 : Double.NaN,
-                            Init() ? _calp1 : Double.NaN);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Pair AzimuthCosines() =>
+            new Pair(Init ? _salp1 : Double.NaN, Init ? _calp1 : Double.NaN);
 
         /**
          * @return <i>azi0</i> the azimuth (degrees) of the geodesic line as it
          *   crosses the equator in a northward direction.
          **********************************************************************/
-        public double EquatorialAzimuth()
-        {
-            return Init() ?
-              GeoMath.Atan2d(_salp0, _calp0) : Double.NaN;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double EquatorialAzimuth() =>
+            Init ? GeoMath.Atan2d(_salp0, _calp0) : Double.NaN;
 
         /**
          * @return pair of sine and cosine of <i>azi0</i> the azimuth of the geodesic
          *   line as it crosses the equator in a northward direction.
          **********************************************************************/
-        public Pair EquatorialAzimuthCosines()
-        {
-            return new Pair(Init() ? _salp0 : Double.NaN,
-                            Init() ? _calp0 : Double.NaN);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Pair EquatorialAzimuthCosines() =>
+            new Pair(Init ? _salp0 : Double.NaN, Init ? _calp0 : Double.NaN);
 
         /**
          * @return <i>a1</i> the arc length (degrees) between the northward
          *   equatorial crossing and point 1.
          **********************************************************************/
-        public double EquatorialArc()
-        {
-            return Init() ?
-              GeoMath.Atan2d(_ssig1, _csig1) : Double.NaN;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double EquatorialArc() =>
+            Init ? GeoMath.Atan2d(_ssig1, _csig1) : double.NaN;
 
         /**
          * @return <i>a</i> the equatorial radius of the ellipsoid (meters).  This is
          *   the value inherited from the Geodesic object used in the constructor.
          **********************************************************************/
-        public double MajorRadius()
-        { return Init() ? _a : Double.NaN; }
+        public double MajorRadius => Init ? _a : double.NaN;
 
         /**
          * @return <i>f</i> the flattening of the ellipsoid.  This is the value
          *   inherited from the Geodesic object used in the constructor.
          **********************************************************************/
-        public double Flattening()
-        { return Init() ? _f : Double.NaN; }
+        public double Flattening => Init ? _f : double.NaN;
 
         /**
          * @return <i>caps</i> the computational capabilities that this object was
          *   constructed with.  LATITUDE and AZIMUTH are always included.
          **********************************************************************/
-        public int Capabilities() { return _caps; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Capabilities() => _caps;
 
         /**
          * @param testcaps a set of bitor'ed {@link GeodesicMask} values.
          * @return true if the GeodesicLine object has all these capabilities.
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Capabilities(int testcaps)
         {
             testcaps &= GeodesicMask.OUT_ALL;
@@ -780,18 +774,20 @@ namespace GeographicLib
          * @return <i>s13</i> if <i>arcmode</i> is false; <i>a13</i> if
          *   <i>arcmode</i> is true.
          **********************************************************************/
-        public double GenDistance(bool arcmode)
-        { return Init() ? (arcmode ? _a13 : _s13) : Double.NaN; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double GenDistance(bool arcmode) => Init ? (arcmode ? _a13 : _s13) : double.NaN;
 
         /**
          * @return <i>s13</i>, the distance to point 3 (meters).
          **********************************************************************/
-        public double Distance() { return GenDistance(false); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double Distance() => GenDistance(false);
 
         /**
          * @return <i>a13</i>, the arc length to point 3 (degrees).
          **********************************************************************/
-        public double Arc() { return GenDistance(true); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double Arc() => GenDistance(true);
 
     }
 
