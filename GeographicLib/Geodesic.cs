@@ -204,7 +204,7 @@ namespace GeographicLib
      *   }
      * }}</pre>
      **********************************************************************/
-    public class Geodesic
+    public sealed class Geodesic
     {
 
         /**
@@ -636,21 +636,32 @@ namespace GeographicLib
             return Inverse(lat1, lon1, lat2, lon2, GeodesicMask.STANDARD);
         }
 
-        internal class InverseData
+        internal struct InverseData
         {
             internal GeodesicData g;
             internal double salp1, calp1, salp2, calp2;
-            internal InverseData()
+
+            private void Init()
             {
                 g = new GeodesicData();
                 salp1 = calp1 = salp2 = calp2 = Double.NaN;
+            }
+
+            internal static InverseData Empty
+            {
+                get
+                {
+                    var self = new InverseData();
+                    self.Init();
+                    return self;
+                }
             }
         }
 
         private InverseData InverseInt(double lat1, double lon1,
                                        double lat2, double lon2, int outmask)
         {
-            InverseData result = new InverseData();
+            InverseData result = InverseData.Empty;
             GeodesicData r = result.g;
             // Compute longitude difference (AngDiff does this carefully).  Result is
             // in [-180, 180] but -180 is only for west-going geodesics.  180 is for
@@ -1327,12 +1338,21 @@ namespace GeographicLib
               : cosx * (y0 - y1);       // cos(x) * (y0 - y1)
         }
 
-        internal class LengthsV
+        internal struct LengthsV
         {
             internal double s12b, m12b, m0, M12, M21;
-            internal LengthsV()
+            private void Init()
             {
                 s12b = m12b = m0 = M12 = M21 = Double.NaN;
+            }
+            internal static LengthsV Empty
+            {
+                get
+                {
+                    var self = new LengthsV();
+                    self.Init();
+                    return self;
+                }
             }
         }
 
@@ -1347,7 +1367,7 @@ namespace GeographicLib
             // Return m12b = (reduced length)/_b; also calculate s12b = distance/_b,
             // and m0 = coefficient of secular term in expression for reduced length.
             outmask &= GeodesicMask.OUT_MASK;
-            LengthsV v = new LengthsV(); // To hold s12b, m12b, m0, M12, M21;
+            LengthsV v = LengthsV.Empty; // To hold s12b, m12b, m0, M12, M21;
 
             double m0x = 0, J12 = 0, A1 = 0, A2 = 0;
             if ((outmask & (GeodesicMask.DISTANCE | GeodesicMask.REDUCEDLENGTH |
@@ -1466,16 +1486,27 @@ namespace GeographicLib
             return k;
         }
 
-        internal class InverseStartV
+        internal struct InverseStartV
         {
             internal double sig12, salp1, calp1,
               // Only updated if return val >= 0
               salp2, calp2,
               // Only updated for short lines
               dnm;
-            internal InverseStartV()
+
+            private void Init()
             {
                 sig12 = salp1 = calp1 = salp2 = calp2 = dnm = Double.NaN;
+            }
+
+            internal static InverseStartV Empty
+            {
+                get
+                {
+                    var self = new InverseStartV();
+                    self.Init();
+                    return self;
+                }
             }
         }
 
@@ -1491,7 +1522,7 @@ namespace GeographicLib
             // salp2 and calp2 and function value is sig12.
 
             // To hold sig12, salp1, calp1, salp2, calp2, dnm.
-            InverseStartV w = new InverseStartV();
+            InverseStartV w = InverseStartV.Empty;
             w.sig12 = -1;               // Return value
             double
               // bet12 = bet2 - bet1 in [0, pi); bet12a = bet2 + bet1 in (-pi, 0]
@@ -1662,14 +1693,24 @@ namespace GeographicLib
             return w;
         }
 
-        internal class Lambda12V
+        internal struct Lambda12V
         {
             internal double lam12, salp2, calp2, sig12, ssig1, csig1, ssig2, csig2,
               eps, domg12, dlam12;
-            internal Lambda12V()
+            private void Init()
             {
                 lam12 = salp2 = calp2 = sig12 = ssig1 = csig1 = ssig2 = csig2
                   = eps = domg12 = dlam12 = Double.NaN;
+            }
+
+            internal static Lambda12V Empty
+            {
+                get
+                {
+                    var self = new Lambda12V();
+                    self.Init();
+                    return self;
+                }
             }
         }
 
@@ -1684,7 +1725,7 @@ namespace GeographicLib
             // Object to hold lam12, salp2, calp2, sig12, ssig1, csig1, ssig2, csig2,
             // eps, domg12, dlam12;
 
-            Lambda12V w = new Lambda12V();
+            Lambda12V w = Lambda12V.Empty;
 
             if (sbet1 == 0 && calp1 == 0)
                 // Break degeneracy of equatorial line.  This case has already been

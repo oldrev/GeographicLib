@@ -94,7 +94,7 @@ namespace GeographicLib
      *   }
      * }}</pre>
      **********************************************************************/
-    public class GeodesicLine
+    public sealed class GeodesicLine
     {
 
         private static readonly int nC1_ = Geodesic.nC1_;

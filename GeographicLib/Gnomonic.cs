@@ -136,12 +136,13 @@ namespace GeographicLib
      * </pre>
      */
 
-    public class Gnomonic
+    public readonly struct Gnomonic
     {
         private static readonly double eps_ = 0.01 * Math.Sqrt(GeoMath.Epsilon);
         private const int numit_ = 10;
-        private Geodesic _earth;
-        private double _a, _f;
+
+        private readonly Geodesic _earth;
+        private readonly double _a, _f;
 
         /**
          * Constructor for Gnomonic.
@@ -281,13 +282,13 @@ namespace GeographicLib
          * @return <i>a</i> the equatorial radius of the ellipsoid (meters).  This is
          *   the value inherited from the Geodesic object used in the constructor.
          **********************************************************************/
-        public double MajorRadius() { return _a; }
+        public double MajorRadius() => _a;
 
         /**
          * @return <i>f</i> the  flattening of the ellipsoid.  This is
          *   the value inherited from the Geodesic object used in the constructor.
          **********************************************************************/
-        public double Flattening() { return _f; }
+        public double Flattening() => _f;
     }
 
 }

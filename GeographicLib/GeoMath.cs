@@ -54,6 +54,7 @@ namespace GeographicLib
          * @param y the second argument.
          * @return sqrt(<i>x</i><sup>2</sup> + <i>y</i><sup>2</sup>).
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Hypot(double x, double y)
         {
             x = Math.Abs(x); y = Math.Abs(y);
@@ -77,6 +78,7 @@ namespace GeographicLib
          * @param x the argument.
          * @return log(1 + <i>x</i>).
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Log1p(double x)
         {
             double
@@ -97,6 +99,7 @@ namespace GeographicLib
          * @param x the argument.
          * @return atanh(<i>x</i>).
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Atanh(double x)
         {
             double y = Math.Abs(x);     // Enforce odd parity
@@ -112,6 +115,7 @@ namespace GeographicLib
          * @return value with the magnitude of <i>x</i> and with the sign of
          *   <i>y</i>.
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double CopySign(double x, double y)
         {
             return Math.Abs(x) * (y < 0 || (y == 0 && 1 / y < 0) ? -1 : 1);
@@ -124,12 +128,14 @@ namespace GeographicLib
          * @param x the argument.
          * @return the real cube root of <i>x</i>.
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Cbrt(double x)
         {
             double y = Math.Pow(Math.Abs(x), 1 / 3.0); // Return the real cube root
             return x < 0 ? -y : y;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Pair Norm(double sinx, double cosx)
         {
             double r = Hypot(sinx, cosx);
@@ -146,6 +152,7 @@ namespace GeographicLib
          * <p>
          * See D. E. Knuth, TAOCP, Vol 2, 4.2.2, Theorem B.
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Pair Sum(double u, double v)
         {
             double s = u + v;
@@ -174,6 +181,7 @@ namespace GeographicLib
          * Return <i>p</i><sub><i>s</i></sub>, if <i>N</i> = 0 (even if <i>x</i> is
          * infinite or a nan).  The evaluation uses Horner's method.
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Polyval(int N, double[] p, int s, double x)
         {
             double y = N < 0 ? 0 : p[s++];
@@ -181,6 +189,7 @@ namespace GeographicLib
             return y;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double AngRound(double x)
         {
             // The makes the smallest gap in x = 1/16 - nextafter(1/16, 0) = 1/2^57
@@ -205,6 +214,7 @@ namespace GeographicLib
          * <p>
          * The range of <i>x</i> is unrestricted.
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double AngNormalize(double x)
         {
             x = x % 360.0;
@@ -218,6 +228,7 @@ namespace GeographicLib
          * @return x if it is in the range [&minus;90&deg;, 90&deg;], otherwise
          *   return NaN.
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LatFix(double x)
         {
             return Math.Abs(x) > 90 ? Double.NaN : x;
@@ -237,6 +248,7 @@ namespace GeographicLib
          * <i>e</i> is the truncation error.  If <i>d</i> = &minus;180, then <i>e</i>
          * &gt; 0; If <i>d</i> = 180, then <i>e</i> &le; 0.
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Pair AngDiff(double x, double y)
         {
             double d, t;
@@ -325,12 +337,15 @@ namespace GeographicLib
          * @param x the argument.
          * @return true if number is finite, false if NaN or infinite.
          **********************************************************************/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool isfinite(double x) =>
             Math.Abs(x) <= Double.MaxValue;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double ToDegrees(double r) =>
             180.0 / Math.PI * r;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double ToRadians(double d) =>
             Math.PI / 180.0 * d;
 

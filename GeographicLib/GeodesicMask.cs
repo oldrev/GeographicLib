@@ -20,7 +20,7 @@ namespace GeographicLib
      * Geodesic#Line(double, double, double, int) Geodesic.Line} what capabilities
      * should be included in the {@link GeodesicLine} object.
      **********************************************************************/
-    public class GeodesicMask
+    public static class GeodesicMask
     {
         internal const int CAP_NONE = 0;
         internal const int CAP_C1 = 1 << 0;
