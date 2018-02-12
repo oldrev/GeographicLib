@@ -18,12 +18,6 @@ artifacts:
 deploy:
   - provider: NuGet
     on:
-      branch: dev
-    server: https://www.myget.org/F/maltreport/api/v2/package
-    skip_symbols: true
-    artifact: /.*\.nupkg/
-  - provider: NuGet
-    on:
       branch: master
     server: https://www.nuget.org/api/v2/package
     api_key:
