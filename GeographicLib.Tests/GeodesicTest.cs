@@ -6,25 +6,15 @@ namespace GeographicLib.Tests
 {
     public class GeodesicTest
     {
-        private static bool doubleIsDifferent(double d1, double d2, double delta)
-        {
-            if (d1.CompareTo(d2) == 0)
-            {
-                return false;
-            }
-            if ((Math.Abs(d1 - d2) <= delta))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
         private static bool isNaN(double x) => double.IsNaN(x);
+
         private static readonly PolygonArea polygon = new PolygonArea(Geodesic.WGS84, false);
+
         private static readonly PolygonArea polyline = new PolygonArea(Geodesic.WGS84, true);
+
         private static void assertEquals(double expected, double value, double delta) =>
-            Assert.False(doubleIsDifferent(expected, value, delta));
+           Assert.InRange(value, expected - delta, expected + delta);
+
 
         private static PolygonResult Planimeter(double[][] points)
         {
