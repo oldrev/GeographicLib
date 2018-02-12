@@ -10,15 +10,13 @@ using System.Runtime.CompilerServices;
 
 namespace GeographicLib
 {
-
-
-
-    /**
-     * Mathematical functions needed by GeographicLib.
-     * <p>
-     * Define mathematical functions and constants so that any version of Java
-     * can be used.
-     **********************************************************************/
+    /// <summary>
+    /// Mathematical functions needed by GeographicLib.
+    /// </summary>
+    /// <para>
+    /// Define mathematical functions and constants so that any version of Java
+    /// can be used.
+    /// </para>
     public static class GeoMath
     {
         /**

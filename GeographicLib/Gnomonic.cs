@@ -282,13 +282,13 @@ namespace GeographicLib
          * @return <i>a</i> the equatorial radius of the ellipsoid (meters).  This is
          *   the value inherited from the Geodesic object used in the constructor.
          **********************************************************************/
-        public double MajorRadius() => _a;
+        public double MajorRadius => _a;
 
         /**
          * @return <i>f</i> the  flattening of the ellipsoid.  This is
          *   the value inherited from the Geodesic object used in the constructor.
          **********************************************************************/
-        public double Flattening() => _f;
+        public double Flattening => _f;
     }
 
 }

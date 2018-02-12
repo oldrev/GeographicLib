@@ -61,7 +61,7 @@ namespace GeographicLib
      *   }
      * }}</pre>
      **********************************************************************/
-    public class PolygonArea
+    public sealed class PolygonArea
     {
 
         private Geodesic _earth;
@@ -72,6 +72,7 @@ namespace GeographicLib
         private int _crossings;
         private Accumulator _areasum, _perimetersum;
         private double _lat0, _lon0, _lat1, _lon1;
+
         private static int transit(double lon1, double lon2)
         {
             // Return 1 or -1 if crossing prime meridian in east or west direction.
@@ -85,6 +86,7 @@ namespace GeographicLib
               (lon2 <= 0 && lon1 > 0 && lon12 < 0 ? -1 : 0);
             return cross;
         }
+
         // an alternate version of transit to deal with longitudes in the direct
         // problem.
         private static int transitdirect(double lon1, double lon2)

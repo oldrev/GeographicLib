@@ -28,35 +28,35 @@ namespace GeographicLib
         /**
          * latitude of center point of projection (degrees).
          **********************************************************************/
-        public double lat0;
+        public double lat0 { get; set; }
         /**
          * longitude of center point of projection (degrees).
          **********************************************************************/
-        public double lon0;
+        public double lon0 { get; set; }
         /**
          * latitude of point (degrees).
          **********************************************************************/
-        public double lat;
+        public double lat { get; set; }
         /**
          * longitude of point (degrees).
          **********************************************************************/
-        public double lon;
+        public double lon { get; set; }
         /**
          * easting of point (meters).
          **********************************************************************/
-        public double x;
+        public double x { get; set; }
         /**
          * northing of point (meters).
          **********************************************************************/
-        public double y;
+        public double y { get; set; }
         /**
          * azimuth of geodesic at point (degrees).
          **********************************************************************/
-        public double azi;
+        public double azi { get; set; }
         /**
          * reciprocal of azimuthal scale at point.
          **********************************************************************/
-        public double rk;
+        public double rk { get; set; }
 
         /**
          * Initialize all the fields to Double.NaN.
