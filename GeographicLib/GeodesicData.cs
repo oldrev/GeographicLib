@@ -25,62 +25,62 @@ namespace GeographicLib
         /// <summary>
         /// latitude of point 1 (degrees).
         /// </summary>
-        public double lat1;
+        public double lat1 { get; set; }
 
         /// <summary>
         /// longitude of point 1 (degrees).
         /// </summary>
-        public double lon1;
+        public double lon1 { get; set; }
 
         /// <summary>
         /// azimuth at point 1 (degrees).
         /// </summary>
-        public double azi1;
+        public double azi1 { get; set; }
 
         /// <summary>
         /// latitude of point 2 (degrees).
         /// </summary>
-        public double lat2;
+        public double lat2 { get; set; }
 
         /// <summary>
         /// longitude of point 2 (degrees).
         /// </summary>
-        public double lon2;
+        public double lon2 { get; set; }
 
         /// <summary>
         /// azimuth at point 2 (degrees).
         /// </summary>
-        public double azi2;
+        public double azi2 { get; set; }
 
         /// <summary>
         /// distance between point 1 and point 2 (meters).
         /// </summary>
-        public double s12;
+        public double s12 { get; set; }
 
         /// <summary>
         /// arc length on the auxiliary sphere between point 1 and point 2 (degrees).
         /// </summary>
-        public double a12;
+        public double a12 { get; set; }
 
         /// <summary>
         /// reduced length of geodesic (meters).
         /// </summary>
-        public double m12;
+        public double m12 { get; set; }
 
         /// <summary>
         /// geodesic scale of point 2 relative to point 1 (dimensionless).
         /// </summary>
-        public double M12;
+        public double M12 { get; set; }
 
         /// <summary>
         /// geodesic scale of point 1 relative to point 2 (dimensionless).
         /// </summary>
-        public double M21;
+        public double M21 { get; set; }
 
         /// <summary>
         /// Area under the geodesic (meters<sup>2</sup>).
         /// </summary>
-        public double S12;
+        public double S12 { get; set; }
 
         /// <summary>
         /// Initialize all the fields to Double.NaN.

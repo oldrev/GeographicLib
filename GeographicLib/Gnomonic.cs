@@ -13,8 +13,7 @@ using System.Text;
 namespace GeographicLib
 {
 
-    /**
-     * Gnomonic projection.
+    /*
      * <p>
      * <i>Note: Gnomonic.java has been ported to Java from its C++ equivalent
      * Gnomonic.cpp, authored by C. F. F. Karney and licensed under MIT/X11
@@ -136,25 +135,24 @@ namespace GeographicLib
      * </pre>
      */
 
+    /// <summary>
+    /// Gnomonic projection.
+    /// </summary>
     public readonly struct Gnomonic
     {
         private static readonly double eps_ = 0.01 * Math.Sqrt(GeoMath.Epsilon);
         private const int numit_ = 10;
 
-        private readonly Geodesic _earth;
-        private readonly double _a, _f;
+        public Geodesic Earth { get; }
 
-        /**
-         * Constructor for Gnomonic.
-         * <p>
-         * @param earth the {@link Geodesic} object to use for geodesic
-         *   calculations.
-         */
+        /// <summary>
+        /// Constructor for Gnomonic.
+        /// </summary>
+        /// <param name="earth">earth the <see cref="GeographicLib.Geodesic"/> object to use for geodesic calculations
+        /// </param>
         public Gnomonic(Geodesic earth)
         {
-            _earth = earth;
-            _a = _earth.MajorRadius;
-            _f = _earth.Flattening;
+            this.Earth = earth;
         }
 
         /**
@@ -181,23 +179,22 @@ namespace GeographicLib
          */
         public GnomonicData Forward(double lat0, double lon0, double lat, double lon)
         {
-            GeodesicData inv =
-              _earth.Inverse(lat0, lon0, lat, lon,
-                             GeodesicMask.AZIMUTH | GeodesicMask.GEODESICSCALE |
-                             GeodesicMask.REDUCEDLENGTH);
-            GnomonicData fwd =
-              new GnomonicData(lat0, lon0, lat, lon, Double.NaN, Double.NaN,
-                               inv.azi2, inv.M12);
+            GeodesicData inv = Earth.Inverse(
+                lat0, lon0, lat, lon,
+                GeodesicMask.AZIMUTH | GeodesicMask.GEODESICSCALE | GeodesicMask.REDUCEDLENGTH);
 
             if (inv.M12 > 0)
             {
-                double rho = inv.m12 / inv.M12;
-                Pair p = GeoMath.Sincosd(inv.azi1);
-                fwd.x = rho * p.First;
-                fwd.y = rho * p.Second;
+                var rho = inv.m12 / inv.M12;
+                var p = GeoMath.Sincosd(inv.azi1);
+                var x = rho * p.First;
+                var y = rho * p.Second;
+                return new GnomonicData(lat0, lon0, lat, lon, x, y, inv.azi2, inv.M12);
             }
-
-            return fwd;
+            else
+            {
+                return new GnomonicData(lat0, lon0, lat, lon, Double.NaN, Double.NaN, inv.azi2, inv.M12);
+            }
         }
 
         /**
@@ -226,20 +223,19 @@ namespace GeographicLib
          */
         public GnomonicData Reverse(double lat0, double lon0, double x, double y)
         {
-            GnomonicData rev =
-              new GnomonicData(lat0, lon0, Double.NaN, Double.NaN, x, y, Double.NaN,
-                               Double.NaN);
 
-            double azi0 = GeoMath.Atan2d(x, y);
-            double rho = GeoMath.Hypot(x, y);
-            double s = _a * Math.Atan(rho / _a);
-            bool little = rho <= _a;
+            var azi0 = GeoMath.Atan2d(x, y);
+            var rho = GeoMath.Hypot(x, y);
+            var s = this.MajorRadius * Math.Atan(rho / this.MajorRadius);
+            var little = rho <= this.MajorRadius;
 
             if (!little)
+            {
                 rho = 1 / rho;
+            }
 
-            GeodesicLine line =
-              _earth.Line(lat0, lon0, azi0, GeodesicMask.LATITUDE
+            var line =
+              Earth.Line(lat0, lon0, azi0, GeodesicMask.LATITUDE
                           | GeodesicMask.LONGITUDE | GeodesicMask.AZIMUTH
                           | GeodesicMask.DISTANCE_IN | GeodesicMask.REDUCEDLENGTH
                           | GeodesicMask.GEODESICSCALE);
@@ -249,46 +245,48 @@ namespace GeographicLib
 
             while (count-- > 0)
             {
-                pos =
-                  line.Position(s, GeodesicMask.LONGITUDE | GeodesicMask.LATITUDE
+                pos = line.Position(s, 
+                                  GeodesicMask.LONGITUDE | GeodesicMask.LATITUDE
                                 | GeodesicMask.AZIMUTH | GeodesicMask.DISTANCE_IN
                                 | GeodesicMask.REDUCEDLENGTH
                                 | GeodesicMask.GEODESICSCALE);
 
                 if (trip > 0)
+                {
                     break;
+                }
 
-                double ds =
-                  little ? ((pos.m12 / pos.M12) - rho) * pos.M12 * pos.M12
-                  : (rho - (pos.M12 / pos.m12)) * pos.m12 * pos.m12;
+                double ds = little ? ((pos.m12 / pos.M12) - rho) * pos.M12 * pos.M12 
+                    : (rho - (pos.M12 / pos.m12)) * pos.m12 * pos.m12;
                 s -= ds;
 
-                if (Math.Abs(ds) <= eps_ * _a)
+                if (Math.Abs(ds) <= eps_ * this.MajorRadius)
+                {
                     trip++;
+                }
             }
 
             if (trip == 0)
-                return rev;
-
-            rev.lat = pos.lat2;
-            rev.lon = pos.lon2;
-            rev.azi = pos.azi2;
-            rev.rk = pos.M12;
-
-            return rev;
+            {
+                return new GnomonicData(lat0, lon0, Double.NaN, Double.NaN, x, y, Double.NaN, Double.NaN);
+            }
+            else
+            {
+                return new GnomonicData(lat0, lon0, pos.lat2, pos.lon2, x, y, pos.azi2, pos.M12);
+            }
         }
 
         /**
          * @return <i>a</i> the equatorial radius of the ellipsoid (meters).  This is
          *   the value inherited from the Geodesic object used in the constructor.
          **********************************************************************/
-        public double MajorRadius => _a;
+        public double MajorRadius => this.Earth.MajorRadius;
 
         /**
          * @return <i>f</i> the  flattening of the ellipsoid.  This is
          *   the value inherited from the Geodesic object used in the constructor.
          **********************************************************************/
-        public double Flattening => _f;
+        public double Flattening => this.Earth.Flattening;
     }
 
 }

@@ -23,48 +23,40 @@ namespace GeographicLib
      * and it always includes the fields <i>x</i>, <i>y</i>, <i>azi</i>. and
      * <i>rk</i>.
      **********************************************************************/
-    public sealed class GnomonicData
+    public readonly struct GnomonicData
     {
         /**
          * latitude of center point of projection (degrees).
          **********************************************************************/
-        public double lat0 { get; set; }
+        public double lat0 { get; }
         /**
          * longitude of center point of projection (degrees).
          **********************************************************************/
-        public double lon0 { get; set; }
+        public double lon0 { get; }
         /**
          * latitude of point (degrees).
          **********************************************************************/
-        public double lat { get; set; }
+        public double lat { get; }
         /**
          * longitude of point (degrees).
          **********************************************************************/
-        public double lon { get; set; }
+        public double lon { get; }
         /**
          * easting of point (meters).
          **********************************************************************/
-        public double x { get; set; }
+        public double x { get; }
         /**
          * northing of point (meters).
          **********************************************************************/
-        public double y { get; set; }
+        public double y { get; }
         /**
          * azimuth of geodesic at point (degrees).
          **********************************************************************/
-        public double azi { get; set; }
+        public double azi { get; }
         /**
          * reciprocal of azimuthal scale at point.
          **********************************************************************/
-        public double rk { get; set; }
-
-        /**
-         * Initialize all the fields to Double.NaN.
-         **********************************************************************/
-        public GnomonicData()
-        {
-            lat0 = lon0 = lat = lon = x = y = azi = rk = Double.NaN;
-        }
+        public double rk { get; }
 
         /**
          * Constructor initializing all the fields for gnomonic projection of a point
@@ -88,8 +80,8 @@ namespace GeographicLib
          * @param rk
          *          reciprocal of azimuthal scale at point.
          */
-        public GnomonicData(double lat0, double lon0, double lat, double lon,
-            double x, double y, double azi, double rk)
+        public GnomonicData(double lat0 = double.NaN, double lon0 = double.NaN, double lat = double.NaN, double lon = double.NaN,
+            double x = double.NaN, double y = double.NaN, double azi = double.NaN, double rk = double.NaN)
         {
             this.lat0 = lat0;
             this.lon0 = lon0;
