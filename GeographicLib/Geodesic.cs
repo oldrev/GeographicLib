@@ -210,21 +210,21 @@ namespace GeographicLib
         /**
          * The order of the expansions used by Geodesic.
          **********************************************************************/
-        internal static readonly int GEOGRAPHICLIB_GEODESIC_ORDER = 6;
+        internal const int GEOGRAPHICLIB_GEODESIC_ORDER = 6;
 
-        internal static readonly int nA1_ = GEOGRAPHICLIB_GEODESIC_ORDER;
-        internal static readonly int nC1_ = GEOGRAPHICLIB_GEODESIC_ORDER;
-        internal static readonly int nC1p_ = GEOGRAPHICLIB_GEODESIC_ORDER;
-        internal static readonly int nA2_ = GEOGRAPHICLIB_GEODESIC_ORDER;
-        internal static readonly int nC2_ = GEOGRAPHICLIB_GEODESIC_ORDER;
-        internal static readonly int nA3_ = GEOGRAPHICLIB_GEODESIC_ORDER;
-        internal static readonly int nA3x_ = nA3_;
-        internal static readonly int nC3_ = GEOGRAPHICLIB_GEODESIC_ORDER;
-        internal static readonly int nC3x_ = (nC3_ * (nC3_ - 1)) / 2;
-        internal static readonly int nC4_ = GEOGRAPHICLIB_GEODESIC_ORDER;
-        internal static readonly int nC4x_ = (nC4_ * (nC4_ + 1)) / 2;
-        private static readonly int maxit1_ = 20;
-        private static readonly int maxit2_ = maxit1_ + GeoMath.Digits + 10;
+        internal const int nA1_ = GEOGRAPHICLIB_GEODESIC_ORDER;
+        internal const int nC1_ = GEOGRAPHICLIB_GEODESIC_ORDER;
+        internal const int nC1p_ = GEOGRAPHICLIB_GEODESIC_ORDER;
+        internal const int nA2_ = GEOGRAPHICLIB_GEODESIC_ORDER;
+        internal const int nC2_ = GEOGRAPHICLIB_GEODESIC_ORDER;
+        internal const int nA3_ = GEOGRAPHICLIB_GEODESIC_ORDER;
+        internal const int nA3x_ = nA3_;
+        internal const int nC3_ = GEOGRAPHICLIB_GEODESIC_ORDER;
+        internal const int nC3x_ = (nC3_ * (nC3_ - 1)) / 2;
+        internal const int nC4_ = GEOGRAPHICLIB_GEODESIC_ORDER;
+        internal const int nC4x_ = (nC4_ * (nC4_ + 1)) / 2;
+        private const int maxit1_ = 20;
+        private const int maxit2_ = maxit1_ + GeoMath.Digits + 10;
 
         // Underflow guard.  We require
         //   tiny_ * epsilon() > 0
@@ -638,22 +638,18 @@ namespace GeographicLib
 
         internal struct InverseData
         {
-            internal GeodesicData g;
-            internal double salp1, calp1, salp2, calp2;
+            private GeodesicData _g;
 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private void Init()
-            {
-                g = new GeodesicData();
-                salp1 = calp1 = salp2 = calp2 = Double.NaN;
-            }
+            internal GeodesicData Geodesic => _g;
+            internal double salp1, calp1, salp2, calp2;
 
             internal static InverseData NaN
             {
                 get
                 {
                     var self = new InverseData();
-                    self.Init();
+                    self._g = GeodesicData.NaN;
+                    self.salp1 = self.calp1 = self.salp2 = self.calp2 = Double.NaN;
                     return self;
                 }
             }
@@ -663,11 +659,11 @@ namespace GeographicLib
                                        double lat2, double lon2, int outmask)
         {
             InverseData result = InverseData.NaN;
-            GeodesicData r = result.g;
             // Compute longitude difference (AngDiff does this carefully).  Result is
             // in [-180, 180] but -180 is only for west-going geodesics.  180 is for
             // east-going and meridional geodesics.
-            r.lat1 = lat1 = GeoMath.LatFix(lat1); r.lat2 = lat2 = GeoMath.LatFix(lat2);
+            result.Geodesic.lat1 = lat1 = GeoMath.LatFix(lat1);
+            result.Geodesic.lat2 = lat2 = GeoMath.LatFix(lat2);
             // If really close to the equator, treat as on equator.
             lat1 = GeoMath.AngRound(lat1);
             lat2 = GeoMath.AngRound(lat2);
@@ -678,11 +674,13 @@ namespace GeographicLib
             }
             if ((outmask & GeodesicMask.LONG_UNROLL) != 0)
             {
-                r.lon1 = lon1; r.lon2 = (lon1 + lon12) + lon12s;
+                result.Geodesic.lon1 = lon1;
+                result.Geodesic.lon2 = (lon1 + lon12) + lon12s;
             }
             else
             {
-                r.lon1 = GeoMath.AngNormalize(lon1); r.lon2 = GeoMath.AngNormalize(lon2);
+                result.Geodesic.lon1 = GeoMath.AngNormalize(lon1);
+                result.Geodesic.lon2 = GeoMath.AngNormalize(lon2);
             }
             // Make longitude difference positive.
             int lonsign = lon12 >= 0 ? 1 : -1;
@@ -798,7 +796,8 @@ namespace GeographicLib
                     s12x = v.s12b; m12x = v.m12b;
                     if ((outmask & GeodesicMask.GEODESICSCALE) != 0)
                     {
-                        r.M12 = v.M12; r.M21 = v.M21;
+                        result.Geodesic.M12 = v.M12;
+                        result.Geodesic.M21 = v.M21;
                     }
                 }
                 // Add the check for sig12 since zero length geodesics might yield m12 <
@@ -835,7 +834,7 @@ namespace GeographicLib
                 sig12 = omg12 = lam12 / _f1;
                 m12x = _b * Math.Sin(sig12);
                 if ((outmask & GeodesicMask.GEODESICSCALE) != 0)
-                    r.M12 = r.M21 = Math.Cos(sig12);
+                    result.Geodesic.M12 = result.Geodesic.M21 = Math.Cos(sig12);
                 a12 = lon12 / _f1;
 
             }
@@ -864,7 +863,7 @@ namespace GeographicLib
                     s12x = sig12 * _b * dnm;
                     m12x = GeoMath.Sq(dnm) * _b * Math.Sin(sig12 / dnm);
                     if ((outmask & GeodesicMask.GEODESICSCALE) != 0)
-                        r.M12 = r.M21 = Math.Cos(sig12 / dnm);
+                        result.Geodesic.M12 = result.Geodesic.M21 = Math.Cos(sig12 / dnm);
                     a12 = GeoMath.ToDegrees(sig12);
                     omg12 = lam12 / (_f1 * dnm);
                 }
@@ -966,7 +965,8 @@ namespace GeographicLib
                         s12x = v.s12b; m12x = v.m12b;
                         if ((outmask & GeodesicMask.GEODESICSCALE) != 0)
                         {
-                            r.M12 = v.M12; r.M21 = v.M21;
+                            result.Geodesic.M12 = v.M12;
+                            result.Geodesic.M21 = v.M21;
                         }
                     }
                     m12x *= _b;
@@ -983,10 +983,10 @@ namespace GeographicLib
             }
 
             if ((outmask & GeodesicMask.DISTANCE) != 0)
-                r.s12 = 0 + s12x;           // Convert -0 to 0
+                result.Geodesic.s12 = 0 + s12x;           // Convert -0 to 0
 
             if ((outmask & GeodesicMask.REDUCEDLENGTH) != 0)
-                r.m12 = 0 + m12x;           // Convert -0 to 0
+                result.Geodesic.m12 = 0 + m12x;           // Convert -0 to 0
 
             if ((outmask & GeodesicMask.AREA) != 0)
             {
@@ -1015,14 +1015,13 @@ namespace GeographicLib
                     }
                     double[] C4a = new double[nC4_];
                     C4f(eps, C4a);
-                    double
-                      B41 = SinCosSeries(false, ssig1, csig1, C4a),
+                    double B41 = SinCosSeries(false, ssig1, csig1, C4a),
                       B42 = SinCosSeries(false, ssig2, csig2, C4a);
-                    r.S12 = A4 * (B42 - B41);
+                    result.Geodesic.S12 = A4 * (B42 - B41);
                 }
                 else
                     // Avoid problems with indeterminate sig1, sig2 on equator
-                    r.S12 = 0;
+                    result.Geodesic.S12 = 0;
 
                 if (!meridian && somg12 > 1)
                 {
@@ -1058,10 +1057,10 @@ namespace GeographicLib
                     }
                     alp12 = Math.Atan2(salp12, calp12);
                 }
-                r.S12 += _c2 * alp12;
-                r.S12 *= swapp * lonsign * latsign;
+                result.Geodesic.S12 += _c2 * alp12;
+                result.Geodesic.S12 *= swapp * lonsign * latsign;
                 // Convert -0 to 0
-                r.S12 += 0;
+                result.Geodesic.S12 += 0;
             }
 
             // Convert calp, salp to azimuth accounting for lonsign, swapp, latsign.
@@ -1070,16 +1069,22 @@ namespace GeographicLib
                 { double t = salp1; salp1 = salp2; salp2 = t; }
                 { double t = calp1; calp1 = calp2; calp2 = t; }
                 if ((outmask & GeodesicMask.GEODESICSCALE) != 0)
-                { double t = r.M12; r.M12 = r.M21; r.M21 = t; }
+                {
+                    double t = result.Geodesic.M12;
+                    result.Geodesic.M12 = result.Geodesic.M21;
+                    result.Geodesic.M21 = t;
+                }
             }
 
             salp1 *= swapp * lonsign; calp1 *= swapp * latsign;
             salp2 *= swapp * lonsign; calp2 *= swapp * latsign;
 
             // Returned value in [0, 180]
-            r.a12 = a12;
-            result.salp1 = salp1; result.calp1 = calp1;
-            result.salp2 = salp2; result.calp2 = calp2;
+            result.Geodesic.a12 = a12;
+            result.salp1 = salp1;
+            result.calp1 = calp1;
+            result.salp2 = salp2;
+            result.calp2 = calp2;
             return result;
         }
 
@@ -1130,7 +1135,7 @@ namespace GeographicLib
         {
             outmask &= GeodesicMask.OUT_MASK;
             InverseData result = InverseInt(lat1, lon1, lat2, lon2, outmask);
-            GeodesicData r = result.g;
+            GeodesicData r = result.Geodesic;
             if ((outmask & GeodesicMask.AZIMUTH) != 0)
             {
                 r.azi1 = GeoMath.Atan2d(result.salp1, result.calp1);
@@ -1186,7 +1191,7 @@ namespace GeographicLib
         {
             InverseData result = InverseInt(lat1, lon1, lat2, lon2, 0);
             double salp1 = result.salp1, calp1 = result.calp1,
-              azi1 = GeoMath.Atan2d(salp1, calp1), a12 = result.g.a12;
+              azi1 = GeoMath.Atan2d(salp1, calp1), a12 = result.Geodesic.a12;
             // Ensure that a12 can be converted to a distance
             if ((caps & (GeodesicMask.OUT_MASK & GeodesicMask.DISTANCE_IN)) != 0)
                 caps |= GeodesicMask.DISTANCE;

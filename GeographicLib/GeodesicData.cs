@@ -20,7 +20,7 @@ namespace GeographicLib
      * Geodesic#Inverse(double, double, double, double) Geodesic.Inverse} and it
      * always includes the field <i>a12</i>.
      **********************************************************************/
-    public sealed class GeodesicData
+    public class GeodesicData
     {
         /// <summary>
         /// latitude of point 1 (degrees).
@@ -85,10 +85,15 @@ namespace GeographicLib
         /// <summary>
         /// Initialize all the fields to Double.NaN.
         /// </summary>
-        public GeodesicData()
+        public static GeodesicData NaN
         {
-            lat1 = lon1 = azi1 = lat2 = lon2 = azi2 =
-              s12 = a12 = m12 = M12 = M21 = S12 = Double.NaN;
+            get
+            {
+                var g = new GeodesicData();
+                g.lat1 = g.lon1 = g.azi1 = g.lat2 = g.lon2 = g.azi2 = g.s12 
+                    = g.a12 = g.m12 = g.M12 = g.M21 = g.S12 = Double.NaN;
+                return g;
+            }
         }
     }
 }

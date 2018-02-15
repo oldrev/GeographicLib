@@ -97,11 +97,11 @@ namespace GeographicLib
     public sealed class GeodesicLine
     {
 
-        private static readonly int nC1_ = Geodesic.nC1_;
-        private static readonly int nC1p_ = Geodesic.nC1p_;
-        private static readonly int nC2_ = Geodesic.nC2_;
-        private static readonly int nC3_ = Geodesic.nC3_;
-        private static readonly int nC4_ = Geodesic.nC4_;
+        private const int nC1_ = Geodesic.nC1_;
+        private const int nC1p_ = Geodesic.nC1p_;
+        private const int nC2_ = Geodesic.nC2_;
+        private const int nC3_ = Geodesic.nC3_;
+        private const int nC4_ = Geodesic.nC4_;
 
         private double _lat1, _lon1, _azi1;
         private double _a, _f, _b, _c2, _f1, _salp0, _calp0, _k2,
@@ -447,17 +447,17 @@ namespace GeographicLib
          * Requesting a value which the GeodesicLine object is not capable of
          * computing is not an error; Double.NaN is returned instead.
          **********************************************************************/
-        public GeodesicData Position(bool arcmode, double s12_a12,
-                                     int outmask)
+        public GeodesicData Position(bool arcmode, double s12_a12, int outmask)
         {
             outmask &= _caps & GeodesicMask.OUT_MASK;
-            GeodesicData r = new GeodesicData();
+            GeodesicData r = GeodesicData.NaN;
             if (!(Init && (arcmode || (_caps & (GeodesicMask.OUT_MASK & GeodesicMask.DISTANCE_IN)) != 0)))
             {
                 // Uninitialized or impossible distance calculation requested
                 return r;
             }
-            r.lat1 = _lat1; r.azi1 = _azi1;
+            r.lat1 = _lat1;
+            r.azi1 = _azi1;
             r.lon1 = ((outmask & GeodesicMask.LONG_UNROLL) != 0) ? _lon1 :
               GeoMath.AngNormalize(_lon1);
 

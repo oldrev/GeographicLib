@@ -4,7 +4,7 @@
     <PackageId>Sandwych.GeographicLib</PackageId>
     <Title>This is an attempt to port the Java version of GeographicLib to C#.</Title>
     <PackageTags>geographic;gis;geodesic;gnomonic;</PackageTags>
-    <VersionPrefix>1.49.1</VersionPrefix>
+    <VersionPrefix>1.49.2</VersionPrefix>
   </PropertyGroup>
 
   <Import Project="../Shared.props" />

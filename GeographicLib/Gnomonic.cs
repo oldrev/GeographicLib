@@ -241,11 +241,11 @@ namespace GeographicLib
                           | GeodesicMask.GEODESICSCALE);
 
             int count = numit_, trip = 0;
-            GeodesicData pos = null;
+            GeodesicData pos = GeodesicData.NaN;
 
             while (count-- > 0)
             {
-                pos = line.Position(s, 
+                pos = line.Position(s,
                                   GeodesicMask.LONGITUDE | GeodesicMask.LATITUDE
                                 | GeodesicMask.AZIMUTH | GeodesicMask.DISTANCE_IN
                                 | GeodesicMask.REDUCEDLENGTH
@@ -256,7 +256,7 @@ namespace GeographicLib
                     break;
                 }
 
-                double ds = little ? ((pos.m12 / pos.M12) - rho) * pos.M12 * pos.M12 
+                double ds = little ? ((pos.m12 / pos.M12) - rho) * pos.M12 * pos.M12
                     : (rho - (pos.M12 / pos.m12)) * pos.m12 * pos.m12;
                 s -= ds;
 
