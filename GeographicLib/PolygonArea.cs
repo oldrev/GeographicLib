@@ -107,7 +107,7 @@ namespace GeographicLib
          * @param polyline if true that treat the points as defining a polyline
          *   instead of a polygon.
          **********************************************************************/
-        public PolygonArea(Geodesic earth, bool polyline)
+        public PolygonArea(in Geodesic earth, bool polyline)
         {
             _earth = earth;
             _area0 = _earth.EllipsoidArea();

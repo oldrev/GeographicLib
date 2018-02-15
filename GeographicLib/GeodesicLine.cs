@@ -103,15 +103,15 @@ namespace GeographicLib
         private const int nC3_ = Geodesic.nC3_;
         private const int nC4_ = Geodesic.nC4_;
 
-        private double _lat1, _lon1, _azi1;
-        private double _a, _f, _b, _c2, _f1, _salp0, _calp0, _k2,
+        private readonly double _lat1, _lon1, _azi1;
+        private readonly double _a, _f, _b, _c2, _f1, _salp0, _calp0, _k2,
           _salp1, _calp1, _ssig1, _csig1, _dn1, _stau1, _ctau1, _somg1, _comg1,
           _A1m1, _A2m1, _A3c, _B11, _B21, _B31, _A4, _B41;
         private double _a13, _s13;
         // index zero elements of _C1a, _C1pa, _C2a, _C3a are unused
-        private double[] _C1a, _C1pa, _C2a, _C3a,
+        private readonly double[] _C1a, _C1pa, _C2a, _C3a,
           _C4a;    // all the elements of _C4a are used
-        private int _caps;
+        private readonly int _caps = 0;
 
         /**
          * Constructor for a geodesic line staring at latitude <i>lat1</i>, longitude
@@ -129,7 +129,7 @@ namespace GeographicLib
          * fixed, writing <i>lat1</i> = &plusmn;(90&deg; &minus; &epsilon;), and
          * taking the limit &epsilon; &rarr; 0+.
          **********************************************************************/
-        public GeodesicLine(Geodesic g,
+        public GeodesicLine(in Geodesic g,
                             double lat1, double lon1, double azi1) :
             this(g, lat1, lon1, azi1, GeodesicMask.ALL)
         {
@@ -181,25 +181,28 @@ namespace GeographicLib
          *   <i>caps</i> |= {@link GeodesicMask#ALL} for all of the above.
          * </ul>
          **********************************************************************/
-        public GeodesicLine(Geodesic g,
+        public GeodesicLine(in Geodesic g,
                             double lat1, double lon1, double azi1,
-                            int caps)
+                            int caps) : this(g, lat1, lon1, azi1, double.NaN, double.NaN, caps, true)
         {
-            azi1 = GeoMath.AngNormalize(azi1);
-            double salp1, calp1;
-            // Guard against underflow in salp0
-            {
-                Pair p = GeoMath.Sincosd(GeoMath.AngRound(azi1));
-                salp1 = p.First; calp1 = p.Second;
-            }
-            LineInit(g, lat1, lon1, azi1, salp1, calp1, caps);
         }
 
-        private void LineInit(Geodesic g,
+        private GeodesicLine(in Geodesic g,
                               double lat1, double lon1,
                               double azi1, double salp1, double calp1,
-                              int caps)
+                              int caps, bool angNorm = false)
         {
+            if (angNorm)
+            {
+                azi1 = GeoMath.AngNormalize(azi1);
+                // Guard against underflow in salp0
+                {
+                    Pair p = GeoMath.Sincosd(GeoMath.AngRound(azi1));
+                    salp1 = p.First;
+                    calp1 = p.Second;
+                }
+            }
+
             _a = g._a;
             _f = g._f;
             _b = g._b;
@@ -295,12 +298,11 @@ namespace GeographicLib
             }
         }
 
-        internal GeodesicLine(Geodesic g,
+        internal GeodesicLine(in Geodesic g,
                                double lat1, double lon1,
                                double azi1, double salp1, double calp1,
-                               int caps, bool arcmode, double s13_a13)
+                               int caps, bool arcmode, double s13_a13) : this(g, lat1, lon1, azi1, salp1, calp1, caps)
         {
-            LineInit(g, lat1, lon1, azi1, salp1, calp1, caps);
             GenSetDistance(arcmode, s13_a13);
         }
 
@@ -312,7 +314,9 @@ namespace GeographicLib
          * (This constructor was useful in C++, e.g., to allow vectors of
          * GeodesicLine objects.  It may not be needed in Java, so make it private.)
          **********************************************************************/
-        private GeodesicLine() { _caps = 0; }
+        private GeodesicLine()
+        {
+        }
 
         /**
          * Compute the position of point 2 which is a distance <i>s12</i> (meters)
