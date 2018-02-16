@@ -20,7 +20,7 @@ namespace GeographicLib
      * Geodesic#Inverse(double, double, double, double) Geodesic.Inverse} and it
      * always includes the field <i>a12</i>.
      **********************************************************************/
-    public class GeodesicData
+    public struct GeodesicData
     {
         /// <summary>
         /// latitude of point 1 (degrees).
