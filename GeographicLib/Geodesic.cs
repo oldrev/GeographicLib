@@ -1937,10 +1937,9 @@ namespace GeographicLib
         };
 
         // The coefficients C1p[l] in the Fourier expansion of B1p
-        internal static void C1pf(double eps, double[] c)
+        internal static void C1pf(double eps, Span<double> c)
         {
-            double
-              eps2 = GeoMath.Sq(eps),
+            double eps2 = GeoMath.Sq(eps),
               d = eps;
             int o = 0;
             for (int l = 1; l <= nC1p_; ++l)

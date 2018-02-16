@@ -6,34 +6,34 @@ namespace GeographicLib.Tests
 {
     public class GeodesicTest
     {
-        private static bool isNaN(double x) => double.IsNaN(x);
+        private static bool IsNaN(double x) => double.IsNaN(x);
 
-        private static readonly PolygonArea polygon = new PolygonArea(Geodesic.WGS84, false);
+        private static readonly PolygonArea s_polygon = new PolygonArea(Geodesic.WGS84, false);
 
-        private static readonly PolygonArea polyline = new PolygonArea(Geodesic.WGS84, true);
+        private static readonly PolygonArea s_polyline = new PolygonArea(Geodesic.WGS84, true);
 
-        private static void assertEquals(double expected, double value, double delta) =>
+        private static void AssertEquals(double expected, double value, double delta) =>
            Assert.InRange(value, expected - delta, expected + delta);
 
 
         private static PolygonResult Planimeter(double[][] points)
         {
-            polygon.Clear();
+            s_polygon.Clear();
             for (int i = 0; i < points.Length; ++i)
             {
-                polygon.AddPoint(points[i][0], points[i][1]);
+                s_polygon.AddPoint(points[i][0], points[i][1]);
             }
-            return polygon.Compute(false, true);
+            return s_polygon.Compute(false, true);
         }
 
         private static PolygonResult PolyLength(double[][] points)
         {
-            polyline.Clear();
+            s_polyline.Clear();
             for (int i = 0; i < points.Length; ++i)
             {
-                polyline.AddPoint(points[i][0], points[i][1]);
+                s_polyline.AddPoint(points[i][0], points[i][1]);
             }
-            return polyline.Compute(false, true);
+            return s_polyline.Compute(false, true);
         }
 
         private static readonly double[][] testcases = new double[][] {
@@ -131,15 +131,15 @@ namespace GeographicLib.Tests
                 GeodesicData inv = Geodesic.WGS84.Inverse(lat1, lon1, lat2, lon2,
                                                           GeodesicMask.ALL |
                                                           GeodesicMask.LONG_UNROLL);
-                assertEquals(lon2, inv.lon2, 1e-13);
-                assertEquals(azi1, inv.azi1, 1e-13);
-                assertEquals(azi2, inv.azi2, 1e-13);
-                assertEquals(s12, inv.s12, 1e-8);
-                assertEquals(a12, inv.a12, 1e-13);
-                assertEquals(m12, inv.m12, 1e-8);
-                assertEquals(M12, inv.M12, 1e-15);
-                assertEquals(M21, inv.M21, 1e-15);
-                assertEquals(S12, inv.S12, 0.1);
+                AssertEquals(lon2, inv.lon2, 1e-13);
+                AssertEquals(azi1, inv.azi1, 1e-13);
+                AssertEquals(azi2, inv.azi2, 1e-13);
+                AssertEquals(s12, inv.s12, 1e-8);
+                AssertEquals(a12, inv.a12, 1e-13);
+                AssertEquals(m12, inv.m12, 1e-8);
+                AssertEquals(M12, inv.M12, 1e-15);
+                AssertEquals(M21, inv.M21, 1e-15);
+                AssertEquals(S12, inv.S12, 0.1);
             }
         }
 
@@ -156,14 +156,14 @@ namespace GeographicLib.Tests
                 GeodesicData dir = Geodesic.WGS84.Direct(lat1, lon1, azi1, s12,
                                                          GeodesicMask.ALL |
                                                          GeodesicMask.LONG_UNROLL);
-                assertEquals(lat2, dir.lat2, 1e-13);
-                assertEquals(lon2, dir.lon2, 1e-13);
-                assertEquals(azi2, dir.azi2, 1e-13);
-                assertEquals(a12, dir.a12, 1e-13);
-                assertEquals(m12, dir.m12, 1e-8);
-                assertEquals(M12, dir.M12, 1e-15);
-                assertEquals(M21, dir.M21, 1e-15);
-                assertEquals(S12, dir.S12, 0.1);
+                AssertEquals(lat2, dir.lat2, 1e-13);
+                AssertEquals(lon2, dir.lon2, 1e-13);
+                AssertEquals(azi2, dir.azi2, 1e-13);
+                AssertEquals(a12, dir.a12, 1e-13);
+                AssertEquals(m12, dir.m12, 1e-8);
+                AssertEquals(M12, dir.M12, 1e-15);
+                AssertEquals(M21, dir.M21, 1e-15);
+                AssertEquals(S12, dir.S12, 0.1);
             }
         }
 
@@ -180,14 +180,14 @@ namespace GeographicLib.Tests
                 GeodesicData dir = Geodesic.WGS84.ArcDirect(lat1, lon1, azi1, a12,
                                                          GeodesicMask.ALL |
                                                          GeodesicMask.LONG_UNROLL);
-                assertEquals(lat2, dir.lat2, 1e-13);
-                assertEquals(lon2, dir.lon2, 1e-13);
-                assertEquals(azi2, dir.azi2, 1e-13);
-                assertEquals(s12, dir.s12, 1e-8);
-                assertEquals(m12, dir.m12, 1e-8);
-                assertEquals(M12, dir.M12, 1e-15);
-                assertEquals(M21, dir.M21, 1e-15);
-                assertEquals(S12, dir.S12, 0.1);
+                AssertEquals(lat2, dir.lat2, 1e-13);
+                AssertEquals(lon2, dir.lon2, 1e-13);
+                AssertEquals(azi2, dir.azi2, 1e-13);
+                AssertEquals(s12, dir.s12, 1e-8);
+                AssertEquals(m12, dir.m12, 1e-8);
+                AssertEquals(M12, dir.M12, 1e-15);
+                AssertEquals(M21, dir.M21, 1e-15);
+                AssertEquals(S12, dir.S12, 0.1);
             }
         }
 
@@ -196,9 +196,9 @@ namespace GeographicLib.Tests
         {
             GeodesicData inv = Geodesic.WGS84.Inverse(40.6, -73.8,
                                                       49.01666667, 2.55);
-            assertEquals(inv.azi1, 53.47022, 0.5e-5);
-            assertEquals(inv.azi2, 111.59367, 0.5e-5);
-            assertEquals(inv.s12, 5853226, 0.5);
+            AssertEquals(inv.azi1, 53.47022, 0.5e-5);
+            AssertEquals(inv.azi2, 111.59367, 0.5e-5);
+            AssertEquals(inv.s12, 5853226, 0.5);
         }
 
         [Fact]
@@ -206,9 +206,9 @@ namespace GeographicLib.Tests
         {
             GeodesicData dir = Geodesic.WGS84.Direct(40.63972222, -73.77888889,
                                                      53.5, 5850e3);
-            assertEquals(dir.lat2, 49.01467, 0.5e-5);
-            assertEquals(dir.lon2, 2.56106, 0.5e-5);
-            assertEquals(dir.azi2, 111.62947, 0.5e-5);
+            AssertEquals(dir.lat2, 49.01467, 0.5e-5);
+            AssertEquals(dir.lon2, 2.56106, 0.5e-5);
+            AssertEquals(dir.azi2, 111.62947, 0.5e-5);
         }
 
         [Fact]
@@ -217,13 +217,13 @@ namespace GeographicLib.Tests
             // Check fix for antipodal prolate bug found 2010-09-04
             Geodesic geod = new Geodesic(6.4e6, -1 / 150.0);
             GeodesicData inv = geod.Inverse(0.07476, 0, -0.07476, 180);
-            assertEquals(inv.azi1, 90.00078, 0.5e-5);
-            assertEquals(inv.azi2, 90.00078, 0.5e-5);
-            assertEquals(inv.s12, 20106193, 0.5);
+            AssertEquals(inv.azi1, 90.00078, 0.5e-5);
+            AssertEquals(inv.azi2, 90.00078, 0.5e-5);
+            AssertEquals(inv.s12, 20106193, 0.5);
             inv = geod.Inverse(0.1, 0, -0.1, 180);
-            assertEquals(inv.azi1, 90.00105, 0.5e-5);
-            assertEquals(inv.azi2, 90.00105, 0.5e-5);
-            assertEquals(inv.s12, 20106193, 0.5);
+            AssertEquals(inv.azi1, 90.00105, 0.5e-5);
+            AssertEquals(inv.azi2, 90.00105, 0.5e-5);
+            AssertEquals(inv.s12, 20106193, 0.5);
         }
 
         [Fact]
@@ -232,7 +232,7 @@ namespace GeographicLib.Tests
             // Check fix for short line bug found 2010-05-21
             GeodesicData inv = Geodesic.WGS84.Inverse(36.493349428792, 0,
                                                       36.49334942879201, .0000008);
-            assertEquals(inv.s12, 0.072, 0.5e-3);
+            AssertEquals(inv.s12, 0.072, 0.5e-3);
         }
 
         [Fact]
@@ -240,16 +240,16 @@ namespace GeographicLib.Tests
         {
             // Check fix for point2=pole bug found 2010-05-03
             GeodesicData dir = Geodesic.WGS84.Direct(0.01777745589997, 30, 0, 10e6);
-            assertEquals(dir.lat2, 90, 0.5e-5);
+            AssertEquals(dir.lat2, 90, 0.5e-5);
             if (dir.lon2 < 0)
             {
-                assertEquals(dir.lon2, -150, 0.5e-5);
-                assertEquals(Math.Abs(dir.azi2), 180, 0.5e-5);
+                AssertEquals(dir.lon2, -150, 0.5e-5);
+                AssertEquals(Math.Abs(dir.azi2), 180, 0.5e-5);
             }
             else
             {
-                assertEquals(dir.lon2, 30, 0.5e-5);
-                assertEquals(dir.azi2, 0, 0.5e-5);
+                AssertEquals(dir.lon2, 30, 0.5e-5);
+                AssertEquals(dir.azi2, 0, 0.5e-5);
             }
         }
 
@@ -261,13 +261,13 @@ namespace GeographicLib.Tests
             GeodesicData inv =
               Geodesic.WGS84.Inverse(88.202499451857, 0,
                                      -88.202499451857, 179.981022032992859592);
-            assertEquals(inv.s12, 20003898.214, 0.5e-3);
+            AssertEquals(inv.s12, 20003898.214, 0.5e-3);
             inv = Geodesic.WGS84.Inverse(89.262080389218, 0,
                                          -89.262080389218, 179.992207982775375662);
-            assertEquals(inv.s12, 20003925.854, 0.5e-3);
+            AssertEquals(inv.s12, 20003925.854, 0.5e-3);
             inv = Geodesic.WGS84.Inverse(89.333123580033, 0, -89.333123580032997687,
                                          179.99295812360148422);
-            assertEquals(inv.s12, 20003926.881, 0.5e-3);
+            AssertEquals(inv.s12, 20003926.881, 0.5e-3);
         }
 
         [Fact]
@@ -277,7 +277,7 @@ namespace GeographicLib.Tests
             GeodesicData inv =
               Geodesic.WGS84.Inverse(56.320923501171, 0,
                                      -56.320923501171, 179.664747671772880215);
-            assertEquals(inv.s12, 19993558.287, 0.5e-3);
+            AssertEquals(inv.s12, 19993558.287, 0.5e-3);
         }
 
         [Fact]
@@ -288,7 +288,7 @@ namespace GeographicLib.Tests
             GeodesicData inv =
               Geodesic.WGS84.Inverse(52.784459512564, 0,
                                      -52.784459512563990912, 179.634407464943777557);
-            assertEquals(inv.s12, 19991596.095, 0.5e-3);
+            AssertEquals(inv.s12, 19991596.095, 0.5e-3);
         }
 
         [Fact]
@@ -299,7 +299,7 @@ namespace GeographicLib.Tests
             GeodesicData inv =
               Geodesic.WGS84.Inverse(48.522876735459, 0,
                                      -48.52287673545898293, 179.599720456223079643);
-            assertEquals(inv.s12, 19989144.774, 0.5e-3);
+            AssertEquals(inv.s12, 19989144.774, 0.5e-3);
         }
 
         [Fact]
@@ -310,9 +310,9 @@ namespace GeographicLib.Tests
             // <stefan.gunther@embl.de>; fixed 2012-10-07
             Geodesic geod = new Geodesic(89.8, -1.83);
             GeodesicData inv = geod.Inverse(0, 0, -10, 160);
-            assertEquals(inv.azi1, 120.27, 1e-2);
-            assertEquals(inv.azi2, 105.15, 1e-2);
-            assertEquals(inv.s12, 266.7, 1e-1);
+            AssertEquals(inv.azi1, 120.27, 1e-2);
+            AssertEquals(inv.azi2, 105.15, 1e-2);
+            AssertEquals(inv.s12, 266.7, 1e-1);
         }
 
         [Fact]
@@ -320,9 +320,9 @@ namespace GeographicLib.Tests
         {
             // Check fix for inverse ignoring lon12 = nan
             GeodesicData inv = Geodesic.WGS84.Inverse(0, 0, 1, Double.NaN);
-            Assert.True(isNaN(inv.azi1));
-            Assert.True(isNaN(inv.azi2));
-            Assert.True(isNaN(inv.s12));
+            Assert.True(IsNaN(inv.azi1));
+            Assert.True(IsNaN(inv.azi2));
+            Assert.True(IsNaN(inv.s12));
         }
 
         [Fact]
@@ -332,7 +332,7 @@ namespace GeographicLib.Tests
             // checks that this is fixed.
             Geodesic geod = new Geodesic(6.4e6, -1 / 150.0);
             GeodesicData dir = geod.Direct(1, 2, 3, 4, GeodesicMask.AREA);
-            assertEquals(dir.S12, 23700, 0.5);
+            AssertEquals(dir.S12, 23700, 0.5);
         }
 
         [Fact]
@@ -342,22 +342,22 @@ namespace GeographicLib.Tests
             GeodesicData dir =
               Geodesic.WGS84.Direct(40, -75, -10, 2e7,
                                     GeodesicMask.STANDARD | GeodesicMask.LONG_UNROLL);
-            assertEquals(dir.lat2, -39, 1);
-            assertEquals(dir.lon2, -254, 1);
-            assertEquals(dir.azi2, -170, 1);
+            AssertEquals(dir.lat2, -39, 1);
+            AssertEquals(dir.lon2, -254, 1);
+            AssertEquals(dir.azi2, -170, 1);
             GeodesicLine line = Geodesic.WGS84.Line(40, -75, -10);
             dir = line.Position(2e7, GeodesicMask.STANDARD | GeodesicMask.LONG_UNROLL);
-            assertEquals(dir.lat2, -39, 1);
-            assertEquals(dir.lon2, -254, 1);
-            assertEquals(dir.azi2, -170, 1);
+            AssertEquals(dir.lat2, -39, 1);
+            AssertEquals(dir.lon2, -254, 1);
+            AssertEquals(dir.azi2, -170, 1);
             dir = Geodesic.WGS84.Direct(40, -75, -10, 2e7);
-            assertEquals(dir.lat2, -39, 1);
-            assertEquals(dir.lon2, 105, 1);
-            assertEquals(dir.azi2, -170, 1);
+            AssertEquals(dir.lat2, -39, 1);
+            AssertEquals(dir.lon2, 105, 1);
+            AssertEquals(dir.azi2, -170, 1);
             dir = line.Position(2e7);
-            assertEquals(dir.lat2, -39, 1);
-            assertEquals(dir.lon2, 105, 1);
-            assertEquals(dir.azi2, -170, 1);
+            AssertEquals(dir.lat2, -39, 1);
+            AssertEquals(dir.lon2, 105, 1);
+            AssertEquals(dir.azi2, -170, 1);
         }
 
         [Fact]
@@ -366,7 +366,7 @@ namespace GeographicLib.Tests
             // Check 0/0 problem with area calculation on sphere 2015-09-08
             Geodesic geod = new Geodesic(6.4e6, 0);
             GeodesicData inv = geod.Inverse(1, 2, 3, 4, GeodesicMask.AREA);
-            assertEquals(inv.S12, 49911046115.0, 0.5);
+            AssertEquals(inv.S12, 49911046115.0, 0.5);
         }
 
         [Fact]
@@ -376,7 +376,7 @@ namespace GeographicLib.Tests
             // Java implementation fixed on 2015-05-19).
             Geodesic geod = new Geodesic(6.4e6, 0.1);
             GeodesicData dir = geod.Direct(1, 2, 10, 5e6);
-            assertEquals(dir.a12, 48.55570690, 0.5e-8);
+            AssertEquals(dir.a12, 48.55570690, 0.5e-8);
         }
 
         [Fact]
@@ -384,15 +384,15 @@ namespace GeographicLib.Tests
         {
             // Check longitude unrolling with inverse calculation 2015-09-16
             GeodesicData dir = Geodesic.WGS84.Inverse(0, 539, 0, 181);
-            assertEquals(dir.lon1, 179, 1e-10);
-            assertEquals(dir.lon2, -179, 1e-10);
-            assertEquals(dir.s12, 222639, 0.5);
+            AssertEquals(dir.lon1, 179, 1e-10);
+            AssertEquals(dir.lon2, -179, 1e-10);
+            AssertEquals(dir.s12, 222639, 0.5);
             dir = Geodesic.WGS84.Inverse(0, 539, 0, 181,
                                          GeodesicMask.STANDARD |
                                          GeodesicMask.LONG_UNROLL);
-            assertEquals(dir.lon1, 539, 1e-10);
-            assertEquals(dir.lon2, 541, 1e-10);
-            assertEquals(dir.s12, 222639, 0.5);
+            AssertEquals(dir.lon1, 539, 1e-10);
+            AssertEquals(dir.lon2, 541, 1e-10);
+            AssertEquals(dir.s12, 222639, 0.5);
         }
 
         [Fact]
@@ -402,51 +402,51 @@ namespace GeographicLib.Tests
             // sind(-0.0) = +0.0 -- and in some version of Visual Studio --
             // fmod(-0.0, 360.0) = +0.0.
             GeodesicData inv = Geodesic.WGS84.Inverse(0, 0, 0, 179);
-            assertEquals(inv.azi1, 90.00000, 0.5e-5);
-            assertEquals(inv.azi2, 90.00000, 0.5e-5);
-            assertEquals(inv.s12, 19926189, 0.5);
+            AssertEquals(inv.azi1, 90.00000, 0.5e-5);
+            AssertEquals(inv.azi2, 90.00000, 0.5e-5);
+            AssertEquals(inv.s12, 19926189, 0.5);
             inv = Geodesic.WGS84.Inverse(0, 0, 0, 179.5);
-            assertEquals(inv.azi1, 55.96650, 0.5e-5);
-            assertEquals(inv.azi2, 124.03350, 0.5e-5);
-            assertEquals(inv.s12, 19980862, 0.5);
+            AssertEquals(inv.azi1, 55.96650, 0.5e-5);
+            AssertEquals(inv.azi2, 124.03350, 0.5e-5);
+            AssertEquals(inv.s12, 19980862, 0.5);
             inv = Geodesic.WGS84.Inverse(0, 0, 0, 180);
-            assertEquals(inv.azi1, 0.00000, 0.5e-5);
-            assertEquals(Math.Abs(inv.azi2), 180.00000, 0.5e-5);
-            assertEquals(inv.s12, 20003931, 0.5);
+            AssertEquals(inv.azi1, 0.00000, 0.5e-5);
+            AssertEquals(Math.Abs(inv.azi2), 180.00000, 0.5e-5);
+            AssertEquals(inv.s12, 20003931, 0.5);
             inv = Geodesic.WGS84.Inverse(0, 0, 1, 180);
-            assertEquals(inv.azi1, 0.00000, 0.5e-5);
-            assertEquals(Math.Abs(inv.azi2), 180.00000, 0.5e-5);
-            assertEquals(inv.s12, 19893357, 0.5);
+            AssertEquals(inv.azi1, 0.00000, 0.5e-5);
+            AssertEquals(Math.Abs(inv.azi2), 180.00000, 0.5e-5);
+            AssertEquals(inv.s12, 19893357, 0.5);
             Geodesic geod = new Geodesic(6.4e6, 0);
             inv = geod.Inverse(0, 0, 0, 179);
-            assertEquals(inv.azi1, 90.00000, 0.5e-5);
-            assertEquals(inv.azi2, 90.00000, 0.5e-5);
-            assertEquals(inv.s12, 19994492, 0.5);
+            AssertEquals(inv.azi1, 90.00000, 0.5e-5);
+            AssertEquals(inv.azi2, 90.00000, 0.5e-5);
+            AssertEquals(inv.s12, 19994492, 0.5);
             inv = geod.Inverse(0, 0, 0, 180);
-            assertEquals(inv.azi1, 0.00000, 0.5e-5);
-            assertEquals(Math.Abs(inv.azi2), 180.00000, 0.5e-5);
-            assertEquals(inv.s12, 20106193, 0.5);
+            AssertEquals(inv.azi1, 0.00000, 0.5e-5);
+            AssertEquals(Math.Abs(inv.azi2), 180.00000, 0.5e-5);
+            AssertEquals(inv.s12, 20106193, 0.5);
             inv = geod.Inverse(0, 0, 1, 180);
-            assertEquals(inv.azi1, 0.00000, 0.5e-5);
-            assertEquals(Math.Abs(inv.azi2), 180.00000, 0.5e-5);
-            assertEquals(inv.s12, 19994492, 0.5);
+            AssertEquals(inv.azi1, 0.00000, 0.5e-5);
+            AssertEquals(Math.Abs(inv.azi2), 180.00000, 0.5e-5);
+            AssertEquals(inv.s12, 19994492, 0.5);
             geod = new Geodesic(6.4e6, -1 / 300.0);
             inv = geod.Inverse(0, 0, 0, 179);
-            assertEquals(inv.azi1, 90.00000, 0.5e-5);
-            assertEquals(inv.azi2, 90.00000, 0.5e-5);
-            assertEquals(inv.s12, 19994492, 0.5);
+            AssertEquals(inv.azi1, 90.00000, 0.5e-5);
+            AssertEquals(inv.azi2, 90.00000, 0.5e-5);
+            AssertEquals(inv.s12, 19994492, 0.5);
             inv = geod.Inverse(0, 0, 0, 180);
-            assertEquals(inv.azi1, 90.00000, 0.5e-5);
-            assertEquals(inv.azi2, 90.00000, 0.5e-5);
-            assertEquals(inv.s12, 20106193, 0.5);
+            AssertEquals(inv.azi1, 90.00000, 0.5e-5);
+            AssertEquals(inv.azi2, 90.00000, 0.5e-5);
+            AssertEquals(inv.s12, 20106193, 0.5);
             inv = geod.Inverse(0, 0, 0.5, 180);
-            assertEquals(inv.azi1, 33.02493, 0.5e-5);
-            assertEquals(inv.azi2, 146.97364, 0.5e-5);
-            assertEquals(inv.s12, 20082617, 0.5);
+            AssertEquals(inv.azi1, 33.02493, 0.5e-5);
+            AssertEquals(inv.azi2, 146.97364, 0.5e-5);
+            AssertEquals(inv.s12, 20082617, 0.5);
             inv = geod.Inverse(0, 0, 1, 180);
-            assertEquals(inv.azi1, 0.00000, 0.5e-5);
-            assertEquals(Math.Abs(inv.azi2), 180.00000, 0.5e-5);
-            assertEquals(inv.s12, 20027270, 0.5);
+            AssertEquals(inv.azi1, 0.00000, 0.5e-5);
+            AssertEquals(Math.Abs(inv.azi2), 180.00000, 0.5e-5);
+            AssertEquals(inv.s12, 20027270, 0.5);
         }
 
         [Fact]
@@ -455,13 +455,13 @@ namespace GeographicLib.Tests
             // Check fix for nan + point on equator or pole not returning all nans in
             // Geodesic::Inverse, found 2015-09-23.
             GeodesicData inv = Geodesic.WGS84.Inverse(Double.NaN, 0, 0, 90);
-            Assert.True(isNaN(inv.azi1));
-            Assert.True(isNaN(inv.azi2));
-            Assert.True(isNaN(inv.s12));
+            Assert.True(IsNaN(inv.azi1));
+            Assert.True(IsNaN(inv.azi2));
+            Assert.True(IsNaN(inv.s12));
             inv = Geodesic.WGS84.Inverse(Double.NaN, 0, 90, 3);
-            Assert.True(isNaN(inv.azi1));
-            Assert.True(isNaN(inv.azi2));
-            Assert.True(isNaN(inv.s12));
+            Assert.True(IsNaN(inv.azi1));
+            Assert.True(IsNaN(inv.azi2));
+            Assert.True(IsNaN(inv.s12));
         }
 
         [Fact]
@@ -469,9 +469,9 @@ namespace GeographicLib.Tests
         {
             // Check for points close with longitudes close to 180 deg apart.
             GeodesicData inv = Geodesic.WGS84.Inverse(5, 0.00000000000001, 10, 180);
-            assertEquals(inv.azi1, 0.000000000000035, 1.5e-14);
-            assertEquals(inv.azi2, 179.99999999999996, 1.5e-14);
-            assertEquals(inv.s12, 18345191.174332713, 4e-9);
+            AssertEquals(inv.azi1, 0.000000000000035, 1.5e-14);
+            AssertEquals(inv.azi2, 179.99999999999996, 1.5e-14);
+            AssertEquals(inv.s12, 18345191.174332713, 4e-9);
         }
 
         [Fact]
@@ -481,15 +481,15 @@ namespace GeographicLib.Tests
             GeodesicData dir =
               Geodesic.WGS84.Direct(45, 0, -0.000000000000000003, 1e7,
                                     GeodesicMask.STANDARD | GeodesicMask.LONG_UNROLL);
-            assertEquals(dir.lat2, 45.30632, 0.5e-5);
-            assertEquals(dir.lon2, -180, 0.5e-5);
-            assertEquals(Math.Abs(dir.azi2), 180, 0.5e-5);
+            AssertEquals(dir.lat2, 45.30632, 0.5e-5);
+            AssertEquals(dir.lon2, -180, 0.5e-5);
+            AssertEquals(Math.Abs(dir.azi2), 180, 0.5e-5);
             GeodesicLine line = Geodesic.WGS84.InverseLine(45, 0, 80,
                                                            -0.000000000000000003);
             dir = line.Position(1e7, GeodesicMask.STANDARD | GeodesicMask.LONG_UNROLL);
-            assertEquals(dir.lat2, 45.30632, 0.5e-5);
-            assertEquals(dir.lon2, -180, 0.5e-5);
-            assertEquals(Math.Abs(dir.azi2), 180, 0.5e-5);
+            AssertEquals(dir.lat2, 45.30632, 0.5e-5);
+            AssertEquals(dir.lon2, -180, 0.5e-5);
+            AssertEquals(Math.Abs(dir.azi2), 180, 0.5e-5);
         }
 
         [Fact]
@@ -502,31 +502,31 @@ namespace GeographicLib.Tests
                                                            -31, 180);
             GeodesicData dir =
               line.Position(1e7, GeodesicMask.ALL | GeodesicMask.LONG_UNROLL);
-            assertEquals(dir.lat1, 30.00000, 0.5e-5);
-            assertEquals(dir.lon1, -0.00000, 0.5e-5);
-            assertEquals(Math.Abs(dir.azi1), 180.00000, 0.5e-5);
-            assertEquals(dir.lat2, -60.23169, 0.5e-5);
-            assertEquals(dir.lon2, -0.00000, 0.5e-5);
-            assertEquals(Math.Abs(dir.azi2), 180.00000, 0.5e-5);
-            assertEquals(dir.s12, 10000000, 0.5);
-            assertEquals(dir.a12, 90.06544, 0.5e-5);
-            assertEquals(dir.m12, 6363636, 0.5);
-            assertEquals(dir.M12, -0.0012834, 0.5e7);
-            assertEquals(dir.M21, 0.0013749, 0.5e-7);
-            assertEquals(dir.S12, 0, 0.5);
+            AssertEquals(dir.lat1, 30.00000, 0.5e-5);
+            AssertEquals(dir.lon1, -0.00000, 0.5e-5);
+            AssertEquals(Math.Abs(dir.azi1), 180.00000, 0.5e-5);
+            AssertEquals(dir.lat2, -60.23169, 0.5e-5);
+            AssertEquals(dir.lon2, -0.00000, 0.5e-5);
+            AssertEquals(Math.Abs(dir.azi2), 180.00000, 0.5e-5);
+            AssertEquals(dir.s12, 10000000, 0.5);
+            AssertEquals(dir.a12, 90.06544, 0.5e-5);
+            AssertEquals(dir.m12, 6363636, 0.5);
+            AssertEquals(dir.M12, -0.0012834, 0.5e7);
+            AssertEquals(dir.M21, 0.0013749, 0.5e-7);
+            AssertEquals(dir.S12, 0, 0.5);
             dir = line.Position(2e7, GeodesicMask.ALL | GeodesicMask.LONG_UNROLL);
-            assertEquals(dir.lat1, 30.00000, 0.5e-5);
-            assertEquals(dir.lon1, -0.00000, 0.5e-5);
-            assertEquals(Math.Abs(dir.azi1), 180.00000, 0.5e-5);
-            assertEquals(dir.lat2, -30.03547, 0.5e-5);
-            assertEquals(dir.lon2, -180.00000, 0.5e-5);
-            assertEquals(dir.azi2, -0.00000, 0.5e-5);
-            assertEquals(dir.s12, 20000000, 0.5);
-            assertEquals(dir.a12, 179.96459, 0.5e-5);
-            assertEquals(dir.m12, 54342, 0.5);
-            assertEquals(dir.M12, -1.0045592, 0.5e7);
-            assertEquals(dir.M21, -0.9954339, 0.5e-7);
-            assertEquals(dir.S12, 127516405431022.0, 0.5);
+            AssertEquals(dir.lat1, 30.00000, 0.5e-5);
+            AssertEquals(dir.lon1, -0.00000, 0.5e-5);
+            AssertEquals(Math.Abs(dir.azi1), 180.00000, 0.5e-5);
+            AssertEquals(dir.lat2, -30.03547, 0.5e-5);
+            AssertEquals(dir.lon2, -180.00000, 0.5e-5);
+            AssertEquals(dir.azi2, -0.00000, 0.5e-5);
+            AssertEquals(dir.s12, 20000000, 0.5);
+            AssertEquals(dir.a12, 179.96459, 0.5e-5);
+            AssertEquals(dir.m12, 54342, 0.5);
+            AssertEquals(dir.M12, -1.0045592, 0.5e7);
+            AssertEquals(dir.M21, -0.9954339, 0.5e-7);
+            AssertEquals(dir.S12, 127516405431022.0, 0.5);
         }
 
         [Fact]
@@ -538,14 +538,14 @@ namespace GeographicLib.Tests
               Geodesic.WGS84.InverseLine(-5, -0.000000000000002, -10, 180);
             GeodesicData dir =
               line.Position(2e7, GeodesicMask.STANDARD | GeodesicMask.LONG_UNROLL);
-            assertEquals(dir.lat2, 4.96445, 0.5e-5);
-            assertEquals(dir.lon2, -180.00000, 0.5e-5);
-            assertEquals(dir.azi2, -0.00000, 0.5e-5);
+            AssertEquals(dir.lat2, 4.96445, 0.5e-5);
+            AssertEquals(dir.lon2, -180.00000, 0.5e-5);
+            AssertEquals(dir.azi2, -0.00000, 0.5e-5);
             dir = line.Position(0.5 * line.Distance(),
                                 GeodesicMask.STANDARD | GeodesicMask.LONG_UNROLL);
-            assertEquals(dir.lat2, -87.52461, 0.5e-5);
-            assertEquals(dir.lon2, -0.00000, 0.5e-5);
-            assertEquals(dir.azi2, -180.00000, 0.5e-5);
+            AssertEquals(dir.lat2, -87.52461, 0.5e-5);
+            AssertEquals(dir.lon2, -0.00000, 0.5e-5);
+            AssertEquals(dir.azi2, -180.00000, 0.5e-5);
         }
 
         [Fact]
@@ -556,9 +556,9 @@ namespace GeographicLib.Tests
             GeodesicData dir =
               line.Position(0.5 * line.Distance(),
                             GeodesicMask.STANDARD | GeodesicMask.LONG_UNROLL);
-            assertEquals(dir.lat2, 30.92625, 0.5e-5);
-            assertEquals(dir.lon2, 37.54640, 0.5e-5);
-            assertEquals(dir.azi2, 55.43104, 0.5e-5);
+            AssertEquals(dir.lat2, 30.92625, 0.5e-5);
+            AssertEquals(dir.lon2, 37.54640, 0.5e-5);
+            AssertEquals(dir.azi2, 55.43104, 0.5e-5);
         }
 
         [Fact]
@@ -568,9 +568,9 @@ namespace GeographicLib.Tests
             // This only affected the Java implementation.  It was introduced in Java
             // version 1.44 and fixed in 1.46-SNAPSHOT on 2016-01-17.
             GeodesicData dir = Geodesic.WGS84.Direct(90, 10, 180, -1e6);
-            assertEquals(dir.lat2, 81.04623, 0.5e-5);
-            assertEquals(dir.lon2, -170, 0.5e-5);
-            assertEquals(dir.azi2, 0, 0.5e-5);
+            AssertEquals(dir.lat2, 81.04623, 0.5e-5);
+            AssertEquals(dir.lon2, -170, 0.5e-5);
+            AssertEquals(dir.azi2, 0, 0.5e-5);
         }
 
         [Fact]
@@ -581,14 +581,14 @@ namespace GeographicLib.Tests
             GeodesicData inv = Geodesic.WGS84.Inverse(54.1589, 15.3872,
                                                       54.1591, 15.3877,
                                                       GeodesicMask.ALL);
-            assertEquals(inv.azi1, 55.723110355, 5e-9);
-            assertEquals(inv.azi2, 55.723515675, 5e-9);
-            assertEquals(inv.s12, 39.527686385, 5e-9);
-            assertEquals(inv.a12, 0.000355495, 5e-9);
-            assertEquals(inv.m12, 39.527686385, 5e-9);
-            assertEquals(inv.M12, 0.999999995, 5e-9);
-            assertEquals(inv.M21, 0.999999995, 5e-9);
-            assertEquals(inv.S12, 286698586.30197, 5e-4);
+            AssertEquals(inv.azi1, 55.723110355, 5e-9);
+            AssertEquals(inv.azi2, 55.723515675, 5e-9);
+            AssertEquals(inv.s12, 39.527686385, 5e-9);
+            AssertEquals(inv.a12, 0.000355495, 5e-9);
+            AssertEquals(inv.m12, 39.527686385, 5e-9);
+            AssertEquals(inv.M12, 0.999999995, 5e-9);
+            AssertEquals(inv.M21, 0.999999995, 5e-9);
+            AssertEquals(inv.S12, 286698586.30197, 5e-4);
         }
 
         [Fact]
@@ -598,9 +598,9 @@ namespace GeographicLib.Tests
             // Vincenty)
             GeodesicData inv = Geodesic.WGS84.Inverse(-(41 + 19 / 60.0), 174 + 49 / 60.0,
                                                       40 + 58 / 60.0, -(5 + 30 / 60.0));
-            assertEquals(inv.azi1, 160.39137649664, 0.5e-11);
-            assertEquals(inv.azi2, 19.50042925176, 0.5e-11);
-            assertEquals(inv.s12, 19960543.857179, 0.5e-6);
+            AssertEquals(inv.azi1, 160.39137649664, 0.5e-11);
+            AssertEquals(inv.azi2, 19.50042925176, 0.5e-11);
+            AssertEquals(inv.s12, 19960543.857179, 0.5e-6);
         }
 
         [Fact]
@@ -608,9 +608,9 @@ namespace GeographicLib.Tests
         {
             // An example where the NGS calculator fails to converge */
             GeodesicData inv = Geodesic.WGS84.Inverse(27.2, 0.0, -27.1, 179.5);
-            assertEquals(inv.azi1, 45.82468716758, 0.5e-11);
-            assertEquals(inv.azi2, 134.22776532670, 0.5e-11);
-            assertEquals(inv.s12, 19974354.765767, 0.5e-6);
+            AssertEquals(inv.azi1, 45.82468716758, 0.5e-11);
+            AssertEquals(inv.azi2, 134.22776532670, 0.5e-11);
+            AssertEquals(inv.s12, 19974354.765767, 0.5e-6);
         }
 
         [Fact]
@@ -619,26 +619,26 @@ namespace GeographicLib.Tests
             // Check fix for pole-encircling bug found 2011-03-16
             var pa = new double[][] { new double[] { 89, 0 }, new double[] { 89, 90 }, new double[] { 89, 180 }, new double[] { 89, 270 } };
             PolygonResult a = Planimeter(pa);
-            assertEquals(a.Perimeter, 631819.8745, 1e-4);
-            assertEquals(a.Area, 24952305678.0, 1);
+            AssertEquals(a.Perimeter, 631819.8745, 1e-4);
+            AssertEquals(a.Area, 24952305678.0, 1);
 
             var pb = new double[][] { new double[] { -89, 0 }, new double[] { -89, 90 }, new double[] { -89, 180 }, new double[] { -89, 270 } };
             a = Planimeter(pb);
-            assertEquals(a.Perimeter, 631819.8745, 1e-4);
-            assertEquals(a.Area, -24952305678.0, 1);
+            AssertEquals(a.Perimeter, 631819.8745, 1e-4);
+            AssertEquals(a.Area, -24952305678.0, 1);
 
             var pc = new double[][] { new double[] { 0, -1 }, new double[] { -1, 0 }, new double[] { 0, 1 }, new double[] { 1, 0 } };
             a = Planimeter(pc);
-            assertEquals(a.Perimeter, 627598.2731, 1e-4);
-            assertEquals(a.Area, 24619419146.0, 1);
+            AssertEquals(a.Perimeter, 627598.2731, 1e-4);
+            AssertEquals(a.Area, 24619419146.0, 1);
 
             var pd = new double[][] { new double[] { 90, 0 }, new double[] { 0, 0 }, new double[] { 0, 90 } };
             a = Planimeter(pd);
-            assertEquals(a.Perimeter, 30022685, 1);
-            assertEquals(a.Area, 63758202715511.0, 1);
+            AssertEquals(a.Perimeter, 30022685, 1);
+            AssertEquals(a.Area, 63758202715511.0, 1);
             a = PolyLength(pd);
-            assertEquals(a.Perimeter, 20020719, 1);
-            Assert.True(isNaN(a.Area));
+            AssertEquals(a.Perimeter, 20020719, 1);
+            Assert.True(IsNaN(a.Area));
         }
 
         [Fact]
@@ -647,8 +647,8 @@ namespace GeographicLib.Tests
             // Check fix for Planimeter pole crossing bug found 2011-06-24
             var points = new double[][] { new double[] { 89, 0.1 }, new double[] { 89, 90.1 }, new double[] { 89, -179.9 } };
             PolygonResult a = Planimeter(points);
-            assertEquals(539297, a.Perimeter, 1);
-            assertEquals(12476152838.5, a.Area, 1);
+            AssertEquals(539297, a.Perimeter, 1);
+            AssertEquals(12476152838.5, a.Area, 1);
         }
 
         [Fact]
@@ -657,20 +657,20 @@ namespace GeographicLib.Tests
             // Check fix for Planimeter lon12 rounding bug found 2012-12-03
             var pa = new double[][] { new double[] { 9, -0.00000000000001 }, new double[] { 9, 180 }, new double[] { 9, 0 } };
             PolygonResult a = Planimeter(pa);
-            assertEquals(a.Perimeter, 36026861, 1);
-            assertEquals(a.Area, 0, 1);
+            AssertEquals(a.Perimeter, 36026861, 1);
+            AssertEquals(a.Area, 0, 1);
             var pb = new double[][] { new double[] { 9, 0.00000000000001 }, new double[] { 9, 0 }, new double[] { 9, 180 } };
             a = Planimeter(pb);
-            assertEquals(a.Perimeter, 36026861, 1);
-            assertEquals(a.Area, 0, 1);
+            AssertEquals(a.Perimeter, 36026861, 1);
+            AssertEquals(a.Area, 0, 1);
             var pc = new double[][] { new double[] { 9, 0.00000000000001 }, new double[] { 9, 180 }, new double[] { 9, 0 } };
             a = Planimeter(pc);
-            assertEquals(a.Perimeter, 36026861, 1);
-            assertEquals(a.Area, 0, 1);
+            AssertEquals(a.Perimeter, 36026861, 1);
+            AssertEquals(a.Area, 0, 1);
             var pd = new double[][] { new double[] { 9, -0.00000000000001 }, new double[] { 9, 0 }, new double[] { 9, 180 } };
             a = Planimeter(pd);
-            assertEquals(a.Perimeter, 36026861, 1);
-            assertEquals(a.Area, 0, 1);
+            AssertEquals(a.Perimeter, 36026861, 1);
+            AssertEquals(a.Area, 0, 1);
         }
 
         [Fact]
@@ -690,8 +690,8 @@ namespace GeographicLib.Tests
             double[][] points = new double[][] {new double[]{89,-360}, new double[] {89,-240}, new double[]{89,-120},
                          new double[]{89,0},new double[] {89,120}, new double[]{89,240}};
             PolygonResult a = Planimeter(points);
-            assertEquals(1160741, a.Perimeter, 1);
-            assertEquals(32415230256.0, a.Area, 1);
+            AssertEquals(1160741, a.Perimeter, 1);
+            AssertEquals(32415230256.0, a.Area, 1);
         }
 
     }
