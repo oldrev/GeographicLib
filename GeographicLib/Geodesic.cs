@@ -204,7 +204,7 @@ namespace GeographicLib
      *   }
      * }}</pre>
      **********************************************************************/
-    public unsafe struct Geodesic
+    public sealed class Geodesic
     {
 
         /**
@@ -242,9 +242,7 @@ namespace GeographicLib
 
         internal readonly double _a, _f, _f1, _e2, _ep2, _b, _c2;
         private readonly double _n, _etol2;
-        private fixed double _A3x[nA3x_];
-        private fixed double _C3x[nC3x_];
-        private fixed double _C4x[nC4x_];
+        private readonly double[] _A3x, _C3x, _C4x;
 
         /**
          * Constructor for a ellipsoid with
@@ -286,11 +284,9 @@ namespace GeographicLib
                 throw new GeographicErr("Equatorial radius is not positive");
             if (!(GeoMath.IsFinite(_b) && _b > 0))
                 throw new GeographicErr("Polar semi-axis is not positive");
-            /*
-                _A3x = new double[nA3x_];
-                _C3x = new double[nC3x_];
-                _C4x = new double[nC4x_];
-                */
+            _A3x = new double[nA3x_];
+            _C3x = new double[nC3x_];
+            _C4x = new double[nC4x_];
 
             A3coeff();
             C3coeff();
@@ -640,32 +636,34 @@ namespace GeographicLib
             return Inverse(lat1, lon1, lat2, lon2, GeodesicMask.STANDARD);
         }
 
-        private struct InverseData
+        internal struct InverseData
         {
-            public GeodesicData geodesic;
-            public double salp1, calp1, salp2, calp2;
+            private GeodesicData _g;
 
-            public static InverseData NaN
+            internal GeodesicData Geodesic => _g;
+            internal double salp1, calp1, salp2, calp2;
+
+            internal static InverseData NaN
             {
                 get
                 {
                     var self = new InverseData();
-                    self.geodesic = GeodesicData.NaN;
+                    self._g = GeodesicData.NaN;
                     self.salp1 = self.calp1 = self.salp2 = self.calp2 = Double.NaN;
                     return self;
                 }
             }
         }
 
-        private unsafe InverseData InverseInt(double lat1, double lon1,
+        private InverseData InverseInt(double lat1, double lon1,
                                        double lat2, double lon2, int outmask)
         {
             InverseData result = InverseData.NaN;
             // Compute longitude difference (AngDiff does this carefully).  Result is
             // in [-180, 180] but -180 is only for west-going geodesics.  180 is for
             // east-going and meridional geodesics.
-            result.geodesic.lat1 = lat1 = GeoMath.LatFix(lat1);
-            result.geodesic.lat2 = lat2 = GeoMath.LatFix(lat2);
+            result.Geodesic.lat1 = lat1 = GeoMath.LatFix(lat1);
+            result.Geodesic.lat2 = lat2 = GeoMath.LatFix(lat2);
             // If really close to the equator, treat as on equator.
             lat1 = GeoMath.AngRound(lat1);
             lat2 = GeoMath.AngRound(lat2);
@@ -676,13 +674,13 @@ namespace GeographicLib
             }
             if ((outmask & GeodesicMask.LONG_UNROLL) != 0)
             {
-                result.geodesic.lon1 = lon1;
-                result.geodesic.lon2 = (lon1 + lon12) + lon12s;
+                result.Geodesic.lon1 = lon1;
+                result.Geodesic.lon2 = (lon1 + lon12) + lon12s;
             }
             else
             {
-                result.geodesic.lon1 = GeoMath.AngNormalize(lon1);
-                result.geodesic.lon2 = GeoMath.AngNormalize(lon2);
+                result.Geodesic.lon1 = GeoMath.AngNormalize(lon1);
+                result.Geodesic.lon2 = GeoMath.AngNormalize(lon2);
             }
             // Make longitude difference positive.
             int lonsign = lon12 >= 0 ? 1 : -1;
@@ -766,15 +764,9 @@ namespace GeographicLib
             double a12, sig12, calp1, salp1, calp2, salp2;
             a12 = sig12 = calp1 = salp1 = calp2 = salp2 = Double.NaN;
             // index zero elements of these arrays are unused
-
-            var pC1a = stackalloc double[nC1_ + 1];
-            var C1a = new Span<double>(pC1a, nC1_ + 1);
-
-            var pC2a = stackalloc double[nC2_ + 1];
-            var C2a = new Span<double>(pC2a, nC2_ + 1);
-
-            var pC3a = stackalloc double[nC3_];
-            var C3a = new Span<double>(pC3a, nC3_);
+            double[] C1a = new double[nC1_ + 1];
+            double[] C2a = new double[nC2_ + 1];
+            double[] C3a = new double[nC3_];
 
             bool meridian = lat1 == -90 || slam12 == 0;
 
@@ -804,8 +796,8 @@ namespace GeographicLib
                     s12x = v.s12b; m12x = v.m12b;
                     if ((outmask & GeodesicMask.GEODESICSCALE) != 0)
                     {
-                        result.geodesic.M12 = v.M12;
-                        result.geodesic.M21 = v.M21;
+                        result.Geodesic.M12 = v.M12;
+                        result.Geodesic.M21 = v.M21;
                     }
                 }
                 // Add the check for sig12 since zero length geodesics might yield m12 <
@@ -842,7 +834,7 @@ namespace GeographicLib
                 sig12 = omg12 = lam12 / _f1;
                 m12x = _b * Math.Sin(sig12);
                 if ((outmask & GeodesicMask.GEODESICSCALE) != 0)
-                    result.geodesic.M12 = result.geodesic.M21 = Math.Cos(sig12);
+                    result.Geodesic.M12 = result.Geodesic.M21 = Math.Cos(sig12);
                 a12 = lon12 / _f1;
 
             }
@@ -871,7 +863,7 @@ namespace GeographicLib
                     s12x = sig12 * _b * dnm;
                     m12x = GeoMath.Sq(dnm) * _b * Math.Sin(sig12 / dnm);
                     if ((outmask & GeodesicMask.GEODESICSCALE) != 0)
-                        result.geodesic.M12 = result.geodesic.M21 = Math.Cos(sig12 / dnm);
+                        result.Geodesic.M12 = result.Geodesic.M21 = Math.Cos(sig12 / dnm);
                     a12 = GeoMath.ToDegrees(sig12);
                     omg12 = lam12 / (_f1 * dnm);
                 }
@@ -973,8 +965,8 @@ namespace GeographicLib
                         s12x = v.s12b; m12x = v.m12b;
                         if ((outmask & GeodesicMask.GEODESICSCALE) != 0)
                         {
-                            result.geodesic.M12 = v.M12;
-                            result.geodesic.M21 = v.M21;
+                            result.Geodesic.M12 = v.M12;
+                            result.Geodesic.M21 = v.M21;
                         }
                     }
                     m12x *= _b;
@@ -991,10 +983,10 @@ namespace GeographicLib
             }
 
             if ((outmask & GeodesicMask.DISTANCE) != 0)
-                result.geodesic.s12 = 0 + s12x;           // Convert -0 to 0
+                result.Geodesic.s12 = 0 + s12x;           // Convert -0 to 0
 
             if ((outmask & GeodesicMask.REDUCEDLENGTH) != 0)
-                result.geodesic.m12 = 0 + m12x;           // Convert -0 to 0
+                result.Geodesic.m12 = 0 + m12x;           // Convert -0 to 0
 
             if ((outmask & GeodesicMask.AREA) != 0)
             {
@@ -1021,17 +1013,15 @@ namespace GeographicLib
                         Pair p = GeoMath.Norm(ssig2, csig2);
                         ssig2 = p.First; csig2 = p.Second;
                     }
-
-                    var pC4a = stackalloc double[nC4_];
-                    var C4a = new Span<double>(pC4a, nC4_);
+                    double[] C4a = new double[nC4_];
                     C4f(eps, C4a);
                     double B41 = SinCosSeries(false, ssig1, csig1, C4a),
                       B42 = SinCosSeries(false, ssig2, csig2, C4a);
-                    result.geodesic.S12 = A4 * (B42 - B41);
+                    result.Geodesic.S12 = A4 * (B42 - B41);
                 }
                 else
                     // Avoid problems with indeterminate sig1, sig2 on equator
-                    result.geodesic.S12 = 0;
+                    result.Geodesic.S12 = 0;
 
                 if (!meridian && somg12 > 1)
                 {
@@ -1067,10 +1057,10 @@ namespace GeographicLib
                     }
                     alp12 = Math.Atan2(salp12, calp12);
                 }
-                result.geodesic.S12 += _c2 * alp12;
-                result.geodesic.S12 *= swapp * lonsign * latsign;
+                result.Geodesic.S12 += _c2 * alp12;
+                result.Geodesic.S12 *= swapp * lonsign * latsign;
                 // Convert -0 to 0
-                result.geodesic.S12 += 0;
+                result.Geodesic.S12 += 0;
             }
 
             // Convert calp, salp to azimuth accounting for lonsign, swapp, latsign.
@@ -1080,9 +1070,9 @@ namespace GeographicLib
                 { double t = calp1; calp1 = calp2; calp2 = t; }
                 if ((outmask & GeodesicMask.GEODESICSCALE) != 0)
                 {
-                    double t = result.geodesic.M12;
-                    result.geodesic.M12 = result.geodesic.M21;
-                    result.geodesic.M21 = t;
+                    double t = result.Geodesic.M12;
+                    result.Geodesic.M12 = result.Geodesic.M21;
+                    result.Geodesic.M21 = t;
                 }
             }
 
@@ -1090,7 +1080,7 @@ namespace GeographicLib
             salp2 *= swapp * lonsign; calp2 *= swapp * latsign;
 
             // Returned value in [0, 180]
-            result.geodesic.a12 = a12;
+            result.Geodesic.a12 = a12;
             result.salp1 = salp1;
             result.calp1 = calp1;
             result.salp2 = salp2;
@@ -1145,7 +1135,7 @@ namespace GeographicLib
         {
             outmask &= GeodesicMask.OUT_MASK;
             InverseData result = InverseInt(lat1, lon1, lat2, lon2, outmask);
-            GeodesicData r = result.geodesic;
+            GeodesicData r = result.Geodesic;
             if ((outmask & GeodesicMask.AZIMUTH) != 0)
             {
                 r.azi1 = GeoMath.Atan2d(result.salp1, result.calp1);
@@ -1201,7 +1191,7 @@ namespace GeographicLib
         {
             InverseData result = InverseInt(lat1, lon1, lat2, lon2, 0);
             double salp1 = result.salp1, calp1 = result.calp1,
-              azi1 = GeoMath.Atan2d(salp1, calp1), a12 = result.geodesic.a12;
+              azi1 = GeoMath.Atan2d(salp1, calp1), a12 = result.Geodesic.a12;
             // Ensure that a12 can be converted to a distance
             if ((caps & (GeodesicMask.OUT_MASK & GeodesicMask.DISTANCE_IN)) != 0)
                 caps |= GeodesicMask.DISTANCE;
@@ -1304,9 +1294,9 @@ namespace GeographicLib
          * A global instantiation of Geodesic with the parameters for the WGS84
          * ellipsoid.
          **********************************************************************/
-        private static readonly Lazy<Geodesic> _wgs84 = new Lazy<Geodesic>(() => new Geodesic(Constants.WGS84_a, Constants.WGS84_f), true);
+        private static readonly Geodesic _wgs84 = new Geodesic(Constants.WGS84_a, Constants.WGS84_f);
 
-        public static Geodesic WGS84 => _wgs84.Value;
+        public static Geodesic WGS84 => _wgs84;
 
         // This is a reformulation of the geodesic problem.  The notation is as
         // follows:
@@ -1329,7 +1319,7 @@ namespace GeographicLib
 
         internal static double SinCosSeries(bool sinp,
                                              double sinx, double cosx,
-                                             Span<double> c)
+                                             double[] c)
         {
             // Evaluate
             // y = sinp ? sum(c[i] * sin( 2*i    * x), i, 1, n) :
@@ -1382,7 +1372,7 @@ namespace GeographicLib
                                  double cbet1, double cbet2,
                                  int outmask,
                                  // Scratch areas of the right size
-                                 Span<double> C1a, Span<double> C2a)
+                                 double[] C1a, double[] C2a)
         {
             // Return m12b = (reduced length)/_b; also calculate s12b = distance/_b,
             // and m0 = coefficient of secular term in expression for reduced length.
@@ -1536,7 +1526,7 @@ namespace GeographicLib
                                            double lam12,
                                            double slam12, double clam12,
                                            // Scratch areas of the right size
-                                           Span<double> C1a, Span<double> C2a)
+                                           double[] C1a, double[] C2a)
         {
             // Return a starting point for Newton's method in salp1 and calp1 (function
             // value is -1).  If Newton's method doesn't need to be used, return also
@@ -1743,7 +1733,7 @@ namespace GeographicLib
                                    double slam120, double clam120,
                                    bool diffp,
                                    // Scratch areas of the right size
-                                   Span<double> C1a, Span<double> C2a, Span<double> C3a)
+                                   double[] C1a, double[] C2a, double[] C3a)
         {
             // Object to hold lam12, salp2, calp2, sig12, ssig1, csig1, ssig2, csig2,
             // eps, domg12, dlam12;
@@ -1835,13 +1825,10 @@ namespace GeographicLib
         internal double A3f(double eps)
         {
             // Evaluate A3
-            fixed (double* pA3x = _A3x)
-            {
-                return GeoMath.Polyval(nA3_ - 1, pA3x, 0, eps);
-            }
+            return GeoMath.Polyval(nA3_ - 1, _A3x, 0, eps);
         }
 
-        internal void C3f(double eps, Span<double> c)
+        internal void C3f(double eps, double[] c)
         {
             // Evaluate C3 coeffs
             // Elements c[1] thru c[nC3_ - 1] are set
@@ -1851,15 +1838,12 @@ namespace GeographicLib
             { // l is index of C3[l]
                 int m = nC3_ - l - 1;          // order of polynomial in eps
                 mult *= eps;
-                fixed (double* pC3x = _C3x)
-                {
-                    c[l] = mult * GeoMath.Polyval(m, pC3x, o, eps);
-                }
+                c[l] = mult * GeoMath.Polyval(m, _C3x, o, eps);
                 o += m + 1;
             }
         }
 
-        internal void C4f(double eps, Span<double> c)
+        internal void C4f(double eps, double[] c)
         {
             // Evaluate C4 coeffs
             // Elements c[0] thru c[nC4_ - 1] are set
@@ -1868,29 +1852,28 @@ namespace GeographicLib
             for (int l = 0; l < nC4_; ++l)
             { // l is index of C4[l]
                 int m = nC4_ - l - 1;          // order of polynomial in eps
-                fixed (double* pC4x = _C4x)
-                {
-                    c[l] = mult * GeoMath.Polyval(m, pC4x, o, eps);
-                }
+                c[l] = mult * GeoMath.Polyval(m, _C4x, o, eps);
                 o += m + 1;
                 mult *= eps;
             }
         }
 
-        private static readonly double[] s_A1m1f_coeff = new double[] {
-            // (1-eps)*A1-1, polynomial in eps2 of order 3
-            1, 4, 64, 0, 256,
-        };
-
         // The scale factor A1-1 = mean value of (d/dsigma)I1 - 1
         internal static double A1m1f(double eps)
         {
+            double[] coeff = {
+              // (1-eps)*A1-1, polynomial in eps2 of order 3
+              1, 4, 64, 0, 256,
+            };
             int m = nA1_ / 2;
-            double t = GeoMath.Polyval(m, s_A1m1f_coeff, 0, GeoMath.Sq(eps)) / s_A1m1f_coeff[m + 1];
+            double t = GeoMath.Polyval(m, coeff, 0, GeoMath.Sq(eps)) / coeff[m + 1];
             return (t + eps) / (1 - eps);
         }
 
-        private static readonly double[] s_C1f_coeff = new double[] {
+        // The coefficients C1[l] in the Fourier expansion of B1
+        internal static void C1f(double eps, double[] c)
+        {
+            double[] coeff = {
               // C1[1]/eps^1, polynomial in eps2 of order 2
               -1, 6, -16, 32,
               // C1[2]/eps^2, polynomial in eps2 of order 2
@@ -1903,11 +1886,7 @@ namespace GeographicLib
               -7, 1280,
               // C1[6]/eps^6, polynomial in eps2 of order 0
               -7, 2048,
-        };
-
-        // The coefficients C1[l] in the Fourier expansion of B1
-        internal static void C1f(double eps, Span<double> c)
-        {
+            };
             double
               eps2 = GeoMath.Sq(eps),
               d = eps;
@@ -1915,224 +1894,211 @@ namespace GeographicLib
             for (int l = 1; l <= nC1_; ++l)
             { // l is index of C1p[l]
                 int m = (nC1_ - l) / 2;         // order of polynomial in eps^2
-                c[l] = d * GeoMath.Polyval(m, s_C1f_coeff, o, eps2) / s_C1f_coeff[o + m + 1];
+                c[l] = d * GeoMath.Polyval(m, coeff, o, eps2) / coeff[o + m + 1];
                 o += m + 2;
                 d *= eps;
             }
         }
 
-        private static readonly double[] s_C1pf_coeff = new double[] {
-            // C1p[1]/eps^1, polynomial in eps2 of order 2
-            205, -432, 768, 1536,
-            // C1p[2]/eps^2, polynomial in eps2 of order 2
-            4005, -4736, 3840, 12288,
-            // C1p[3]/eps^3, polynomial in eps2 of order 1
-            -225, 116, 384,
-            // C1p[4]/eps^4, polynomial in eps2 of order 1
-            -7173, 2695, 7680,
-            // C1p[5]/eps^5, polynomial in eps2 of order 0
-            3467, 7680,
-            // C1p[6]/eps^6, polynomial in eps2 of order 0
-            38081, 61440,
-        };
-
         // The coefficients C1p[l] in the Fourier expansion of B1p
-        internal static void C1pf(double eps, Span<double> c)
+        internal static void C1pf(double eps, double[] c)
         {
-            double eps2 = GeoMath.Sq(eps),
+            double[] coeff = {
+                // C1p[1]/eps^1, polynomial in eps2 of order 2
+                205, -432, 768, 1536,
+                // C1p[2]/eps^2, polynomial in eps2 of order 2
+                4005, -4736, 3840, 12288,
+                // C1p[3]/eps^3, polynomial in eps2 of order 1
+                -225, 116, 384,
+                // C1p[4]/eps^4, polynomial in eps2 of order 1
+                -7173, 2695, 7680,
+                // C1p[5]/eps^5, polynomial in eps2 of order 0
+                3467, 7680,
+                // C1p[6]/eps^6, polynomial in eps2 of order 0
+                38081, 61440,
+            };
+            double
+              eps2 = GeoMath.Sq(eps),
               d = eps;
             int o = 0;
             for (int l = 1; l <= nC1p_; ++l)
             { // l is index of C1p[l]
                 int m = (nC1p_ - l) / 2;         // order of polynomial in eps^2
-                c[l] = d * GeoMath.Polyval(m, s_C1pf_coeff, o, eps2) / s_C1pf_coeff[o + m + 1];
+                c[l] = d * GeoMath.Polyval(m, coeff, o, eps2) / coeff[o + m + 1];
                 o += m + 2;
                 d *= eps;
             }
         }
-
-        private static readonly double[] s_A2m1f_coeff = new double[]
-        {
-            // (eps+1)*A2-1, polynomial in eps2 of order 3
-            -11, -28, -192, 0, 256,
-        };
 
         // The scale factor A2-1 = mean value of (d/dsigma)I2 - 1
         internal static double A2m1f(double eps)
         {
+            double[] coeff = {
+                // (eps+1)*A2-1, polynomial in eps2 of order 3
+                -11, -28, -192, 0, 256,
+            };
             int m = nA2_ / 2;
-            double t = GeoMath.Polyval(m, s_A2m1f_coeff, 0, GeoMath.Sq(eps)) / s_A2m1f_coeff[m + 1];
+            double t = GeoMath.Polyval(m, coeff, 0, GeoMath.Sq(eps)) / coeff[m + 1];
             return (t - eps) / (1 + eps);
         }
 
-        private static readonly double[] s_C2f_coeff = new double[] {
-            // C2[1]/eps^1, polynomial in eps2 of order 2
-            1, 2, 16, 32,
-            // C2[2]/eps^2, polynomial in eps2 of order 2
-            35, 64, 384, 2048,
-            // C2[3]/eps^3, polynomial in eps2 of order 1
-            15, 80, 768,
-            // C2[4]/eps^4, polynomial in eps2 of order 1
-            7, 35, 512,
-            // C2[5]/eps^5, polynomial in eps2 of order 0
-            63, 1280,
-            // C2[6]/eps^6, polynomial in eps2 of order 0
-            77, 2048,
-        };
-
         // The coefficients C2[l] in the Fourier expansion of B2
-        internal static void C2f(double eps, Span<double> c)
+        internal static void C2f(double eps, double[] c)
         {
-            double eps2 = GeoMath.Sq(eps), d = eps;
+            double[] coeff = {
+                // C2[1]/eps^1, polynomial in eps2 of order 2
+                1, 2, 16, 32,
+                // C2[2]/eps^2, polynomial in eps2 of order 2
+                35, 64, 384, 2048,
+                // C2[3]/eps^3, polynomial in eps2 of order 1
+                15, 80, 768,
+                // C2[4]/eps^4, polynomial in eps2 of order 1
+                7, 35, 512,
+                // C2[5]/eps^5, polynomial in eps2 of order 0
+                63, 1280,
+                // C2[6]/eps^6, polynomial in eps2 of order 0
+                77, 2048,
+            };
+
+            double
+              eps2 = GeoMath.Sq(eps),
+              d = eps;
             int o = 0;
             for (int l = 1; l <= nC2_; ++l)
             { // l is index of C2[l]
                 int m = (nC2_ - l) / 2;         // order of polynomial in eps^2
-                c[l] = d * GeoMath.Polyval(m, s_C2f_coeff, o, eps2) / s_C2f_coeff[o + m + 1];
+                c[l] = d * GeoMath.Polyval(m, coeff, o, eps2) / coeff[o + m + 1];
                 o += m + 2;
                 d *= eps;
             }
         }
 
-        private static readonly double[] s_A3coeff_coeff = new double[] {
-            // A3, coeff of eps^5, polynomial in n of order 0
-            -3, 128,
-            // A3, coeff of eps^4, polynomial in n of order 1
-            -2, -3, 64,
-            // A3, coeff of eps^3, polynomial in n of order 2
-            -1, -3, -1, 16,
-            // A3, coeff of eps^2, polynomial in n of order 2
-            3, -1, -2, 8,
-            // A3, coeff of eps^1, polynomial in n of order 1
-            1, -1, 2,
-            // A3, coeff of eps^0, polynomial in n of order 0
-            1, 1,
-        };
-
         // The scale factor A3 = mean value of (d/dsigma)I3
         internal void A3coeff()
         {
+            double[] coeff = {
+                // A3, coeff of eps^5, polynomial in n of order 0
+                -3, 128,
+                // A3, coeff of eps^4, polynomial in n of order 1
+                -2, -3, 64,
+                // A3, coeff of eps^3, polynomial in n of order 2
+                -1, -3, -1, 16,
+                // A3, coeff of eps^2, polynomial in n of order 2
+                3, -1, -2, 8,
+                // A3, coeff of eps^1, polynomial in n of order 1
+                1, -1, 2,
+                // A3, coeff of eps^0, polynomial in n of order 0
+                1, 1,
+            };
             int o = 0, k = 0;
             for (int j = nA3_ - 1; j >= 0; --j)
             { // coeff of eps^j
                 int m = Math.Min(nA3_ - j - 1, j);  // order of polynomial in n
-                fixed (double* pA3x = _A3x)
-                {
-                    pA3x[k++] = GeoMath.Polyval(m, s_A3coeff_coeff, o, _n) / s_A3coeff_coeff[o + m + 1];
-                }
+                _A3x[k++] = GeoMath.Polyval(m, coeff, o, _n) / coeff[o + m + 1];
                 o += m + 2;
             }
         }
 
-        private static readonly double[] s_C3coeff_coeff = new double[] {
-          // C3[1], coeff of eps^5, polynomial in n of order 0
-          3, 128,
-          // C3[1], coeff of eps^4, polynomial in n of order 1
-          2, 5, 128,
-          // C3[1], coeff of eps^3, polynomial in n of order 2
-          -1, 3, 3, 64,
-          // C3[1], coeff of eps^2, polynomial in n of order 2
-          -1, 0, 1, 8,
-          // C3[1], coeff of eps^1, polynomial in n of order 1
-          -1, 1, 4,
-          // C3[2], coeff of eps^5, polynomial in n of order 0
-          5, 256,
-          // C3[2], coeff of eps^4, polynomial in n of order 1
-          1, 3, 128,
-          // C3[2], coeff of eps^3, polynomial in n of order 2
-          -3, -2, 3, 64,
-          // C3[2], coeff of eps^2, polynomial in n of order 2
-          1, -3, 2, 32,
-          // C3[3], coeff of eps^5, polynomial in n of order 0
-          7, 512,
-          // C3[3], coeff of eps^4, polynomial in n of order 1
-          -10, 9, 384,
-          // C3[3], coeff of eps^3, polynomial in n of order 2
-          5, -9, 5, 192,
-          // C3[4], coeff of eps^5, polynomial in n of order 0
-          7, 512,
-          // C3[4], coeff of eps^4, polynomial in n of order 1
-          -14, 7, 512,
-          // C3[5], coeff of eps^5, polynomial in n of order 0
-          21, 2560,
-        };
-
         // The coefficients C3[l] in the Fourier expansion of B3
         internal void C3coeff()
         {
+            double[] coeff = {
+              // C3[1], coeff of eps^5, polynomial in n of order 0
+              3, 128,
+              // C3[1], coeff of eps^4, polynomial in n of order 1
+              2, 5, 128,
+              // C3[1], coeff of eps^3, polynomial in n of order 2
+              -1, 3, 3, 64,
+              // C3[1], coeff of eps^2, polynomial in n of order 2
+              -1, 0, 1, 8,
+              // C3[1], coeff of eps^1, polynomial in n of order 1
+              -1, 1, 4,
+              // C3[2], coeff of eps^5, polynomial in n of order 0
+              5, 256,
+              // C3[2], coeff of eps^4, polynomial in n of order 1
+              1, 3, 128,
+              // C3[2], coeff of eps^3, polynomial in n of order 2
+              -3, -2, 3, 64,
+              // C3[2], coeff of eps^2, polynomial in n of order 2
+              1, -3, 2, 32,
+              // C3[3], coeff of eps^5, polynomial in n of order 0
+              7, 512,
+              // C3[3], coeff of eps^4, polynomial in n of order 1
+              -10, 9, 384,
+              // C3[3], coeff of eps^3, polynomial in n of order 2
+              5, -9, 5, 192,
+              // C3[4], coeff of eps^5, polynomial in n of order 0
+              7, 512,
+              // C3[4], coeff of eps^4, polynomial in n of order 1
+              -14, 7, 512,
+              // C3[5], coeff of eps^5, polynomial in n of order 0
+              21, 2560,
+            };
             int o = 0, k = 0;
             for (int l = 1; l < nC3_; ++l)
             {        // l is index of C3[l]
                 for (int j = nC3_ - 1; j >= l; --j)
                 { // coeff of eps^j
                     int m = Math.Min(nC3_ - j - 1, j);  // order of polynomial in n
-                    fixed (double* pC3x = _C3x)
-                    {
-                        pC3x[k++] = GeoMath.Polyval(m, s_C3coeff_coeff, o, _n) / s_C3coeff_coeff[o + m + 1];
-                    }
+                    _C3x[k++] = GeoMath.Polyval(m, coeff, o, _n) / coeff[o + m + 1];
                     o += m + 2;
                 }
             }
         }
 
-
-        private static readonly double[] s_C4coeff_coeff = new double[] {
-          // C4[0], coeff of eps^5, polynomial in n of order 0
-          97, 15015,
-          // C4[0], coeff of eps^4, polynomial in n of order 1
-          1088, 156, 45045,
-          // C4[0], coeff of eps^3, polynomial in n of order 2
-          -224, -4784, 1573, 45045,
-          // C4[0], coeff of eps^2, polynomial in n of order 3
-          -10656, 14144, -4576, -858, 45045,
-          // C4[0], coeff of eps^1, polynomial in n of order 4
-          64, 624, -4576, 6864, -3003, 15015,
-          // C4[0], coeff of eps^0, polynomial in n of order 5
-          100, 208, 572, 3432, -12012, 30030, 45045,
-          // C4[1], coeff of eps^5, polynomial in n of order 0
-          1, 9009,
-          // C4[1], coeff of eps^4, polynomial in n of order 1
-          -2944, 468, 135135,
-          // C4[1], coeff of eps^3, polynomial in n of order 2
-          5792, 1040, -1287, 135135,
-          // C4[1], coeff of eps^2, polynomial in n of order 3
-          5952, -11648, 9152, -2574, 135135,
-          // C4[1], coeff of eps^1, polynomial in n of order 4
-          -64, -624, 4576, -6864, 3003, 135135,
-          // C4[2], coeff of eps^5, polynomial in n of order 0
-          8, 10725,
-          // C4[2], coeff of eps^4, polynomial in n of order 1
-          1856, -936, 225225,
-          // C4[2], coeff of eps^3, polynomial in n of order 2
-          -8448, 4992, -1144, 225225,
-          // C4[2], coeff of eps^2, polynomial in n of order 3
-          -1440, 4160, -4576, 1716, 225225,
-          // C4[3], coeff of eps^5, polynomial in n of order 0
-          -136, 63063,
-          // C4[3], coeff of eps^4, polynomial in n of order 1
-          1024, -208, 105105,
-          // C4[3], coeff of eps^3, polynomial in n of order 2
-          3584, -3328, 1144, 315315,
-          // C4[4], coeff of eps^5, polynomial in n of order 0
-          -128, 135135,
-          // C4[4], coeff of eps^4, polynomial in n of order 1
-          -2560, 832, 405405,
-          // C4[5], coeff of eps^5, polynomial in n of order 0
-          128, 99099,
-        };
-
         internal void C4coeff()
         {
+            double[] coeff = {
+              // C4[0], coeff of eps^5, polynomial in n of order 0
+              97, 15015,
+              // C4[0], coeff of eps^4, polynomial in n of order 1
+              1088, 156, 45045,
+              // C4[0], coeff of eps^3, polynomial in n of order 2
+              -224, -4784, 1573, 45045,
+              // C4[0], coeff of eps^2, polynomial in n of order 3
+              -10656, 14144, -4576, -858, 45045,
+              // C4[0], coeff of eps^1, polynomial in n of order 4
+              64, 624, -4576, 6864, -3003, 15015,
+              // C4[0], coeff of eps^0, polynomial in n of order 5
+              100, 208, 572, 3432, -12012, 30030, 45045,
+              // C4[1], coeff of eps^5, polynomial in n of order 0
+              1, 9009,
+              // C4[1], coeff of eps^4, polynomial in n of order 1
+              -2944, 468, 135135,
+              // C4[1], coeff of eps^3, polynomial in n of order 2
+              5792, 1040, -1287, 135135,
+              // C4[1], coeff of eps^2, polynomial in n of order 3
+              5952, -11648, 9152, -2574, 135135,
+              // C4[1], coeff of eps^1, polynomial in n of order 4
+              -64, -624, 4576, -6864, 3003, 135135,
+              // C4[2], coeff of eps^5, polynomial in n of order 0
+              8, 10725,
+              // C4[2], coeff of eps^4, polynomial in n of order 1
+              1856, -936, 225225,
+              // C4[2], coeff of eps^3, polynomial in n of order 2
+              -8448, 4992, -1144, 225225,
+              // C4[2], coeff of eps^2, polynomial in n of order 3
+              -1440, 4160, -4576, 1716, 225225,
+              // C4[3], coeff of eps^5, polynomial in n of order 0
+              -136, 63063,
+              // C4[3], coeff of eps^4, polynomial in n of order 1
+              1024, -208, 105105,
+              // C4[3], coeff of eps^3, polynomial in n of order 2
+              3584, -3328, 1144, 315315,
+              // C4[4], coeff of eps^5, polynomial in n of order 0
+              -128, 135135,
+              // C4[4], coeff of eps^4, polynomial in n of order 1
+              -2560, 832, 405405,
+              // C4[5], coeff of eps^5, polynomial in n of order 0
+              128, 99099,
+            };
             int o = 0, k = 0;
             for (int l = 0; l < nC4_; ++l)
             {        // l is index of C4[l]
                 for (int j = nC4_ - 1; j >= l; --j)
                 { // coeff of eps^j
                     int m = nC4_ - j - 1;               // order of polynomial in n
-                    fixed (double* pC4x = _C4x)
-                    {
-                        pC4x[k++] = GeoMath.Polyval(m, s_C4coeff_coeff, o, _n) / s_C4coeff_coeff[o + m + 1];
-                    }
+                    _C4x[k++] = GeoMath.Polyval(m, coeff, o, _n) / coeff[o + m + 1];
                     o += m + 2;
                 }
             }

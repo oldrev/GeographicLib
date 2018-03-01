@@ -29,10 +29,6 @@ namespace GeographicLib
         /// </summary>
         private double _s, _t;
 
-        public static Accumulator NaN => new Accumulator(double.NaN);
-
-        public static Accumulator Zero => new Accumulator(0D);
-
         /// <summary>
         ///  Construct from a double.
         /// </summary>

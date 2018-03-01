@@ -94,7 +94,7 @@ namespace GeographicLib
      *   }
      * }}</pre>
      **********************************************************************/
-    public unsafe struct GeodesicLine
+    public sealed class GeodesicLine
     {
 
         private const int nC1_ = Geodesic.nC1_;
@@ -103,23 +103,15 @@ namespace GeographicLib
         private const int nC3_ = Geodesic.nC3_;
         private const int nC4_ = Geodesic.nC4_;
 
-        private const int C1aSize = nC1_ + 1;
-        private const int C1paSize = nC1p_ + 1;
-        private const int C2aSize = nC2_ + 1;
-
-        private readonly double _lat1, _lon1, _azi1;
-        private readonly double _a, _f, _b, _c2, _f1, _salp0, _calp0, _k2,
+        private double _lat1, _lon1, _azi1;
+        private double _a, _f, _b, _c2, _f1, _salp0, _calp0, _k2,
           _salp1, _calp1, _ssig1, _csig1, _dn1, _stau1, _ctau1, _somg1, _comg1,
           _A1m1, _A2m1, _A3c, _B11, _B21, _B31, _A4, _B41;
         private double _a13, _s13;
         // index zero elements of _C1a, _C1pa, _C2a, _C3a are unused
-
-        private fixed double _C1a[C1aSize];
-        private fixed double _C1pa[C1paSize];
-        private fixed double _C2a[C2aSize];
-        private fixed double _C3a[nC3_];
-        private fixed double _C4a[nC4_];    // all the elements of _C4a are used
-        private readonly int _caps;
+        private double[] _C1a, _C1pa, _C2a, _C3a,
+          _C4a;    // all the elements of _C4a are used
+        private int _caps;
 
         /**
          * Constructor for a geodesic line staring at latitude <i>lat1</i>, longitude
@@ -137,7 +129,7 @@ namespace GeographicLib
          * fixed, writing <i>lat1</i> = &plusmn;(90&deg; &minus; &epsilon;), and
          * taking the limit &epsilon; &rarr; 0+.
          **********************************************************************/
-        public GeodesicLine(in Geodesic g,
+        public GeodesicLine(Geodesic g,
                             double lat1, double lon1, double azi1) :
             this(g, lat1, lon1, azi1, GeodesicMask.ALL)
         {
@@ -189,31 +181,25 @@ namespace GeographicLib
          *   <i>caps</i> |= {@link GeodesicMask#ALL} for all of the above.
          * </ul>
          **********************************************************************/
-        public GeodesicLine(in Geodesic g,
+        public GeodesicLine(Geodesic g,
                             double lat1, double lon1, double azi1,
-                            int caps) : this(g, lat1, lon1, azi1, double.NaN, double.NaN, caps, true)
+                            int caps)
         {
+            azi1 = GeoMath.AngNormalize(azi1);
+            double salp1, calp1;
+            // Guard against underflow in salp0
+            {
+                Pair p = GeoMath.Sincosd(GeoMath.AngRound(azi1));
+                salp1 = p.First; calp1 = p.Second;
+            }
+            LineInit(g, lat1, lon1, azi1, salp1, calp1, caps);
         }
 
-        private GeodesicLine(in Geodesic g,
+        private void LineInit(Geodesic g,
                               double lat1, double lon1,
                               double azi1, double salp1, double calp1,
-                              int caps, bool angNorm = false)
+                              int caps)
         {
-            _a13 = double.NaN;
-            _s13 = double.NaN;
-
-            if (angNorm)
-            {
-                azi1 = GeoMath.AngNormalize(azi1);
-                // Guard against underflow in salp0
-                {
-                    Pair p = GeoMath.Sincosd(GeoMath.AngRound(azi1));
-                    salp1 = p.First;
-                    calp1 = p.Second;
-                }
-            }
-
             _a = g._a;
             _f = g._f;
             _b = g._b;
@@ -266,13 +252,9 @@ namespace GeographicLib
             if ((_caps & GeodesicMask.CAP_C1) != 0)
             {
                 _A1m1 = Geodesic.A1m1f(eps);
-                //_C1a = new double[nC1_ + 1];
-                fixed (double* pC1a = _C1a)
-                {
-                    var spanC1a = new Span<double>(pC1a, C1aSize);
-                    Geodesic.C1f(eps, spanC1a);
-                    _B11 = Geodesic.SinCosSeries(true, _ssig1, _csig1, spanC1a);
-                }
+                _C1a = new double[nC1_ + 1];
+                Geodesic.C1f(eps, _C1a);
+                _B11 = Geodesic.SinCosSeries(true, _ssig1, _csig1, _C1a);
                 double s = Math.Sin(_B11), c = Math.Cos(_B11);
                 // tau1 = sig1 + B11
                 _stau1 = _ssig1 * c + _csig1 * s;
@@ -280,81 +262,49 @@ namespace GeographicLib
                 // Not necessary because C1pa reverts C1a
                 //    _B11 = -SinCosSeries(true, _stau1, _ctau1, _C1pa, nC1p_);
             }
-            else
-            {
-                _A1m1 = double.NaN;
-                _B11 = double.NaN;
-                _stau1 = double.NaN;
-                _ctau1 = double.NaN;
-            }
 
             if ((_caps & GeodesicMask.CAP_C1p) != 0)
             {
-                fixed (double* pC1pa = _C1pa)
-                {
-                    Geodesic.C1pf(eps, new Span<double>(pC1pa, C1paSize));
-                }
+                _C1pa = new double[nC1p_ + 1];
+                Geodesic.C1pf(eps, _C1pa);
             }
 
             if ((_caps & GeodesicMask.CAP_C2) != 0)
             {
-                fixed (double* pC2a = _C2a)
-                {
-                    var spanC2a = new Span<double>(pC2a, C2aSize);
-                    _A2m1 = Geodesic.A2m1f(eps);
-                    Geodesic.C2f(eps, spanC2a);
-                    _B21 = Geodesic.SinCosSeries(true, _ssig1, _csig1, spanC2a);
-                }
-            }
-            else
-            {
-                _A2m1 = double.NaN;
-                _B21 = double.NaN;
+                _C2a = new double[nC2_ + 1];
+                _A2m1 = Geodesic.A2m1f(eps);
+                Geodesic.C2f(eps, _C2a);
+                _B21 = Geodesic.SinCosSeries(true, _ssig1, _csig1, _C2a);
             }
 
             if ((_caps & GeodesicMask.CAP_C3) != 0)
             {
-                fixed (double* pC3a = _C3a)
-                {
-                    var spanC3a = new Span<double>(pC3a, nC3_);
-                    g.C3f(eps, spanC3a);
-                    _A3c = -_f * _salp0 * g.A3f(eps);
-                    _B31 = Geodesic.SinCosSeries(true, _ssig1, _csig1, spanC3a);
-                }
-            }
-            else
-            {
-                _A3c = double.NaN;
-                _B31 = double.NaN;
+                _C3a = new double[nC3_];
+                g.C3f(eps, _C3a);
+                _A3c = -_f * _salp0 * g.A3f(eps);
+                _B31 = Geodesic.SinCosSeries(true, _ssig1, _csig1, _C3a);
             }
 
             if ((_caps & GeodesicMask.CAP_C4) != 0)
             {
-                fixed (double* pC4a = _C4a)
-                {
-                    var spanC4a = new Span<double>(pC4a, nC4_);
-                    g.C4f(eps, spanC4a);
-                    // Multiplier = a^2 * e^2 * cos(alpha0) * sin(alpha0)
-                    _A4 = GeoMath.Sq(_a) * _calp0 * _salp0 * g._e2;
-                    _B41 = Geodesic.SinCosSeries(false, _ssig1, _csig1, spanC4a);
-                }
-            }
-            else
-            {
-                _A4 = double.NaN;
-                _B41 = double.NaN;
+                _C4a = new double[nC4_];
+                g.C4f(eps, _C4a);
+                // Multiplier = a^2 * e^2 * cos(alpha0) * sin(alpha0)
+                _A4 = GeoMath.Sq(_a) * _calp0 * _salp0 * g._e2;
+                _B41 = Geodesic.SinCosSeries(false, _ssig1, _csig1, _C4a);
             }
         }
 
-        internal GeodesicLine(in Geodesic g,
+        internal GeodesicLine(Geodesic g,
                                double lat1, double lon1,
                                double azi1, double salp1, double calp1,
-                               int caps, bool arcmode, double s13_a13) : this(g, lat1, lon1, azi1, salp1, calp1, caps)
+                               int caps, bool arcmode, double s13_a13)
         {
+            LineInit(g, lat1, lon1, azi1, salp1, calp1, caps);
             GenSetDistance(arcmode, s13_a13);
         }
 
-        /*
+        /**
          * A default constructor.  If GeodesicLine.Position is called on the
          * resulting object, it returns immediately (without doing any calculations).
          * The object can be set with a call to {@link Geodesic.Line}.  Use {@link
@@ -362,7 +312,7 @@ namespace GeographicLib
          * (This constructor was useful in C++, e.g., to allow vectors of
          * GeodesicLine objects.  It may not be needed in Java, so make it private.)
          **********************************************************************/
-
+        private GeodesicLine() { _caps = 0; }
 
         /**
          * Compute the position of point 2 which is a distance <i>s12</i> (meters)
@@ -532,10 +482,10 @@ namespace GeographicLib
                   s = Math.Sin(tau12),
                   c = Math.Cos(tau12);
                 // tau2 = tau1 + tau12
-                fixed (double* pC1pa = _C1pa)
-                {
-                    B12 = -Geodesic.SinCosSeries(true, _stau1 * c + _ctau1 * s, _ctau1 * c - _stau1 * s, new Span<double>(pC1pa, C1paSize));
-                }
+                B12 = -Geodesic.SinCosSeries(true,
+                                              _stau1 * c + _ctau1 * s,
+                                              _ctau1 * c - _stau1 * s,
+                                              _C1pa);
                 sig12 = tau12 - (B12 - _B11);
                 ssig12 = Math.Sin(sig12); csig12 = Math.Cos(sig12);
                 if (Math.Abs(_f) > 0.01)
@@ -565,10 +515,7 @@ namespace GeographicLib
                     double
                       ssig2_ = _ssig1 * csig12 + _csig1 * ssig12,
                       csig2_ = _csig1 * csig12 - _ssig1 * ssig12;
-                    fixed (double* pC1a = _C1a)
-                    {
-                        B12 = Geodesic.SinCosSeries(true, ssig2_, csig2_, new Span<double>(pC1a, C1aSize));
-                    }
+                    B12 = Geodesic.SinCosSeries(true, ssig2_, csig2_, _C1a);
                     double serr = (1 + _A1m1) * (sig12 + (B12 - _B11)) - s12_a12 / _b;
                     sig12 = sig12 - serr / Math.Sqrt(1 + _k2 * GeoMath.Sq(ssig2_));
                     ssig12 = Math.Sin(sig12); csig12 = Math.Cos(sig12);
@@ -586,12 +533,7 @@ namespace GeographicLib
                             GeodesicMask.GEODESICSCALE)) != 0)
             {
                 if (arcmode || Math.Abs(_f) > 0.01)
-                {
-                    fixed (double* pC1a = _C1a)
-                    {
-                        B12 = Geodesic.SinCosSeries(true, ssig2, csig2, new Span<double>(pC1a, C1aSize));
-                    }
-                }
+                    B12 = Geodesic.SinCosSeries(true, ssig2, csig2, _C1a);
                 AB1 = (1 + _A1m1) * (B12 - _B11);
             }
             // sin(bet2) = cos(alp0) * sin(sig2)
@@ -619,14 +561,9 @@ namespace GeographicLib
                          + (Math.Atan2(E * somg2, comg2) - Math.Atan2(E * _somg1, _comg1)))
                   : Math.Atan2(somg2 * _comg1 - comg2 * _somg1,
                                comg2 * _comg1 + somg2 * _somg1);
-
-                double lam12 = double.NaN;
-                fixed (double* pC3a = _C3a)
-                {
-                    var spanC3a = new Span<double>(pC3a, nC3_);
-                    lam12 = omg12 + _A3c *
-                      (sig12 + (Geodesic.SinCosSeries(true, ssig2, csig2, spanC3a) - _B31));
-                }
+                double lam12 = omg12 + _A3c *
+                  (sig12 + (Geodesic.SinCosSeries(true, ssig2, csig2, _C3a)
+                             - _B31));
                 double lon12 = GeoMath.ToDegrees(lam12);
                 r.lon2 = ((outmask & GeodesicMask.LONG_UNROLL) != 0) ? _lon1 + lon12 :
                   GeoMath.AngNormalize(r.lon1 + GeoMath.AngNormalize(lon12));
@@ -641,35 +578,27 @@ namespace GeographicLib
             if ((outmask &
                  (GeodesicMask.REDUCEDLENGTH | GeodesicMask.GEODESICSCALE)) != 0)
             {
-                fixed (double* pC2a = _C2a)
+                double
+                  B22 = Geodesic.SinCosSeries(true, ssig2, csig2, _C2a),
+                  AB2 = (1 + _A2m1) * (B22 - _B21),
+                  J12 = (_A1m1 - _A2m1) * sig12 + (AB1 - AB2);
+                if ((outmask & GeodesicMask.REDUCEDLENGTH) != 0)
+                    // Add parens around (_csig1 * ssig2) and (_ssig1 * csig2) to ensure
+                    // accurate cancellation in the case of coincident points.
+                    r.m12 = _b * ((dn2 * (_csig1 * ssig2) - _dn1 * (_ssig1 * csig2))
+                                - _csig1 * csig2 * J12);
+                if ((outmask & GeodesicMask.GEODESICSCALE) != 0)
                 {
-                    var spanC2a = new Span<double>(pC2a, C2aSize);
-                    double
-                      B22 = Geodesic.SinCosSeries(true, ssig2, csig2, spanC2a),
-                      AB2 = (1 + _A2m1) * (B22 - _B21),
-                      J12 = (_A1m1 - _A2m1) * sig12 + (AB1 - AB2);
-                    if ((outmask & GeodesicMask.REDUCEDLENGTH) != 0)
-                        // Add parens around (_csig1 * ssig2) and (_ssig1 * csig2) to ensure
-                        // accurate cancellation in the case of coincident points.
-                        r.m12 = _b * ((dn2 * (_csig1 * ssig2) - _dn1 * (_ssig1 * csig2))
-                                    - _csig1 * csig2 * J12);
-                    if ((outmask & GeodesicMask.GEODESICSCALE) != 0)
-                    {
-                        double t = _k2 * (ssig2 - _ssig1) * (ssig2 + _ssig1) / (_dn1 + dn2);
-                        r.M12 = csig12 + (t * ssig2 - csig2 * J12) * _ssig1 / _dn1;
-                        r.M21 = csig12 - (t * _ssig1 - _csig1 * J12) * ssig2 / dn2;
-                    }
+                    double t = _k2 * (ssig2 - _ssig1) * (ssig2 + _ssig1) / (_dn1 + dn2);
+                    r.M12 = csig12 + (t * ssig2 - csig2 * J12) * _ssig1 / _dn1;
+                    r.M21 = csig12 - (t * _ssig1 - _csig1 * J12) * ssig2 / dn2;
                 }
             }
 
             if ((outmask & GeodesicMask.AREA) != 0)
             {
-                var B42 = double.NaN;
-                fixed (double* pC4a = _C4a)
-                {
-                    var spanC4a = new Span<double>(pC4a, nC4_);
-                    B42 = Geodesic.SinCosSeries(false, ssig2, csig2, spanC4a);
-                }
+                double
+                  B42 = Geodesic.SinCosSeries(false, ssig2, csig2, _C4a);
                 double salp12, calp12;
                 if (_calp0 == 0 || _salp0 == 0)
                 {

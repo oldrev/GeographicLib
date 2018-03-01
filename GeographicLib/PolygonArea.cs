@@ -64,10 +64,10 @@ namespace GeographicLib
     public sealed class PolygonArea
     {
 
-        private readonly Geodesic _earth;
-        private readonly double _area0;        // Full ellipsoid area
-        private readonly bool _polyline;    // Assume polyline (don't close and skip area)
-        private readonly int _mask;
+        private Geodesic _earth;
+        private double _area0;        // Full ellipsoid area
+        private bool _polyline;    // Assume polyline (don't close and skip area)
+        private int _mask;
         private int _num;
         private int _crossings;
         private Accumulator _areasum, _perimetersum;
@@ -107,7 +107,7 @@ namespace GeographicLib
          * @param polyline if true that treat the points as defining a polyline
          *   instead of a polygon.
          **********************************************************************/
-        public PolygonArea(in Geodesic earth, bool polyline)
+        public PolygonArea(Geodesic earth, bool polyline)
         {
             _earth = earth;
             _area0 = _earth.EllipsoidArea();
@@ -116,15 +116,10 @@ namespace GeographicLib
               GeodesicMask.DISTANCE |
               (_polyline ? GeodesicMask.NONE :
                GeodesicMask.AREA | GeodesicMask.LONG_UNROLL);
-            _perimetersum = Accumulator.Zero;
-            if (!_polyline) _areasum = Accumulator.Zero;
-            else _areasum = Accumulator.NaN;
-
-            _num = 0;
-            _crossings = 0;
-            _perimetersum.Set(0);
-            if (!_polyline) _areasum.Set(0);
-            _lat0 = _lon0 = _lat1 = _lon1 = Double.NaN;
+            _perimetersum = new Accumulator(0);
+            if (!_polyline)
+                _areasum = new Accumulator(0);
+            Clear();
         }
 
         /**

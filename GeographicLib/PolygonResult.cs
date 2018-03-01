@@ -28,16 +28,16 @@ namespace GeographicLib
         /**
          * Constructor
          * <p>
-         * @param num the number of vertices in the polygon.
-         * @param perimeter the Perimeter of the polygon or the length of the
+         * @param Num the number of vertices in the polygon.
+         * @param Perimeter the Perimeter of the polygon or the length of the
          *   polyline (meters).
-         * @param area the Area of the polygon (meters<sup>2</sup>).
+         * @param Area the Area of the polygon (meters<sup>2</sup>).
          **********************************************************************/
-        public PolygonResult(int num, double perimeter, double area)
+        public PolygonResult(int Num, double Perimeter, double Area)
         {
-            this.Num = num;
-            this.Perimeter = perimeter;
-            this.Area = area;
+            this.Num = Num;
+            this.Perimeter = Perimeter;
+            this.Area = Area;
         }
     }
 }

@@ -5,7 +5,6 @@
     <Title>This is an attempt to port the Java version of GeographicLib to C#.</Title>
     <PackageTags>geographic;gis;geodesic;gnomonic;</PackageTags>
     <VersionPrefix>1.49.3</VersionPrefix>
-    <VersionSuffix>beta</VersionSuffix>
   </PropertyGroup>
 
   <Import Project="../Shared.props" />

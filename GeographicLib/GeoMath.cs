@@ -188,22 +188,6 @@ namespace GeographicLib
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Polyval(int N, in ReadOnlySpan<double> p, int s, double x)
-        {
-            double y = N < 0 ? 0 : p[s++];
-            while (--N >= 0) y = y * x + p[s++];
-            return y;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe static double Polyval(int N, double* p, int s, double x)
-        {
-            double y = N < 0 ? 0 : p[s++];
-            while (--N >= 0) y = y * x + p[s++];
-            return y;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double AngRound(double x)
         {
             // The makes the smallest gap in x = 1/16 - nextafter(1/16, 0) = 1/2^57
@@ -283,7 +267,6 @@ namespace GeographicLib
          * The results obey exactly the elementary properties of the trigonometric
          * functions, e.g., sin 9&deg; = cos 81&deg; = &minus; sin 123456789&deg;.
          **********************************************************************/
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Pair Sincosd(double x)
         {
             // In order to minimize round-off errors, this function exactly reduces
@@ -320,7 +303,6 @@ namespace GeographicLib
          * &minus;1) = &minus;180&deg;, for &epsilon; positive and tiny;
          * atan2d(&plusmn;0, 1) = &plusmn;0&deg;.
          **********************************************************************/
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Atan2d(double y, double x)
         {
             // In order to minimize round-off errors, this function rearranges the
