@@ -240,9 +240,9 @@ namespace GeographicLib
         private static readonly double tolb_ = tol0_ * tol2_;
         private static readonly double xthresh_ = 1000 * tol2_;
 
-        internal double _a, _f, _f1, _e2, _ep2, _b, _c2;
-        private double _n, _etol2;
-        private double[] _A3x, _C3x, _C4x;
+        internal readonly double _a, _f, _f1, _e2, _ep2, _b, _c2;
+        private readonly double _n, _etol2;
+        private readonly double[] _A3x, _C3x, _C4x;
 
         /**
          * Constructor for a ellipsoid with
@@ -1294,9 +1294,9 @@ namespace GeographicLib
          * A global instantiation of Geodesic with the parameters for the WGS84
          * ellipsoid.
          **********************************************************************/
-        private static readonly Lazy<Geodesic> _wgs84 = new Lazy<Geodesic>(() => new Geodesic(Constants.WGS84_a, Constants.WGS84_f), true);
+        private static readonly Geodesic _wgs84 = new Geodesic(Constants.WGS84_a, Constants.WGS84_f);
 
-        public static Geodesic WGS84 => _wgs84.Value;
+        public static Geodesic WGS84 => _wgs84;
 
         // This is a reformulation of the geodesic problem.  The notation is as
         // follows:
